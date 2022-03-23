@@ -1,0 +1,61 @@
+---
+title: "survey-first-glance"
+author: "Dorien Huijser"
+date: "23 maart 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+This file was last run on: `r as.character(Sys.Date())`.
+
+## Load packages
+
+```{r packages}
+# install.packages("data.table")
+library(data.table)
+
+# install.packages("dplyr")
+library(dplyr)
+```
+
+## Read the data
+This part reads in the raw data export from Qualtrics.
+
+```{r read-data, cache=TRUE}
+datafile <- "../data/raw/Data_Privacy_Survey_20220323.csv"
+
+dppsurvey <- fread(datafile, na.strings = "")
+
+# Skip the first 2 rows as they contain the question text
+dppsurvey <- dppsurvey[-c(1, 2), ]
+
+# Skip the previews
+dppsurvey <- dppsurvey[-grep("preview",
+                             dppsurvey$DistributionChannel), ]
+
+# Convert Duration into numeric variable
+dppsurvey$Duration <- as.numeric(dppsurvey$`Duration (in seconds)`)
+```
+
+## Exploring response numbers
+
+There are currently `r dim(dppsurvey)[1]` survey responses, which took a median time of `r median(dppsurvey$Duration/60)` minutes.
+Would be nice to make some graphs from these numbers eventually. 
+
+```{r demographics}
+# Faculties
+facultiestable <- dppsurvey %>% 
+  count(Faculty, sort=TRUE)
+
+print(facultiestable)
+
+# Positions
+positionsperfaculty <- dppsurvey %>%
+  group_by(Faculty) %>%
+  count(Position)
+
+print(positionsperfaculty)
+```
