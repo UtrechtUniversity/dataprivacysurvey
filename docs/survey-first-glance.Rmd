@@ -19,9 +19,13 @@ library(data.table)
 
 # install.packages("dplyr")
 library(dplyr)
+
+# install.packages("ggplot2")
+library(ggplot2)
 ```
 
 ## Read the data
+
 This part reads in the raw data export from Qualtrics.
 
 ```{r read-data, cache=TRUE}
@@ -43,7 +47,6 @@ dppsurvey$Duration <- as.numeric(dppsurvey$`Duration (in seconds)`)
 ## Exploring response numbers
 
 There are currently `r dim(dppsurvey)[1]` survey responses, which took a median time of `r median(dppsurvey$Duration/60)` minutes.
-Would be nice to make some graphs from these numbers eventually. 
 
 ```{r demographics}
 # Faculties
@@ -52,6 +55,14 @@ facultiestable <- dppsurvey %>%
 
 print(facultiestable)
 
+# TODO: some respondents filled out multiple faculties, these responses are saved as 1 (e.g. "medicine, geo") and need to be separated to be added to the count of the relevant faculties (e.g., "medicine", "geo"). This actually happens throughout the survey so a generic solution is needed.
+
+# Graph of respondents per faculty
+ggplot(dppsurvey, aes(x= Faculty)) + 
+  geom_bar() + 
+  labs(x = "Faculty", y = "Number of respondents", title = "Respondents per faculty") + 
+  guides(x = guide_axis(angle = 40))
+
 # Positions
 positionsperfaculty <- dppsurvey %>%
   group_by(Faculty) %>%
@@ -59,3 +70,29 @@ positionsperfaculty <- dppsurvey %>%
 
 print(positionsperfaculty)
 ```
+
+## Interviews
+
+There are currently `r length(dppsurvey$Email_2_TEXT[!is.na(dppsurvey$Email_2_TEXT)])` researchers who have left their email address to be contacted. Below you can find from which faculties they are:
+
+```{r demo-emailpeople}
+# Select the people that left their email address
+emailpeople <- dppsurvey %>% 
+  filter(!is.na(Email_2_TEXT))
+
+# Show which faculties they are from
+emailpeople %>% count(Faculty, sort=TRUE)
+
+# Show which positions they are from Positions
+emailpeople %>%
+  group_by(Faculty) %>%
+  count(Position)
+```
+
+## To Do
+
+- Graph for representation of faculties
+- Graph for departments in each faculty (panel)
+- Rescore data type and personal data type to exclude example text
+- Descriptives data type, personal data type, organisational measures, storage medium, consent forms, consent content, dpia experience, dpia help, share outside UU, share measures, data publication, reasonnopub/format publication, know PO, looked for help, found help, sources used, obstacle, challenges,infomissing (text), bettersupport (text)
+- Infotoolsmissing en bettersupport (open text) op een rij zetten (evt. moet dit handmatig)
