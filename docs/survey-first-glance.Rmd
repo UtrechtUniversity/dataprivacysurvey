@@ -91,8 +91,19 @@ emailpeople %>%
 
 ## To Do
 
+- Separate responses if people gave multiple responses so they are counted separately
 - Graph for representation of faculties
 - Graph for departments in each faculty (panel)
 - Rescore data type and personal data type to exclude example text
 - Descriptives data type, personal data type, organisational measures, storage medium, consent forms, consent content, dpia experience, dpia help, share outside UU, share measures, data publication, reasonnopub/format publication, know PO, looked for help, found help, sources used, obstacle, challenges,infomissing (text), bettersupport (text)
-- Infotoolsmissing en bettersupport (open text) op een rij zetten (evt. moet dit handmatig)
+
+## Open text responses
+
+There are many questions with open text responses (questions with an "Other, namely" option and Infotools_missing and Better_support variables), which are harder to analyze but extremely important to take into account in the Data Privacy Project
+
+```{r selectopenquestions}
+opentextresponses <- dppsurvey %>% 
+  select(Faculty, Position, Challenges, Infotools_missing, Better_support_9_TEXT)
+
+write.csv(opentextresponses, file.path("data/raw/dppsurvey_opentextresponses.csv"))
+```
