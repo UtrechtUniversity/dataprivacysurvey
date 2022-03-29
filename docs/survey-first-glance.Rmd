@@ -29,7 +29,7 @@ library(ggplot2)
 This part reads in the raw data export from Qualtrics.
 
 ```{r read-data, cache=TRUE}
-datafile <- "../data/raw/Data_Privacy_Survey_20220328.csv"
+datafile <- "../data/raw/Data_Privacy_Survey_20220329.csv"
 
 dppsurvey <- fread(datafile, na.strings = "")
 
@@ -87,6 +87,14 @@ emailpeople %>% count(Faculty, sort=TRUE)
 emailpeople %>%
   group_by(Faculty) %>%
   count(Position)
+
+emaildataset <- emailpeople %>%
+  select(Faculty, Position, Email_address = Email_2_TEXT)
+
+todaysdate <- as.character(Sys.Date())
+
+write.csv(emaildataset, file.path(paste0("../", todaysdate, "_emailaddresses.csv")))
+
 ```
 
 ## To Do
@@ -105,5 +113,5 @@ There are many questions with open text responses (questions with an "Other, nam
 opentextresponses <- dppsurvey %>% 
   select(Faculty, Position, Challenges, Infotools_missing, Better_support_9_TEXT)
 
-write.csv(opentextresponses, file.path("data/raw/dppsurvey_opentextresponses.csv"))
+write.csv(opentextresponses, file.path(paste0("../data/raw/", todaysdate, "_dppsurvey_opentextresponses.csv")))
 ```
