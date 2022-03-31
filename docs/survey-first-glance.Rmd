@@ -130,6 +130,7 @@ write.csv(emaildataset, file.path(paste0("../../", todaysdate, "_emailaddresses.
 ## To Do
 
 - Separate responses if people gave multiple responses so they are counted separately -> Have not yet found a solution for  this.
+   - Perhaps str_split is a good workaround. str_split(dppsurvey$Faculty,",",simplify = T, n=2) -> Returns a matrix column with a list of separate responses that can then be visualized irrespective of whether a person responded gave multiple responses. Made sure in the data recode in Qualtrics that the text in the data does not contain any commas so str_split should then work. Data needs to be downloaded anew!
 - Graph for representation of faculties
 - Graph for departments in each faculty (panel)
 - Rescore data type and personal data type to exclude example text
