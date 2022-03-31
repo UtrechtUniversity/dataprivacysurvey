@@ -17,11 +17,9 @@ This file was last run on: `r as.character(Sys.Date())`.
 # install.packages("data.table")
 library(data.table)
 
-# install.packages("dplyr")
-library(dplyr)
+# install.packages("tidyverse")
+library(tidyverse)
 
-# install.packages("ggplot2")
-library(ggplot2)
 ```
 
 ## Read the data
@@ -29,7 +27,7 @@ library(ggplot2)
 This part reads in the raw data export from Qualtrics.
 
 ```{r read-data, cache=TRUE}
-datafile <- "../data/raw/Data_Privacy_Survey_20220331.csv"
+datafile <- "../data/raw/Data_Privacy_Survey_20220331-3.csv" #-2.csv" # This file has multiple responses in separate columns (so very wide format but tidier)
 
 dppsurvey <- fread(datafile, na.strings = "")
 
@@ -42,6 +40,37 @@ dppsurvey <- dppsurvey[-grep("preview",
 
 # Convert Duration into numeric variable
 dppsurvey$Duration <- as.numeric(dppsurvey$`Duration (in seconds)`)
+
+# Skip unnecessary columns
+dppsurvey <- dppsurvey[,-c("StartDate","EndDate","Status","IPAddress", 
+                           "Duration (in seconds)", "Finished", "RecordedDate", 
+                           "ResponseId", "RecipientLastName", "RecipientFirstName",
+                           "RecipientEmail", "ExternalReference", "LocationLatitude",
+                           "LocationLongitude", "DistributionChannel", "UserLanguage")]
+
+# Select only consented data
+dppsurvey <- dppsurvey %>% 
+  filter(Consent == "Yes")
+
+```
+
+
+## TO DO: 
+
+From wide to long format
+
+```{r}
+# Selecting columns, see https://tidyselect.r-lib.org/reference/language.html
+
+# This code does not work :(
+dppsurvey_long <- dppsurvey %>%
+  pivot_longer(cols = everything(),
+               names_to = "variable",
+               values_to = "value")
+
+# Example to separate variable column:
+dppsurvey_long %>% separate(col = variable, sep = "_", into = c("Variable", "Responsenumber"))
+
 ```
 
 ## Exploring response numbers
@@ -49,6 +78,7 @@ dppsurvey$Duration <- as.numeric(dppsurvey$`Duration (in seconds)`)
 There are currently `r dim(dppsurvey)[1]` survey responses, which took a median time of `r median(dppsurvey$Duration/60)` minutes.
 
 ```{r demographics}
+# This code works only on the data exports where multiple responses are collapsed into 1 column (which is not tidy)
 # Faculties
 facultiestable <- dppsurvey %>% 
   count(Faculty, sort=TRUE)
@@ -99,7 +129,7 @@ write.csv(emaildataset, file.path(paste0("../../", todaysdate, "_emailaddresses.
 
 ## To Do
 
-- Separate responses if people gave multiple responses so they are counted separately
+- Separate responses if people gave multiple responses so they are counted separately -> Have not yet found a solution for  this.
 - Graph for representation of faculties
 - Graph for departments in each faculty (panel)
 - Rescore data type and personal data type to exclude example text
