@@ -11,6 +11,21 @@ knitr::opts_chunk$set(echo = FALSE)
 
 This file was last run on: `r as.character(Sys.Date())`.
 
+## Analysis plan
+
+1. Overall (no split per faculty or position, entire UU): counts, percentages, graphs
+2. Split by faculty, possibly department (for organization purposes): counts, percentages, graphs
+3. Generate a first report of the report to share and present. Ask for input: what else do people want to know? Ideas for other ways to analyse?
+4. After feedback, possible split by Position (for teaching purposes).
+5. If relevant, split per faculty and position (if not too small of a sample)
+
+### Useful links for prettifying
+
+- https://www.data-to-viz.com/ 
+- https://r-graph-gallery.com/ 
+- https://holtzy.github.io/Pimp-my-rmd/ 
+- Coolers: color palette with UU colors
+
 ## Load packages
 
 ```{r packages}
