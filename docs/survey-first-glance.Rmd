@@ -27,7 +27,7 @@ library(tidyverse)
 This part reads in the raw data export from Qualtrics.
 
 ```{r read-data, cache=TRUE}
-datafile <- "../data/raw/Data_Privacy_Survey_20220331-3.csv" #-2.csv" # This file has multiple responses in separate columns (so very wide format but tidier)
+datafile <- "../data/raw/Data_Privacy_Survey_20220405.csv" # This file has multiple responses in separate columns (so very wide format but tidier)
 
 dppsurvey <- fread(datafile, na.strings = "")
 
@@ -108,7 +108,7 @@ There are currently `r length(dppsurvey$Email_2_TEXT[!is.na(dppsurvey$Email_2_TE
 ```{r demo-emailpeople}
 # Select the people that left their email address
 emailpeople <- dppsurvey %>% 
-  filter(!is.na(Email_2_TEXT))
+  filter(!is.na(Email_1_TEXT))
 
 # Show which faculties they are from
 emailpeople %>% count(Faculty, sort=TRUE)
