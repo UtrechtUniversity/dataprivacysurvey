@@ -1,7 +1,7 @@
 ---
 title: "survey-first-glance"
 author: "Dorien Huijser"
-date: "23 maart 2022"
+date: "8 April 2022"
 output: html_document
 ---
 
@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-This file was last run on: `r as.character(Sys.Date())`.
+**In the second quarter of 2022, Utrecht University (UU) Research Data Management Support sent out a survey among all scientific personnel at UU: the Data Privacy Survey. The aim of this survey was to investigate 1) How UU researchers currently deal with personal data in research, 2) What challenges they run into when handling personal data in research, and 3) How RDM Support and collaborators can improve their services and support concerning personal data in research. The current report contains a summary of the results of this survey, as well as points of action to be taken.**
 
 ## Analysis plan
 
@@ -26,24 +26,24 @@ This file was last run on: `r as.character(Sys.Date())`.
 - https://holtzy.github.io/Pimp-my-rmd/ 
 - Coolers: color palette with UU colors
 
-## Load packages
-
-```{r packages}
+```{r dependencies}
 # install.packages("data.table")
 library(data.table)
 
 # install.packages("tidyverse")
 library(tidyverse)
 
+#install.packages("wordcloud2")
+library(wordcloud2)
+
+# install.packages("gridExtra")
+library(gridExtra)
 ```
 
-## Read the data
-
-This part reads in the raw data export from Qualtrics.
-
-```{r read-data, cache=TRUE}
-datafile <- "../data/raw/Data_Privacy_Survey_20220405.csv" # This file has multiple responses in separate columns (so very wide format but tidier)
-
+```{r readdata, cache=TRUE}
+# We first read the data from Qualtrics and select the relevant data
+# This file has multiple responses in separate columns
+datafile <- "../data/raw/Data_Privacy_Survey_20220408.csv"
 dppsurvey <- fread(datafile, na.strings = "")
 
 # Skip the first 2 rows as they contain the question text
@@ -53,8 +53,9 @@ dppsurvey <- dppsurvey[-c(1, 2), ]
 dppsurvey <- dppsurvey[-grep("preview",
                              dppsurvey$DistributionChannel), ]
 
-# Convert Duration into numeric variable
+# Convert Duration and Progress into a numeric variable
 dppsurvey$Duration <- as.numeric(dppsurvey$`Duration (in seconds)`)
+dppsurvey$Progress <- as.numeric(dppsurvey$Progress)
 
 # Skip unnecessary columns
 dppsurvey <- dppsurvey[,-c("StartDate","EndDate","Status","IPAddress", 
@@ -70,94 +71,283 @@ dppsurvey <- dppsurvey %>%
 ```
 
 
-## TO DO: 
+## Data exploration
 
-From wide to long format
+The survey was filled out by `r dim(dppsurvey)[1]` researchers. The median time it took to complete the survey was `r round(median(dppsurvey$Duration/60), 1)` minutes (range: `r round(min(dppsurvey$Duration)/60, 1)` minutes -`r round(max(dppsurvey$Duration)/3600/24,1)` days). The majority of researchers (`r round(length(dppsurvey$Progress[dppsurvey$Progress == 100])/dim(dppsurvey)[1]*100,1)`%) fully completed the survey.
 
-```{r}
-# Selecting columns, see https://tidyselect.r-lib.org/reference/language.html
+We received responses from each faculty, but the distribution is not equal: the faculties of Science and Social and Behavioural Sciences are overrepresented, whereas the responses of the Faculty of Geosciences and the Faculty of Medicine are rather low. This can be explained by the fact that a large chunk of research performed at the  Faculty of Geosciences does not investigate human behavior and therefore does not work with personal data much. The Faculty of Medicine, then, is located at the University Medical Center Utrecht (UMCU) and is not of primary interest for the current survey, as it concerns an entirely different organization and research support structure.
 
-# This code does not work :(
-dppsurvey_long <- dppsurvey %>%
-  pivot_longer(cols = everything(),
-               names_to = "variable",
-               values_to = "value")
+```{r facultyplot}
+# R color brewers palettes: http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
+# UU colors: https://www.uu.nl/organisatie/huisstijl/huisstijlelementen/kleur
+UU_pallette <- c("#FFCD00", "#FFE6AB", "#F3965E", "#AA1555", "#6E3B23", "#24A793", "#5287C6", "#001240", "#5B2182")
 
-# Example to separate variable column:
-dppsurvey_long %>% separate(col = variable, sep = "_", into = c("Variable", "Responsenumber"))
+# TODO: 
+# Faculty_1 should be renamed into "Geosciences" -> mutate([nameofcontent] = Faculty_1)
+# or newname = unlist(dppsurvey %>% select(Faculty_1) %>% filter(!is.na(Faculty_1)) %>% unique())
+# rename(newname = oldname)
+# Or make a dictionary variable?
 
-```
-
-## Exploring response numbers
-
-There are currently `r dim(dppsurvey)[1]` survey responses, which took a median time of `r median(dppsurvey$Duration/60)` minutes.
-
-```{r demographics}
-# This code works only on the data exports where multiple responses are collapsed into 1 column (which is not tidy)
-# Faculties
-facultiestable <- dppsurvey %>% 
-  count(Faculty, sort=TRUE)
-
-print(facultiestable)
-
-# TODO: some respondents filled out multiple faculties, these responses are saved as 1 (e.g. "medicine, geo") and need to be separated to be added to the count of the relevant faculties (e.g., "medicine", "geo"). This actually happens throughout the survey so a generic solution is needed.
-
-# Graph of respondents per faculty
-ggplot(dppsurvey, aes(x= Faculty)) + 
-  geom_bar() + 
-  labs(x = "Faculty", y = "Number of respondents", title = "Respondents per faculty") + 
-  guides(x = guide_axis(angle = 40))
-
-# Positions
-positionsperfaculty <- dppsurvey %>%
+# Simple barplot of faculty division (WORKS, yet to prettify)
+dppsurvey %>% 
+  pivot_longer(cols = grep("Faculty_[0-9]$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Faculty") %>%
+  select(-name) %>%
   group_by(Faculty) %>%
-  count(Position)
-
-print(positionsperfaculty)
+  summarise(Count = length(Faculty)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Faculty = factor(Faculty, levels=Faculty)) %>% # Update factor levels
+  ggplot(aes(x = Faculty, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Respondents per UU Faculty") +
+  coord_flip() +
+  theme_classic() +
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
 ```
 
-## Interviews
+As can be seen in the plot below, most respondents are early career researchers (PhDs, junior researchers and postdoctoral researchers). We suspect that this is because 1) there simply are more early-career researchers than mid- and late career researchers, and 2) early-career researchers experience a greater need for support with respect to handling personal data.
+
+```{r positionplot}
+# Simple barplot of position division (WORKS, yet to prettify)
+dppsurvey %>% 
+  pivot_longer(cols = grep("Position_[0-9]$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Position") %>%
+  select(-name) %>%
+  group_by(Position) %>%
+  summarise(Count = length(Position)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Position = factor(Position, levels=Position)) %>% # Update factor levels
+  ggplot(aes(x = Position, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Respondents per position type") +
+  coord_flip() +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+```
+
+Below the division of position per faculty is plotted:
+
+```{r facultypositionplot}
+# Barplot of faculty and position (WORKS but looks bad and is NOT ordered)
+dppsurvey %>%
+  pivot_longer(cols = grep("Faculty_[0-9]$", names(dppsurvey), value = TRUE), 
+               values_drop_na = TRUE, 
+               values_to = "Faculty") %>%
+  select(-name) %>%
+  pivot_longer(cols = grep("Position_[0-9]$", names(dppsurvey), value = TRUE),  
+               values_drop_na = TRUE, 
+               values_to = "Position") %>%
+  select(-name) %>%
+  group_by(Faculty, Position) %>%
+  summarise(n = length(Faculty)) %>%
+  ggplot(aes(x = Faculty, y = n, fill = Position)) + 
+  geom_bar(stat = "identity") +
+  labs(x = "", y = "Count", title = "Respondents per UU Faculty and Position") +
+  scale_fill_manual(values = UU_pallette) + 
+  coord_flip() +
+  geom_text(aes(label = n), position= position_stack(vjust = 0.5)) + 
+  theme_classic() + 
+  theme(legend.position = "bottom")
+  
+
+## Test dataset - this works
+#testdf <- data.frame(fac1=c("fsw",NA,NA,"fsw",NA), 
+#                     fac2 = c(NA,"geo",NA,NA,NA),
+#                     fac3 = c(NA,NA,"dgk",NA,"dgk"))
+
+#testdf %>%
+#  pivot_longer(1:3, values_drop_na = TRUE, values_to = "Faculty") %>%
+#  select(-name) %>%
+#  group_by(Faculty) %>%
+#  summarise(n = length(Faculty)) %>%
+#  ggplot(aes(x = Faculty, y = n)) + geom_bar(stat = "identity")
+  
+### 
+
+### Testdataset 2 WORKS
+#testdf2 <- data.frame(fac1 =c("fsw",NA,NA,"fsw",NA), 
+#                     fac2 = c(NA,"geo",NA,NA,NA),
+#                     fac3 = c(NA,NA,"dgk",NA,"dgk"),
+#                     pos1 = c("PhD", NA, NA, "PhD",NA),
+#                     pos2 = c("NA", "postdoc", "postdoc", NA, "postdoc"))
+
+#testdf2 %>%
+#  pivot_longer(contains("fac"), values_drop_na = TRUE, values_to = "Faculty") %>%
+#  select(-name) %>%
+#  pivot_longer(contains("pos"), values_drop_na = TRUE, values_to = "Position") %>%
+#  select(-name) %>%
+#  group_by(Faculty, Position) %>%
+#  summarise(n = length(Faculty)) %>%
+#  ggplot(aes(x = Faculty, y = n, fill = Position)) + geom_bar(stat = "identity")
+
+``` 
+
+## Types of data
+
+```{r typesofdata}
+# Link for grids for graphs: https://cran.r-project.org/web/packages/egg/vignettes/Ecosystem.html
+
+# Data types
+# Simple barplot of types of data used (WORKS, yet to prettify)
+datatypeplot <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Datatype_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Datatype") %>%
+  select(-name) %>%
+  group_by(Datatype) %>%
+  summarise(Count = length(Datatype)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
+  ggplot(aes(x = Datatype, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Data types") +
+  coord_flip() +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+# Personal data types
+personaldatatypeplot <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Personaldata_type_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Datatype") %>%
+  select(-name) %>%
+  group_by(Datatype) %>%
+  summarise(Count = length(Datatype)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
+  ggplot(aes(x = Datatype, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Personal data types") +
+  coord_flip() +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+# From the gridExtra package
+grid.arrange(datatypeplot, personaldatatypeplot, nrow = 1)
+
+# Other data types not in these graphs
+otherdatatypes <- 
+  dppsurvey$Datatype_11_TEXT[!is.na(dppsurvey$Datatype_11_TEXT)] %>%
+  str_split(",") %>%
+  unlist() %>%
+  str_trim() %>%
+  str_to_lower()
+
+#otherdatacounts <- as.data.frame(sort(table(otherdatatypes), decreasing=TRUE))
+#otherdata <- wordcloud2(data = otherdatacounts, size=1.6, color=rep_len(UU_pallette, nrow(otherdatacounts)),
+#            minRotation = 0, maxRotation = 0, rotateRatio = 1)
+
+otherpersdatatypes <- 
+  dppsurvey$Personaldata_type_10_TEXT[!is.na(dppsurvey$Personaldata_type_10_TEXT)] %>%
+  str_split(",") %>%
+  unlist() %>%
+  str_trim() %>%
+  str_to_lower()
+
+#otherdatacounts <- as.data.frame(sort(table(otherdatatypes), decreasing=TRUE))
+#otherpersdata <- wordcloud2(data = otherdatacounts, size=1.6, color=rep_len(UU_pallette, nrow(otherdatacounts)),
+#            minRotation = 0, maxRotation = 0, rotateRatio = 1)
+
+# grid.arrange(otherdata, otherpersdata, nrow = 1)
+
+```
+
+## Organisational and technical measures
+Orgmeasures","Storage_medium",
+"ConsentForms", "Consent_content", "DPIA_experience", 
+"DPIA_Help", 
+
+## Data sharing and publication
+Share_outside_UU", "Share_measures",
+Data_publication", "Publication_format", "Reason_NoPub"
+
+
+## Existing support
+
+"Know_PO", "Lookedforhelp", "Foundhelp",
+Sourcesused", 
+
+## Support required
+
+Obstacle, Challenges, Infotools_missing, Beter_support
+
+### Interviews
 
 There are currently `r length(dppsurvey$Email_2_TEXT[!is.na(dppsurvey$Email_2_TEXT)])` researchers who have left their email address to be contacted. Below you can find from which faculties they are:
 
 ```{r demo-emailpeople}
-# Select the people that left their email address
-emailpeople <- dppsurvey %>% 
-  filter(!is.na(Email_1_TEXT))
+# Select the people that left their email address, and their
+# Faculty, department and position (combined in 1 column)
+emaildataset <- dppsurvey %>%
+  filter(!is.na(Email_1_TEXT)) %>%
+  select(contains(c("Faculty", "Dept", "Position", "Email_1"))) %>%
+  rename(Email = Email_1_TEXT) %>%
+  unite("Faculty", grep("Faculty",names(.), value = T), 
+        sep = ",", remove = TRUE, na.rm=TRUE) %>%
+  unite("Dept", grep("Dept",names(.), value = T), 
+        sep = ",", remove = TRUE, na.rm=TRUE) %>%
+  unite("Position", grep("Position",names(.), value = T), 
+        sep = ",", remove = TRUE, na.rm=TRUE)
 
-# Show which faculties they are from
-emailpeople %>% count(Faculty, sort=TRUE)
+# Plot the division of email addresses over faculties and positions
+UU_pallette <- c("#FFCD00", "#FFE6AB", "#F3965E", "#AA1555", 
+                 "#6E3B23", "#24A793", "#5287C6", "#001240", "#5B2182")
 
-# Show which positions they are from Positions
-emailpeople %>%
-  group_by(Faculty) %>%
-  count(Position)
+emaildataset %>% 
+  ggplot(aes(x = Faculty, fill = Position)) +
+  geom_bar(stat = "count") + 
+  stat_count(geom = "text", aes(label = ..count..), position = position_stack(vjust=0.5)) + 
+  coord_flip() + 
+  theme_classic() +
+  theme(legend.position = "bottom") +
+  scale_fill_manual(values = UU_pallette) +
+  labs(x = "", y = "Count", title = "Email people per faculty and position")
 
-emaildataset <- emailpeople %>%
-  select(Faculty, Position, Email_address = Email_2_TEXT)
+# For later: looping through variables to combine them
+#variables <- c("Faculty", "Dept", "Position", "Datatype", 
+#               "Personaldata_type", "Orgmeasures","Storage_medium",
+#               "ConsentForms", "Consent_content", "DPIA_experience", 
+#               "DPIA_Help", "Share_outside_UU", "Share_measures",
+#               "Data_publication", "Publication_format", "Reason_NoPub",
+#               "Know_PO", "Lookedforhelp", "Foundhelp",
+#               "Sourcesused", "Obstacle", "Challenges",
+#               "Infotools_missing", "Better_support",
+#               "Email", "Email_1", "Duration")
+
+#for(varname in variables){ # Does not work yet
+#  emailpeople2 <- emailpeople %>%
+#    unite(varname, grep(varname, names(emailpeople), value = TRUE), sep = ",", remove = TRUE, na.rm=TRUE)
+#}
 
 todaysdate <- as.character(Sys.Date())
-
 write.csv(emaildataset, file.path(paste0("../../", todaysdate, "_emailaddresses.csv")))
 
 ```
 
-## To Do
-
-- Separate responses if people gave multiple responses so they are counted separately -> Have not yet found a solution for  this.
-   - Perhaps str_split is a good workaround. str_split(dppsurvey$Faculty,",",simplify = T, n=2) -> Returns a matrix column with a list of separate responses that can then be visualized irrespective of whether a person responded gave multiple responses. Made sure in the data recode in Qualtrics that the text in the data does not contain any commas so str_split should then work. Data needs to be downloaded anew!
-- Graph for representation of faculties
-- Graph for departments in each faculty (panel)
-- Rescore data type and personal data type to exclude example text
-- Descriptives data type, personal data type, organisational measures, storage medium, consent forms, consent content, dpia experience, dpia help, share outside UU, share measures, data publication, reasonnopub/format publication, know PO, looked for help, found help, sources used, obstacle, challenges,infomissing (text), bettersupport (text)
-
-## Open text responses
+## OLD
+### Open text responses
 
 There are many questions with open text responses (questions with an "Other, namely" option and Infotools_missing and Better_support variables), which are harder to analyze but extremely important to take into account in the Data Privacy Project
 
 ```{r selectopenquestions}
-opentextresponses <- dppsurvey %>% 
-  select(Faculty, Position, Challenges, Infotools_missing, Better_support_9_TEXT)
+#opentextresponses <- dppsurvey %>% 
+#  select(Faculty, Position, Challenges, Infotools_missing, Better_support_9_TEXT)
+#
+#write.csv(opentextresponses, file.path(paste0("../data/raw/", todaysdate, "_dppsurvey_opentextresponses.csv")))
+```
 
-write.csv(opentextresponses, file.path(paste0("../data/raw/", todaysdate, "_dppsurvey_opentextresponses.csv")))
+This document was last created on: `r as.character(Sys.Date())`.
+
+```{r sessioninfo}
+sessionInfo()
 ```
