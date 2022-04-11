@@ -43,7 +43,7 @@ library(gridExtra)
 ```{r readdata, cache=TRUE}
 # We first read the data from Qualtrics and select the relevant data
 # This file has multiple responses in separate columns
-datafile <- "../data/raw/Data_Privacy_Survey_20220408.csv"
+datafile <- "../data/raw/Data_Privacy_Survey_20220411.csv"
 dppsurvey <- fread(datafile, na.strings = "")
 
 # Skip the first 2 rows as they contain the question text
@@ -263,9 +263,183 @@ otherpersdatatypes <-
 ```
 
 ## Organisational and technical measures
-Orgmeasures","Storage_medium",
-"ConsentForms", "Consent_content", "DPIA_experience", 
-"DPIA_Help", 
+
+### Organisational measures and storage media used
+
+```{r orgmeasures}
+# Link for grids for graphs: https://cran.r-project.org/web/packages/egg/vignettes/Ecosystem.html
+
+# Organisational measures
+# Simple barplot of types of data used (WORKS, yet to prettify)
+orgmeasuresplot <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Orgmeasures_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Orgmeasures") %>%
+  select(-name) %>%
+  group_by(Orgmeasures) %>%
+  summarise(Count = length(Orgmeasures)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Orgmeasures = factor(Orgmeasures, levels=Orgmeasures)) %>% # Update factor levels
+  ggplot(aes(x = Orgmeasures, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Organisational measures") +
+  coord_flip() +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+#orgmeasuresplot
+
+# Other organisational measures
+otherorgmeasures <- 
+  dppsurvey$Orgmeasures_16_TEXT[!is.na(dppsurvey$Orgmeasures_16_TEXT)] %>%
+  unlist() %>%
+  str_trim() %>%
+  str_to_lower()
+
+# Storage media used
+storagemediaplot <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Storage_medium_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Storagemed") %>%
+  select(-name) %>%
+  group_by(Storagemed) %>%
+  summarise(Count = length(Storagemed)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Storagemed = factor(Storagemed, levels=Storagemed)) %>% # Update factor levels
+  ggplot(aes(x = Storagemed, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Storage media used") +
+  coord_flip() +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+#storagemediaplot
+
+# Other storage media
+otherstoragemedia <- 
+  dppsurvey$Storage_medium_8_TEXT[!is.na(dppsurvey$Storage_medium_8_TEXT)] %>%
+  unlist() %>%
+  str_trim() %>%
+  str_to_lower()
+
+grid.arrange(orgmeasuresplot, storagemediaplot, nrow = 1)
+```
+
+### Informed consent forms
+
+```{r consent}
+# Do you use consent forms in your research?
+consentformplot <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Consentforms_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "consentforms") %>%
+  select(-name) %>%
+  group_by(consentforms) %>%
+  summarise(Count = length(consentforms)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(consentforms = factor(consentforms, levels=consentforms)) %>% # Update factor levels
+  ggplot(aes(x = consentforms, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Do you use consent forms?") +
+  coord_flip() +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+# Consent forms: other
+consentformsother <- 
+  dppsurvey$Consentforms_7_TEXT[!is.na(dppsurvey$Consentforms_7_TEXT)] %>%
+  unlist() %>%
+  str_trim() %>%
+  str_to_lower()
+
+# Consent form content
+consentcontentplot <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Consent_content_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "consentconsent") %>%
+  select(-name) %>%
+  group_by(consentconsent) %>%
+  summarise(Count = length(consentconsent)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(consentconsent = factor(consentconsent, levels=consentconsent)) %>% # Update factor levels
+  ggplot(aes(x = consentconsent, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Content of the consent form") +
+  coord_flip() +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+# Consent form content: other
+consentcontentother <- 
+  dppsurvey$Consent_content_12_TEXT[!is.na(dppsurvey$Consent_content_12_TEXT)] %>%
+  unlist() %>%
+  str_trim() %>%
+  str_to_lower()
+
+grid.arrange(consentformplot, consentcontentplot, nrow = 1)
+```
+
+### Data Protection Impact Assessment (DPIA)
+
+"DPIA_Help"
+
+
+```{r dpia}
+# Experience with DPIAs?
+dpiaexperienceplot <- dppsurvey %>% 
+  pivot_longer(cols = grep("^DPIA_experience_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "dpiaexperience") %>%
+  select(-name) %>%
+  group_by(dpiaexperience) %>%
+  summarise(Count = length(dpiaexperience)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(dpiaexperience = factor(dpiaexperience, levels=dpiaexperience)) %>% # Update factor levels
+  ggplot(aes(x = dpiaexperience, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Experience with DPIAs") +
+  coord_flip() +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+# DPIA: had help?
+dpiahelpplot <- dppsurvey %>% 
+  pivot_longer(cols = grep("^DPIA_Help_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "dpiahelp") %>%
+  select(-name) %>%
+  group_by(dpiahelp) %>%
+  summarise(Count = length(dpiahelp)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(dpiahelp = factor(dpiahelp, levels=dpiahelp)) %>% # Update factor levels
+  ggplot(aes(x = dpiahelp, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Help with DPIA and from whom") +
+  coord_flip() +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+# DPIA help from: other
+dpiahelpother <- 
+  dppsurvey$DPIA_Help_4_TEXT[!is.na(dppsurvey$DPIA_Help_4_TEXT)] %>%
+  unlist() %>%
+  str_trim() %>%
+  str_to_lower()
+
+grid.arrange(dpiaexperienceplot, dpiahelpplot, nrow = 1)
+```
 
 ## Data sharing and publication
 Share_outside_UU", "Share_measures",
@@ -283,7 +457,7 @@ Obstacle, Challenges, Infotools_missing, Beter_support
 
 ### Interviews
 
-There are currently `r length(dppsurvey$Email_2_TEXT[!is.na(dppsurvey$Email_2_TEXT)])` researchers who have left their email address to be contacted. Below you can find from which faculties they are:
+There are currently `r length(dppsurvey$Email_1_TEXT[!is.na(dppsurvey$Email_1_TEXT)])` researchers who have left their email address to be contacted. Below you can find from which faculties they are:
 
 ```{r demo-emailpeople}
 # Select the people that left their email address, and their
@@ -345,6 +519,9 @@ There are many questions with open text responses (questions with an "Other, nam
 #
 #write.csv(opentextresponses, file.path(paste0("../data/raw/", todaysdate, "_dppsurvey_opentextresponses.csv")))
 ```
+
+
+## Technical info
 
 This document was last created on: `r as.character(Sys.Date())`.
 
