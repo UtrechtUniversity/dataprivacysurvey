@@ -44,7 +44,7 @@ library(gridExtra)
 
 ```{r readdata, cache=TRUE}
 # This file has multiple responses in separate columns
-datafile <- "../data/raw/Data_Privacy_Survey_20220412.csv"
+datafile <- "../data/raw/Data_Privacy_Survey_20220419.csv"
 dppsurvey <- fread(datafile, na.strings = "")
 
 # Skip the first 2 rows as they contain the question text

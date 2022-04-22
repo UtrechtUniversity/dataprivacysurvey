@@ -1,0 +1,284 @@
+---
+title: "Data Privacy Survey: signalling challenges and improving privacy services in research"
+author: "Dorien Huijser"
+date: "22 april 2022"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    toc_float: true
+    theme: united
+    highlight: tango
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+```
+
+## Abstract
+In the second quarter of 2022, Utrecht University (UU) Research Data Management 
+Support sent out a survey among all scientific personnel at UU: the Data Privacy
+Survey. The aim of this survey was to investigate 1) How UU researchers 
+currently deal with personal data in research, 2) What challenges they run into 
+when handling personal data in research, and 3) How RDM Support and 
+collaborators can improve their services and support concerning personal data 
+in research. The current report contains a summary of the results of this 
+survey, as well as points of action to be taken.
+
+## Report contents
+
+1. Management summary
+2. Introduction
+3. Methods
+4. Results
+5. Conclusion and discussion
+6. References
+7. Technical information
+
+## Management summary
+
+## Introduction
+Scientific research often includes some form of personal data. The amount of 
+personal data in research is likely underestimated, as researchers may be 
+unaware of what personal data are or whether they are being collected. With the 
+implementation of the General Data Protection Regulation (GDPR) in May 2018, 
+stricter legal requirements apply to handling personal data and its sharing or 
+publication. The number of (complex) questions on handling personal data in 
+scientific research is increasing. Yet, practical information to resolve these 
+questions can be difficult to find, scattered, and/or discipline-specific. As 
+such, there is room to better translate the legislation to scientific research 
+practice and to provide practical tools for handling personal data in research.
+
+This room for better translation is exemplified in the 
+<a href = "https://utrechtuniversity.github.io/dataprivacyproject/" 
+target = "_blank">Data Privacy Project</a>, a data support effort^[The Data 
+Privacy Project is led by Utrecht University's <a href="https://uu.nl/rdm/" 
+target = "_blank">Research Data Management Support</a>,
+a collaboration between the University Library and Information Technology 
+Services, but there is a tight collaboration with other data support, such as 
+first- and second-line privacy officers and information security.] within 
+Utrecht University (UU), the Netherlands. The project aims to build knowledge 
+and expertise on how researchers can and should deal with personal data. The 
+project's deliverables are all focussed on providing practical, actionable and
+FAIR (Findable, Accessible, Interoperable, Reusable) information and tools for
+researchers to use in their research ^[The project is funded by Utrecht 
+University’s Research IT program and a Digital Competence Center grant from 
+the Dutch Organization for Scientific Research (NWO).]. 
+
+To properly take into account the challenges and needs of our target audience, 
+namely UU researchers, one of the deliverables of the project is to perform
+quantitative and qualitative investigations into the current practices and needs
+of UU researchers concerning the handling of personal data. Our primary research
+questions are:
+
+1. To what extent are UU researchers aware of privacy legislation and practices?
+2. What data privacy issues do UU researchers typically run into?
+3. What support do UU researchers need to handle personal data?
+
+To answer these questions both quantitatively and qualitatively, we have set 
+up an online survey and planned one-on-one meetings with a selection of UU 
+researchers. This report describes our methods, results and the future steps
+that data support at UU can take to improve their services concerning privacy
+in research.
+
+## Methods
+### Data Privacy Survey
+```{r dependencies, warning = FALSE, message = FALSE}
+# install.packages("data.table")
+library(data.table)
+
+# install.packages("tidyverse")
+library(tidyverse)
+
+#install.packages("wordcloud2")
+library(wordcloud2)
+
+# install.packages("gridExtra")
+library(gridExtra)
+```
+
+```{r readdata, cache=TRUE}
+# This file has multiple responses in separate columns
+datafile <- "../data/raw/Data_Privacy_Survey_20220419.csv"
+dppsurvey <- fread(datafile, na.strings = "")
+
+# Skip the first 2 rows as they contain the question text
+dppsurvey <- dppsurvey[-c(1, 2), ]
+
+# Skip the previews
+dppsurvey <- dppsurvey[-grep("preview",
+                             dppsurvey$DistributionChannel), ]
+
+# Convert Duration and Progress into a numeric variable
+dppsurvey$Duration <- as.numeric(dppsurvey$`Duration (in seconds)`)
+dppsurvey$Progress <- as.numeric(dppsurvey$Progress)
+
+# Skip unnecessary columns
+dppsurvey <- dppsurvey[,-c("StartDate","EndDate","Status","IPAddress", 
+                           "Duration (in seconds)", "Finished", "RecordedDate", 
+                           "ResponseId", "RecipientLastName", "RecipientFirstName",
+                           "RecipientEmail", "ExternalReference", "LocationLatitude",
+                           "LocationLongitude", "DistributionChannel", "UserLanguage")]
+
+# Select only consented data
+dppsurvey <- dppsurvey %>% 
+  filter(Consent == "Yes")
+```
+
+#### Survey questions 
+The Data Privacy Survey was created by the project coordinators (DH, NM) with 
+input from the Data Privacy Project team, consisting of privacy officers, data
+managers, data consultants, information security and research engineering.
+The final version of the survey in Qualtrics consisted of 19-23 questions, 
+which were separated into 5 sections:
+
+1. *About you and your research*: 5 questions about the faculty, department, 
+position, and type of (personal) data the researcher works with.
+2. *Measures and documents*: 4-6 questions about researchers' familiarity and
+use of privacy-related measures (e.g., processing register, Data Privacy Impact
+Assessment, encryption, pseudonymisation, etc.), data storage, and informed 
+consent forms.
+3. *Data sharing, archiving and publication*: 3-4 questions about researchers' 
+data sharing and publishing practices.
+4. *Finding support*: 3-4 questions about the awareness of several data support
+channels.
+5. *Improving our services*: 4 questions about researchers' challenges, needs, 
+and suggestions to improve UU's data privacy support.
+
+The estimated 10 minute duration of the survey in advance proved to be 
+relatively accurate: respondents spent an average of 
+`r round(median(dppsurvey$Duration/60), 1)` minutes on the survey (range: 
+`r round(min(dppsurvey$Duration)/60, 1)` minutes - 
+`r round(max(dppsurvey$Duration)/3600/24,1)` days). The majority of researchers
+(`r round(length(dppsurvey$Progress[dppsurvey$Progress == 100])/dim(dppsurvey)[1]*100,1)`%) 
+fully completed the survey.
+
+#### Procedure
+The survey was distributed from March 21st, 2022 onwards via several 
+communication channels to reach as many UU researchers as possible:
+
+- An <a href = "https://utrechtuniversity.github.io/dataprivacyproject/20220321-data-privacy-survey.html"
+target = "_blank">email</a> was sent to all academic staff at UU through 
+central communication channels. The reasoning was that this would be the most
+effective way to reach as many UU researchers as possible (taking for granted
+that we would likely miss a small part of non-academic personnel also involved
+in research in some way).
+- A mention in several Faculty newsletters.
+- Social media messages (e.g., on <a href = "https://twitter.com/RDMsupportUU/status/1517390979707412481"
+target = "_blank">Twitter</a>).
+- A <a href = "https://intranet.uu.nl/en/news/news-items/survey-better-support-for-handling-privacy-sensitive-data-in-research" 
+target = "_blank">news item</a> on the UU intranet.
+- Via data support colleagues, who were asked to point researchers they were
+in contact with to the survey.
+
+Researchers could provide voluntarily whether they wanted to participate in the
+survey. The survey only started after they had provided their consent. All 
+results reported here are from researchers who provided their active consent. 
+
+#### Survey respondents
+The survey was filled out by `r dim(dppsurvey)[1]` UU researchers. The survey
+was created in such a way so that only researchers from a UU faculty, who 
+worked with personal research data, were selected to respond to all other survey
+questions.
+
+We received responses from each faculty, but the distribution is not equal: 
+the faculties of Science and Social and Behavioural Sciences are 
+overrepresented, whereas the responses of the Faculty of Geosciences and the 
+Faculty of Medicine are rather low. This can be explained by the fact that 
+a large chunk of research performed at the  Faculty of Geosciences does 
+not investigate human behavior and therefore does not work with personal data 
+much. The Faculty of Medicine, then, is located at the University Medical 
+Center Utrecht (UMCU) and is not of primary interest for the current survey, 
+as it concerns an entirely different organisation with a separate research 
+support structure.
+
+As can be seen in the figure on the right, most respondents are early 
+career researchers (PhDs, junior researchers and postdoctoral researchers). 
+We suspect that this is because 1) there simply are more early-career 
+researchers than mid- and late career researchers, and 2) early-career 
+researchers experience a greater need for support with respect to handling 
+personal data.
+
+```{r facultyplot}
+# R color brewers palettes: http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
+# UU colors: https://www.uu.nl/organisatie/huisstijl/huisstijlelementen/kleur
+UU_pallette <- c("#FFCD00", "#FFE6AB", "#F3965E", "#AA1555", "#6E3B23", "#24A793", "#5287C6", "#001240", "#5B2182")
+
+# Simple barplot of faculty division (WORKS, yet to prettify)
+facultyplot <- 
+  dppsurvey %>% 
+  pivot_longer(cols = grep("Faculty_[0-9]$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Faculty") %>%
+  select(-name) %>%
+  group_by(Faculty) %>%
+  summarise(Count = length(Faculty)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Faculty = factor(Faculty, levels=Faculty)) %>% # Update factor levels
+  ggplot(aes(x = Faculty, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Respondents per UU Faculty") +
+  coord_flip() +
+  theme_classic() +
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+# Simple barplot of position division (WORKS, yet to prettify)
+positionplot <-
+  dppsurvey %>% 
+  pivot_longer(cols = grep("Position_[0-9]$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Position") %>%
+  select(-name) %>%
+  group_by(Position) %>%
+  summarise(Count = length(Position)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Position = factor(Position, levels=Position)) %>% # Update factor levels
+  ggplot(aes(x = Position, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Respondents per position type") +
+  coord_flip() +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+grid.arrange(facultyplot, positionplot, nrow = 1)
+```
+
+#### Analysis
+Below we report on the descriptive statistics or summaries from most of the 
+survey questions. As we did not formulate hypotheses, no statistical analyses 
+were performed. 
+
+#### Data and material availability
+The entire survey can be found 
+<a href = "https://utrechtuniversity.github.io/dataprivacyproject/assets/docs/survey-questions-qualtrics.pdf"
+target = "_blank">on our website</a>, as well as the separate 
+<a href = "https://utrechtuniversity.github.io/dataprivacyproject/assets/docs/survey-privacy-statement.pdf" 
+target = "_blank">privacy statement</a>. The script can be found in the designated
+<a href = "https://github.com/UtrechtUniversity/dataprivacysurvey" target = 
+"_blank">GitHub repository</a>. As the raw data contain personal information (IP 
+address, demographic information, open text responses and email addresses), and
+no consent was obtained to share those details, we are unable to share them.
+
+### One-on-one meetings
+The one-on-one meetings are currently being conducted. More will be shared soon!
+
+## Results
+  - University-wide
+  - Faculty-specific
+  
+## Conclusion and discussion
+
+## References
+
+## Technical information
+This document was last created on: `r as.character(Sys.Date())`.
+
+```{r sessioninfo}
+sessionInfo()
+```
