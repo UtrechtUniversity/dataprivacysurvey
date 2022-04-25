@@ -11,6 +11,7 @@ output:
     theme: united
     highlight: tango
     code_folding: hide
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -101,7 +102,7 @@ library(gridExtra)
 
 ```{r readdata, cache=TRUE}
 # This file has multiple responses in separate columns
-datafile <- "../data/raw/Data_Privacy_Survey_20220419.csv"
+datafile <- "../data/raw/Data_Privacy_Survey_20220425.csv"
 dppsurvey <- fread(datafile, na.strings = "")
 
 # Skip the first 2 rows as they contain the question text
@@ -219,7 +220,8 @@ facultyplot <-
   mutate(Faculty = factor(Faculty, levels=Faculty)) %>% # Update factor levels
   ggplot(aes(x = Faculty, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Respondents per UU Faculty") +
+  labs(x = "", title = "Faculties",
+       caption = "UU faculty representation in the Data Privacy Survey") +
   coord_flip() +
   theme_classic() +
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
@@ -239,7 +241,8 @@ positionplot <-
   mutate(Position = factor(Position, levels=Position)) %>% # Update factor levels
   ggplot(aes(x = Position, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Respondents per position type") +
+  labs(x = "", title = "Position",
+       caption = "Positions of Data Privacy Survey respondents") +
   coord_flip() +
   theme_classic() + 
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
@@ -269,8 +272,94 @@ no consent was obtained to share those details, we are unable to share them.
 The one-on-one meetings are currently being conducted. More will be shared soon!
 
 ## Results
-  - University-wide
-  - Faculty-specific
+### Types of research data
+Within the sample of the survey, it is clear that most researchers use tabular, textual, code and audio data as their primary research data format. The most encountered type of personal data that researchers indicate to work with are contact information, demographic information and direct identifiers. This can be either because these are the types of personal data that are indeed most common, or because researchers mostly recognize these types of data as being personal data.
+
+```{r datatypes}
+# count
+#sum(!is.na(dppsurvey$Datatype_1))
+
+# percentage
+#sum(!is.na(dppsurvey$Datatype_1))/dim(dppsurvey)[1]
+
+# text label
+#unique(dppsurvey$Datatype_1)[1]
+
+# Table of data types
+datatypetable <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Datatype_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Datatype") %>%
+  select(-name) %>%
+  group_by(Datatype) %>%
+  summarise(Count = length(Datatype)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+
+# Table of personal data types
+tablepersdata <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Personaldata_type_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Personal_Datatype") %>%
+  select(-name) %>%
+  group_by(Personal_Datatype) %>%
+  summarise(Count = length(Personal_Datatype)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype), # Update factor levels
+         Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+
+# Donut chart of personal data types --> Nr of categories = too large! But does work otherwise
+#perstypedonut <- dppsurvey %>% 
+#  pivot_longer(cols = grep("^Personaldata_type_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "Personal_Datatype") %>%
+#  select(-name) %>%
+#  group_by(Personal_Datatype) %>%
+#  summarise(Count = length(Personal_Datatype)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype), # Update factor levels
+#         Percentage = round(Count/dim(dppsurvey)[1]*100,1),
+#         ymax = cumsum(Percentage),
+#         ymin = c(0, head(ymax, n = -1)),
+#         labelPosition = (ymax + ymin)/2,
+#         label = paste0(Personal_Datatype, ": ", Percentage, "%")) %>% 
+#  ggplot(aes(ymax = ymax, ymin = ymin, xmax = 4, xmin = 3, fill = Personal_Datatype)) +
+#  geom_rect() + 
+#  geom_label(x = 3.5, aes(y = labelPosition, label = label), size = 6) +
+#  scale_fill_brewer(palette=4) +
+# coord_polar(theta="y") + 
+# xlim(c(2,4)) + 
+#  theme_void() +
+#  theme(legend.position = "none")
+```
+
+**TO DO: wrangle Dept_ columns so that they can be displayed within Faculties**
+
+### Current practices in handling personal data
+
+The first part of the survey addressed the researchers' current practices in 
+handling personal data in their research. 
+
+### Needs 
+
+
+Variables
+- Measures used (organisational and technical measures)
+- Storage media used
+- Consent forms: use of consent forms and content of consent forms
+- DPIA: familiarity and help used
+- Data sharing practices: externally and if so, which measures are used?
+- Data publishing: does that ever happen and if so, in what format. IF not: why not?
+- Existing support channels: PO, have you looked for help and ifso, did you find what you were looking for?
+- Which channels are mostly used?
+- Is privacy an obstacle?
+- What do you need for better support?
+- Open text: challenges and needs
   
 ## Conclusion and discussion
 
