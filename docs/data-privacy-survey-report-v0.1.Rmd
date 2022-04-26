@@ -345,9 +345,6 @@ tablepersdata <- dppsurvey %>%
 The first part of the survey addressed the researchers' current practices in 
 handling personal data in their research. 
 
-### Needs 
-
-
 Variables
 - Measures used (organisational and technical measures)
 - Storage media used
@@ -355,8 +352,14 @@ Variables
 - DPIA: familiarity and help used
 - Data sharing practices: externally and if so, which measures are used?
 - Data publishing: does that ever happen and if so, in what format. IF not: why not?
+
+### Existing support channels
+
 - Existing support channels: PO, have you looked for help and ifso, did you find what you were looking for?
 - Which channels are mostly used?
+
+### Challenges and needs
+
 - Is privacy an obstacle?
 - What do you need for better support?
 - Open text: challenges and needs
