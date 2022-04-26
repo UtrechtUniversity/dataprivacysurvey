@@ -1,7 +1,7 @@
 ---
 title: "Data Privacy Survey: signalling challenges and improving privacy services in research"
-author: "Dorien Huijser"
-date: "22 april 2022"
+author: "Dorien Huijser, Neha Moopen"
+date: "26 april 2022"
 output:
   html_document:
     toc: true
@@ -565,13 +565,13 @@ within their faculties.
 
 #### Looking for help
 
-
-have you looked for help and ifso, did you find what you were looking for?
-
-#### Channels used to find support
-
-
-- Which channels are mostly used?
+When asked whether respondents have ever looked for support in the form of 
+information, tools, or support an overwheling majority indicated that they have,
+as can be seen in the graph below. Most respondents that looked for support
+indicate however that they haven't always found the suport they were looking for.
+Together with the results from the previous question about privacy officers,
+this suggests that the visibility of the current support channels could be 
+improved.
 
 ```{r existingsupport}
 # Ever looked for help with privacy?
@@ -586,7 +586,8 @@ lookedforhelpplot <- dppsurvey %>%
   mutate(searchhelp = factor(searchhelp, levels = searchhelp)) %>% # Update factor levels
   ggplot(aes(x = searchhelp, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Looked for help?") +
+  labs(x = "", title = "Has looked for help",
+       caption = "Have you ever looked for UU-specific information, \n in-person support or tools on handling personal data?") +
   theme_classic() + 
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
              color = "black",
@@ -607,7 +608,8 @@ foundhelpplot <- dppsurvey %>%
                                                   "(Almost) never"))) %>% # Update factor levels
   ggplot(aes(x = foundhelp, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Find what you were looking for?") +
+  labs(x = "", title = "Has found what they were looking for",
+       caption = "Did you find what you were looking for \n(e.g., information, support, tools)?") +
   theme_classic() + 
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
              color = "black",
@@ -615,6 +617,18 @@ foundhelpplot <- dppsurvey %>%
 
 grid.arrange(lookedforhelpplot, foundhelpplot, nrow = 1)
 ```
+
+#### Channels used to find support
+
+The graph below indicates which channels respondents to the survey used most 
+when looking for information about handling personal data. Note that this was 
+a multiple choice question, and so the numbers do no add up to the total number
+of survey respondents. As shown below, all sources mentioned are to some extent
+consulted by the respondents. However, there is large differentiation between 
+these sources. The university website and intranet are the most visited online 
+resources for information about handline personal data. Notably, colleagues 
+appear to play an important role as well in informing researchers
+about how to handle personal data.
 
 ```{r sourcesused}
 # Sources used to find information and help
@@ -648,12 +662,186 @@ sourcesusedother <-
 
 
 ### Challenges and needs
+```{r obstacle}
+obstacleplot <- dppsurvey %>% 
+  pivot_longer(cols = Obstacle, 
+               values_drop_na = TRUE,
+               values_to = "obstacle") %>%
+  select(-name) %>%
+  group_by(obstacle) %>%
+  summarise(Count = length(obstacle)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(obstacle = factor(obstacle, levels = c("(Almost) always",
+                                                "Sometimes",
+                                                "(Almost) never",
+                                                "Not sure"))) %>% # Update factor levels
+  ggplot(aes(x = obstacle, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Is privacy an obstacle?",
+       caption = "Do you see dealing with personal data as an obstacle in open science and research data management?") +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
 
-- Is privacy an obstacle?
-- What do you need for better support?
-- Open text: challenges and needs
+obstacleplot
+```
+
+As can be seen above, most researchers experience privacy an obstacle for 
+open science and research data management. It is therefore important to aim for
+better service and support in this area. What this support should look like 
+differs a bit: 
+
+```{r bettersupport}
+bettersupporttable <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Better_support_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "bettersupport") %>%
+  select(-name) %>%
+  group_by(bettersupport) %>%
+  summarise(Count = length(bettersupport)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(bettersupport = factor(bettersupport, levels=bettersupport)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+```
+
+- **TO DO: Open text: challenges and needs**
   
-## Conclusion and discussion
+## Results summary [preliminary]
+
+In this survey, we find that personal data are processed in each faculty and 
+across all academic positions at Utrecht University. Most researchers have 
+tabular, textual, code and audiovisual datasets, which contain all kinds of 
+personal data (mostly demographics, contact information, direct identifiers).
+  
+Most researchers are familiar with concepts like anonymisation and 
+pseudonymisation, access control, and UU-approved tools for handling personal 
+data. However, the knowledge level differs quite a bit. For example, some 
+researchers seem to store data on locations that officially are not allowed.
+Data is often shared, but not all the right measures are always taken to do so 
+securely. Additionally, some measures to securely handle personal data in accordance 
+with the GDPR are less known, or there is confusion about it. For example, 
+the processing register, Data Protection Impact Assessment, and Standard 
+Contractual Clauses are among the least known concepts that we measured. And there
+seems to be unclarity among part of the respondents on when sharing data is allowed
+or when data are personal. Together, this suggests that there is a lot to be gained
+regarding awareness and secure practices in scientific research with personal data.
+
+Below, we summarise challenges and needs explicated by researchers. 
+
+## Recommendations [preliminary]
+### Increased visibility
+
+Our data show that the visibility of existing support for handling personal data 
+can be increased at UU. This includes visibility of privacy officers, legal affairs 
+and Research Data Management Support, as well as faculty- or department-level 
+support. 
+
+As shown by the fact that many respondents consult with colleagues for 
+information and support, personal contact with supporters will likely be more 
+effective at increasing awareness and uptake of secure privacy practices than a 
+passive website that may not always answer all possible questions.
+
+Some suggestions for increasing visibility:
+
+- Make sure there is (sufficient) support available to help researchers in time.
+If there is no support available, the odds are that researchers may not ask for 
+help at all and thus forget important privacy elements in the design of their 
+research project.
+- Make sure support staff are easy to find. For example, give them a clear location
+on the university website and/or on the intranet. Also indicate who is available
+for what type of support and for which target audience (e.g., "all UU 
+researchers", "employees from the Faculty of Humanities", etc.)
+- Make sure information on handling personal data in research is easy to find.
+The UU website and intranet seem the most suitable places, as these are the most
+visited to look for information according to the survey. 
+- Make researchers actively aware of existing support channels. For example,
+first-line support can visit important faculty or department events, offer to
+give a workshop, and keep short lines of contact with department heads.
+
+### More hands-on support
+
+The survey and interviews show that some researchers are not content with the 
+support they have received in the past. For example, their research project may
+have suffered significant delays due to the fact that support personnel only
+pointed them at what they could *not* do, rather than how to solve privacy-
+related issues. We noticed many researchers that argue for more hands-on suppport,
+rather than advise with no concrete direction how to apply it in practice. More
+hands-on support can for example be reached by:
+
+- More collaboration between different types of data support. For example, at UU
+there is a clear distinction between privacy officers (employed by faculties),
+data managers (employed by the University Library and some faculties), information
+security officers (Information Technology Services) and research engineers 
+(Information Technology Services). However, in practice there is often overlap 
+between either or all of these positions. Regular collaboration between these 
+parties can:
+  - help privacy and security experts understand the perspective of the 
+  researcher and possibly how to apply their advice in practice,
+  - help data managers and research engineers understand the GDPR requirements 
+  and translate those to practice, and
+  - enable reuse of solutions already applied in earlier cases that either 
+  party may not be aware of.
+- Together with researchers, developing suitable practical solutions (tools, 
+protocols, etc.) for specific scenarios and/or types of research, and sharing 
+them with the world for reuse (if possible).
+- Increasing contact between support staff and researchers to understand the 
+issues they are dealing with that require a solution.
+
+### Decreased administrative burden
+
+A selection of researchers mention a high administrative burden when handling
+personal data. This is for example expressed in processes that take too long
+(e.g., writing and reviewing a Data Privacy Impact Assessment) and too many 
+forms to be filled out with overlapping content (e.g., privacy review, Data 
+Management Plan, processing register, DPIA). We suggest that these issues can 
+be partly attributed to:
+
+1. Understaffing: it is currently impossible for data support staff to review 
+all research projects involving personal data that are undertaken at UU. This 
+can lead to projects with issues being noticed too late and researchers having 
+to change their timeline or even project as a whole after the fact. This creates
+unnecessary administrative burden that could have been prevented had researchers
+been in contact with support staff. 
+2. Lack of unifying policy on steps to take when working with personal data. At
+the moment each faculty has its own procedure, or has none at all. This can 
+create confusion among both researchers and support staff on which steps to take
+when, who to contact for help, or who is responsible for deciding on compliance.
+3. Lack of integration between systems and staff: having to fill out the same
+thing multiple times may be caused by the fact that different administrative
+systems are used for different purposes. Integration of these systems may lead
+to a relief of the administrative burden experienced by researchers. <br>For 
+example, DMPonline is used at UU for registering Data Management Plans. However, 
+DMP templates do not include sufficient questions about how personal data are 
+handled, and thus a privacy plan or review may be required. Privacy is 
+sometimes part of an ethical application, and so this same information may be 
+included there again as well. Finally, the processing register also requires 
+information on (among others) the type and sensitivity of personal data, 
+which is a third system where this information will be registered.
+
+### Education and outreach
+
+Many problems seem to arise from the fact that privacy has not been taken into
+account from the design phase of a research project. This leads to research
+support staff being contacted too late in the process, who then has to tell the
+researcher to retrospectively make changes in their design in order to move 
+forward. 
+
+Such scenarios may be prevented by, for example:
+
+- Including the basic of handling personal data and contact details of support
+staff in onboarding processes when researchers are newly hired.
+- Educating researchers on taking privacy into account in the designing phase
+of their project. 
+- Organising outreach events, such as the "Privacy and Security week" making
+researchers aware of privacy-related measures (see further Visibility).
+- Embedding privacy in existing materials and processes, such as in ethical
+applications, in the education of research master and PhD students, etc.
+
+## Conclusion [preliminary]
+
 
 ## References
 
