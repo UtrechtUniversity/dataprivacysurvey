@@ -273,7 +273,7 @@ The one-on-one meetings are currently being conducted. More will be shared soon!
 
 ## Results
 ### Types of research data
-Within the sample of the survey, it is clear that most researchers use tabular, textual, code and audio data as their primary research data format. The most encountered type of personal data that researchers indicate to work with are contact information, demographic information and direct identifiers. This can be either because these are the types of personal data that are indeed most common, or because researchers mostly recognize these types of data as being personal data.
+Within the sample of the survey, it is clear that most researchers use tabular, textual, code and audio data as their primary research data format. The most encountered type of *personal* data that researchers indicate to work with are contact information, demographic information and direct identifiers. This can be either because these are the types of personal data that are indeed most common, or because researchers mostly recognize these types of data as being personal data.
 
 ```{r datatypes}
 # count
@@ -355,8 +355,103 @@ Variables
 
 ### Existing support channels
 
-- Existing support channels: PO, have you looked for help and ifso, did you find what you were looking for?
+#### Faculty privacy officer
+The second part of the survey concerned the visibility and use of existing 
+support channels. When asked whether respondents know who their faculty
+privacy officer is, most respondents indicated that they do 
+not (Yes: `r sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)` 
+(`r round(sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)/dim(dppsurvey)[1]*100,0)`%), No: 
+`r sum(dppsurvey$Know_PO=="No", na.rm=TRUE)` 
+(`r round(sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)/dim(dppsurvey)[1]*100,0)`%), NA: 
+`r sum(is.na(dppsurvey$Know_PO))` 
+(`r round(sum(is.na(dppsurvey$Know_PO))/dim(dppsurvey)[1]*100,0)`%)). This 
+suggests either that researchers have simply never required help from their privacy 
+officer, or that the faculty privacy officers could increase their visibility
+within their faculties.
+
+#### Looking for help
+
+
+have you looked for help and ifso, did you find what you were looking for?
+
+#### Channels used to find support
+
+
 - Which channels are mostly used?
+
+```{r existingsupport}
+# Ever looked for help with privacy?
+lookedforhelpplot <- dppsurvey %>% 
+  pivot_longer(cols = Lookedforhelp, 
+               values_drop_na = TRUE,
+               values_to = "searchhelp") %>%
+  select(-name) %>%
+  group_by(searchhelp) %>%
+  summarise(Count = length(searchhelp)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(searchhelp = factor(searchhelp, levels = searchhelp)) %>% # Update factor levels
+  ggplot(aes(x = searchhelp, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Looked for help?") +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+# Found what you're looking for?
+foundhelpplot <- dppsurvey %>% 
+  pivot_longer(cols = Foundhelp, 
+               values_drop_na = TRUE,
+               values_to = "foundhelp") %>%
+  select(-name) %>%
+  group_by(foundhelp) %>%
+  summarise(Count = length(foundhelp)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(foundhelp = factor(foundhelp, levels = c("(Almost) always", 
+                                                  "Often",
+                                                  "Sometimes",
+                                                  "(Almost) never"))) %>% # Update factor levels
+  ggplot(aes(x = foundhelp, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Find what you were looking for?") +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+grid.arrange(lookedforhelpplot, foundhelpplot, nrow = 1)
+```
+
+```{r sourcesused}
+# Sources used to find information and help
+sourcesusedplot <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Sourcesused_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "sourcesused") %>%
+  select(-name) %>%
+  group_by(sourcesused) %>%
+  summarise(Count = length(sourcesused)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(sourcesused = factor(sourcesused, levels = sourcesused)) %>% # Update factor levels
+  ggplot(aes(x = sourcesused, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Sources used to find help") +
+  coord_flip() +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+sourcesusedplot
+
+# Other sources used
+sourcesusedother <- 
+  dppsurvey$Sourcesused_19_TEXT[!is.na(dppsurvey$Sourcesused_19_TEXT)] %>%
+  unlist() %>%
+  str_trim() %>%
+  str_to_lower()
+```
+
 
 ### Challenges and needs
 
