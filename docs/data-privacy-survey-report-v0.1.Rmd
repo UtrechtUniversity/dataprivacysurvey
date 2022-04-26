@@ -346,12 +346,206 @@ The first part of the survey addressed the researchers' current practices in
 handling personal data in their research. 
 
 Variables
+
 - Measures used (organisational and technical measures)
+
+```{r}
+
+# table of measures used
+
+hpd_measures_used <- datatypetable <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Orgmeasures_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "measures") %>%
+  select(-name) %>%
+  group_by(measures) %>%
+  summarise(Count = length(measures)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(measures = factor(measures, levels=measures)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+```
+
 - Storage media used
+
+```{r}
+# table storage media used
+
+storage_used <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Storage_medium_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "storage") %>%
+  select(-name) %>%
+  group_by(storage) %>%
+  summarise(Count = length(storage)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(storage = factor(storage, levels=storage)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+```
+
 - Consent forms: use of consent forms and content of consent forms
+
+```{r}
+# table of consent forms used
+
+consent_forms <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Consentforms_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "consent_forms") %>%
+  select(-name) %>%
+  group_by(consent_forms) %>%
+  summarise(Count = length(consent_forms)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(consent_forms = factor(consent_forms, levels=consent_forms)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+```
+
+```{r}
+# table of content in consent forms
+
+consent_content <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Consent_content_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "consent_content") %>%
+  select(-name) %>%
+  group_by(consent_content) %>%
+  summarise(Count = length(consent_content)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(consent_content = factor(consent_content, levels=consent_content)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+```
+
 - DPIA: familiarity and help used
+
+```{r}
+# table  on experience with DPIAs
+
+DPIA_experience <- dppsurvey %>% 
+  pivot_longer(cols = grep("^DPIA_experience_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "DPIA_experience") %>%
+  select(-name) %>%
+  group_by(DPIA_experience) %>%
+  summarise(Count = length(DPIA_experience)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(DPIA_experience = factor(DPIA_experience, levels=DPIA_experience)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+
+```
+```{r}
+# table on help with DPIAs
+
+DPIA_help <- dppsurvey %>% 
+  pivot_longer(cols = grep("^DPIA_Help_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "DPIA_help") %>%
+  select(-name) %>%
+  group_by(DPIA_help) %>%
+  summarise(Count = length(DPIA_help)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(DPIA_help = factor(DPIA_help, levels=DPIA_help)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+
+```
 - Data sharing practices: externally and if so, which measures are used?
+
+```{r}
+external_sharing <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Share_outside_UU_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "external_sharing") %>%
+  select(-name) %>%
+  group_by(external_sharing) %>%
+  summarise(Count = length(external_sharing)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(external_sharing = factor(external_sharing, levels=external_sharing)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+
+```
+
+```{r}
+sharing_measures <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Share_measures_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "sharing_measures") %>%
+  select(-name) %>%
+  group_by(sharing_measures) %>%
+  summarise(Count = length(sharing_measures)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(sharing_measures = factor(sharing_measures, levels=sharing_measures)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+
+```
+
 - Data publishing: does that ever happen and if so, in what format. IF not: why not?
+
+```{r}
+data_publishing <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Data_publication_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "data_publishing") %>%
+  select(-name) %>%
+  group_by(data_publishing) %>%
+  summarise(Count = length(data_publishing)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(data_publishing = factor(data_publishing, levels=data_publishing)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+
+```
+
+```{r}
+# publication format
+
+publication_format <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Publication_format_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "publication_format") %>%
+  select(-name) %>%
+  group_by(publication_format) %>%
+  summarise(Count = length(publication_format)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(publication_format = factor(publication_format, levels=publication_format)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+
+```
+
+```{r}
+# reasons for not publishing
+
+reasons_nopub <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Reason_NoPub_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "reasons_nopub") %>%
+  select(-name) %>%
+  group_by(reasons_nopub) %>%
+  summarise(Count = length(reasons_nopub)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(reasons_nopub = factor(reasons_nopub, levels=reasons_nopub)) %>% # Update factor levels
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  map_df(rev) %>% # reverse order
+  print()
+
+```
+
 
 ### Existing support channels
 
