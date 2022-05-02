@@ -102,7 +102,7 @@ library(gridExtra)
 
 ```{r readdata, cache=TRUE}
 # This file has multiple responses in separate columns
-datafile <- "../data/raw/Data_Privacy_Survey_20220425.csv"
+datafile <- "../data/raw/Data_Privacy_Survey_20220502.csv"
 dppsurvey <- fread(datafile, na.strings = "")
 
 # Skip the first 2 rows as they contain the question text
@@ -340,7 +340,9 @@ tablepersdata <- dppsurvey %>%
 #  theme(legend.position = "none")
 ```
 
-**TO DO: wrangle Dept_ columns so that they can be displayed within Faculties**
+````{r todo}
+# **TO DO: wrangle Dept_ columns so that they can be displayed within Faculties**
+````
 
 ### Current practices in handling personal data
 
@@ -351,7 +353,7 @@ handling personal data in their research.
 
 With respect to organisational and technical measures used to handle personal data, most researchers indicate they pseudonymise/anonymise their data. We cannot, however, assess whether the data is sufficiently pseudonymised/anonymised in line with the GDPR. Researchers also implement some form of access control and complete data management plans (DMPs). Agreements, such as NDAs, are utilized to some degree as well. On the other hand, GDPR-specific assessments such as DPIAs or privacy reviews are least used. As it stands, these assessments are typically carried out on a case-by-case basis.   
  
-```{r}
+```{r measuresused}
 
 # table of measures used
 
@@ -373,7 +375,7 @@ hpd_measures_used <- datatypetable <- dppsurvey %>%
 
 To store personal data, most researchers rely on storage solutions provided by UU. Nonetheless, some researchers utilize non-UU solutions, including non-UU cloud storage. Several researchers also indicated they use 'Other' storage solutions - the survey responses do not provide more information on this option.
 
-```{r}
+```{r storagemedia}
 # table storage media used
 
 storage_used <- dppsurvey %>% 
@@ -392,11 +394,11 @@ storage_used <- dppsurvey %>%
 
 ### Consent forms: usage and content
 
-Only a small number researchers indicated that consent forms were not applicable to their research or they didn't know what they were. When researchers do use consent forms, they often use forms approved by privacy officers or ethical committees. Researchers also indicated they tend to independently create and use forms. Departmental and UU-wide templates are also used to a fair extent, as well as 'Other' templates.
+Only a small number of researchers indicated that consent forms were not applicable to their research or they didn't know what they were. When researchers do use consent forms, they often use forms approved by privacy officers or ethical committees. Researchers also indicated they tend to independently create and use forms. Departmental and UU-wide templates are also used to a fair extent, as well as 'Other' templates.
 
 
 
-```{r}
+```{r consentforms}
 # table of consent forms used
 
 consent_forms <- dppsurvey %>% 
@@ -413,7 +415,7 @@ consent_forms <- dppsurvey %>%
   print()
 ```
 
-```{r}
+```{r consentcontent}
 # table of content in consent forms
 
 consent_content <- dppsurvey %>% 
@@ -432,7 +434,7 @@ consent_content <- dppsurvey %>%
 
 ### DPIA: familiarity and help used
 
-```{r}
+```{r dpia}
 # table  on experience with DPIAs
 
 DPIA_experience <- dppsurvey %>% 
@@ -467,7 +469,7 @@ DPIA_help <- dppsurvey %>%
 
 ### Data sharing practices: externally and if so, which measures are used?
 
-```{r}
+```{r datasharing}
 external_sharing <- dppsurvey %>% 
   pivot_longer(cols = grep("^Share_outside_UU_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
@@ -483,7 +485,7 @@ external_sharing <- dppsurvey %>%
 
 ```
 
-```{r}
+```{r sharingmeasures}
 sharing_measures <- dppsurvey %>% 
   pivot_longer(cols = grep("^Share_measures_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
@@ -499,9 +501,11 @@ sharing_measures <- dppsurvey %>%
 
 ```
 
-### Data publishing: does that ever happen and if so, in what format. IF not: why not?
+### Data publishing
 
-```{r}
+Does that ever happen and if so, in what format. If not: why not?
+
+```{r datapublishing}
 data_publishing <- dppsurvey %>% 
   pivot_longer(cols = grep("^Data_publication_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
@@ -517,7 +521,7 @@ data_publishing <- dppsurvey %>%
 
 ```
 
-```{r}
+```{r pubformat}
 # publication format
 
 publication_format <- dppsurvey %>% 
@@ -535,7 +539,7 @@ publication_format <- dppsurvey %>%
 
 ```
 
-```{r}
+```{r reasonsnopub}
 # reasons for not publishing
 
 reasons_nopub <- dppsurvey %>% 
@@ -713,8 +717,36 @@ bettersupporttable <- dppsurvey %>%
   print()
 ```
 
-- **TO DO: Open text: challenges and needs**
-  
+```{r selectopenquestions}
+opentextresponses <- dppsurvey %>% 
+  select(
+    contains(c("Faculty", "Dept", "Position")),
+    Better_support_9_TEXT,
+    Challenges,
+    Infotools_missing
+  ) %>%
+  unite("Faculty", grep("Faculty",names(.), value = T), 
+        sep = ", ", remove = TRUE, na.rm=TRUE) %>%
+  unite("Dept", grep("Dept",names(.), value = T), 
+        sep = ", ", remove = TRUE, na.rm=TRUE) %>%
+  unite("Position", grep("Position",names(.), value = T), 
+        sep = ", ", remove = TRUE, na.rm=TRUE) %>%
+  rename(Bettersupport = Better_support_9_TEXT) %>%
+  mutate(
+    Bettersupport = str_to_lower(str_trim(Bettersupport)),
+    Challenges = str_to_lower((str_trim(Challenges))),
+    Infotools_missing = str_to_lower(str_trim(Infotools_missing))
+  ) %>%
+  filter_at(vars(Bettersupport, 
+                 Challenges, 
+                 Infotools_missing), 
+            any_vars(!is.na(.)))
+
+todaysdate <- as.character(Sys.Date())
+write.csv(opentextresponses, file.path(paste0("../data/raw/", todaysdate, "_dppsurvey_opentextresponses.csv")))
+```
+
+
 ## Results summary [preliminary]
 
 In this survey, we find that personal data are processed in each faculty and 
