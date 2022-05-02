@@ -1,6 +1,6 @@
 ---
-title: "Data Privacy Survey: signalling challenges and improving privacy services in research"
-author: "Dorien Huijser"
+title: "Data Privacy Survey: signalling challenges and improvments of privacy-related services in research"
+author: "Dorien Huijser & Neha Moopen"
 date: "22 april 2022"
 output:
   html_document:
@@ -272,7 +272,9 @@ no consent was obtained to share those details, we are unable to share them.
 The one-on-one meetings are currently being conducted. More will be shared soon!
 
 ## Results
+
 ### Types of research data
+
 Within the sample of the survey, it is clear that most researchers use tabular, textual, code and audio data as their primary research data format. The most encountered type of *personal* data that researchers indicate to work with are contact information, demographic information and direct identifiers. This can be either because these are the types of personal data that are indeed most common, or because researchers mostly recognize these types of data as being personal data.
 
 ```{r datatypes}
@@ -343,12 +345,12 @@ tablepersdata <- dppsurvey %>%
 ### Current practices in handling personal data
 
 The first part of the survey addressed the researchers' current practices in 
-handling personal data in their research. 
+handling personal data in their research.
 
-Variables
+#### - Organisational and technical measures
 
-- Measures used (organisational and technical measures)
-
+With respect to organisational and technical measures used to handle personal data, most researchers indicate they pseudonymise/anonymise their data. We cannot, however, assess whether the data is sufficiently pseudonymised/anonymised in line with the GDPR. Researchers also implement some form of access control and complete data management plans (DMPs). Agreements, such as NDAs, are utilized to some degree as well. On the other hand, GDPR-specific assessments such as DPIAs or privacy reviews are least used. As it stands, these assessments are typically carried out on a case-by-case basis.   
+ 
 ```{r}
 
 # table of measures used
@@ -367,7 +369,9 @@ hpd_measures_used <- datatypetable <- dppsurvey %>%
   print()
 ```
 
-- Storage media used
+#### Storage media used
+
+To store personal data, most researchers rely on storage solutions provided by UU. Nonetheless, some researchers utilize non-UU solutions, including non-UU cloud storage. Several researchers also indicated they use 'Other' storage solutions - the survey responses do not provide more information on this option.
 
 ```{r}
 # table storage media used
@@ -386,7 +390,11 @@ storage_used <- dppsurvey %>%
   print()
 ```
 
-- Consent forms: use of consent forms and content of consent forms
+### Consent forms: usage and content
+
+Only a small number researchers indicated that consent forms were not applicable to their research or they didn't know what they were. When researchers do use consent forms, they often use forms approved by privacy officers or ethical committees. Researchers also indicated they tend to independently create and use forms. Departmental and UU-wide templates are also used to a fair extent, as well as 'Other' templates.
+
+
 
 ```{r}
 # table of consent forms used
@@ -422,7 +430,7 @@ consent_content <- dppsurvey %>%
   print()
 ```
 
-- DPIA: familiarity and help used
+### DPIA: familiarity and help used
 
 ```{r}
 # table  on experience with DPIAs
@@ -440,8 +448,6 @@ DPIA_experience <- dppsurvey %>%
   map_df(rev) %>% # reverse order
   print()
 
-```
-```{r}
 # table on help with DPIAs
 
 DPIA_help <- dppsurvey %>% 
@@ -458,7 +464,8 @@ DPIA_help <- dppsurvey %>%
   print()
 
 ```
-- Data sharing practices: externally and if so, which measures are used?
+
+### Data sharing practices: externally and if so, which measures are used?
 
 ```{r}
 external_sharing <- dppsurvey %>% 
@@ -492,7 +499,7 @@ sharing_measures <- dppsurvey %>%
 
 ```
 
-- Data publishing: does that ever happen and if so, in what format. IF not: why not?
+### Data publishing: does that ever happen and if so, in what format. IF not: why not?
 
 ```{r}
 data_publishing <- dppsurvey %>% 
@@ -545,7 +552,6 @@ reasons_nopub <- dppsurvey %>%
   print()
 
 ```
-
 
 ### Existing support channels
 
