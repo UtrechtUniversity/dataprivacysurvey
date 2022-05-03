@@ -747,24 +747,26 @@ write.csv(opentextresponses, file.path(paste0("../data/raw/", todaysdate, "_dpps
 ```
 
 
-The open text responses reveal the following challenges and needs. Please note that some researchers indicate not to have run into any issues, but for action point determination purposes, these have been left out here:
+The open text responses reveal the following challenges and needs:
 
+- **Knowledge gaps**: A selection of researchers use the space in the open questions to ask knowledge-related questions, such as: "How far should one go before data can be considered fully anonymous?" (n = 5), "What counts as personal data?" (n = 7), "How to make sure data are fully deleted?" (n = 1), and "What to do when only a selection of data subjects has consented to data sharing?" (n = 1). These questions can be addressed in future support efforts, such as to be developed information materials and trainings.
 - **Time-intensive and bureaucratic**: Processes are often experienced as being time-inefficient, and sometimes longer and more bureaucratic than necessary. Some researchers argue that (part of) this burden should be relieved or carried by support staff:
 <blockquote>"Sharing data costs a lot of time and is inefficient when you do not do it often"</blockquote>
-<blockquote>"Minder acties die gericht zijn op inhoudelijk trainen van wp en meer uit handen nemen van deze groep."</blockquote>
+<blockquote>"Minder acties die gericht zijn op inhoudelijk trainen van WP en meer uit handen nemen van deze groep."</blockquote>
 - **Unclear expectations and support channels**: There is unclarity in the exact requirements for researchers: what does the process look like? Who should they ask for help, and with what kinds of questions?
 <blockquote>"There is no one who tells at the start of your PhD how you should handle your data. [...] I think new PhD students should get a basic course on data management and privacy."</blockquote>
-- **More hands-on support**: Some researchers find that support staff could provide support in a more hands-on fashion, rather than abstract advice and telling researchers how *not* to do things. Some researchers add that privacy professionals have a tendency to cling to the letter of the law, instead of looking at how to apply the law in practice:
+- **More hands-on support**: Some researchers find that support staff could sometimes provide support in a more hands-on fashion, rather than abstract advice and telling researchers how *not* to do things. Some researchers add that privacy professionals have a tendency to cling to the letter of the law, instead of looking at how to apply the GDPR in practice:
 <blockquote>"I find that there is a severe lack of trust in employees"</blockquote>
 <blockquote>"Soms zijn we door deze regels heiliger dan de paus."</blockquote>
-- **Specific data types**: Some researchers express the need for practical guidelines, tools and templates on specific types of data (e.g., etnographic, historic, linguistic, video data, etc.) or specific scenarios. Multiple researchers indicate that existing solutions are not always suitable for their type of research, or that there are no (standardised) guidelines available at all.
+- **Specific data types**: Many researchers express the need for practical guidelines, tools and templates, and on specific types of data (e.g., etnographic, historic, linguistic, video data, etc.) or in specific scenarios. Multiple researchers indicate that existing solutions are not always suitable for their type of research, or that there are no (standardised) guidelines available at all.
 <blockquote>"De informatie is gewoon veel te generiek, er zouden templates moeten zijn per type onderzoek."</blockquote>
 <blockquote>"Veel templates en uitlegmodellen spreken over data, data packages en metadata, maar die woorden zijn niet ingebed in historisch onderzoek. Er ontstaat al snel verwarring over wat historici nu precies moeten met archiefmateriaal in het licht van privacy."</blockquote>
-- **Definitions**: There is unclarity among some researchers on when data are personal and when  they are anonymous, and sometimes researchers acknowledge that it is difficult or impossible to anonymise data and then wonder what to do in that case. 
-<blockquote>"Ik heb niet zo'n goed beeld van wat precies 'gevoelige' informatie is en wat niet."</blockquote>
-<blockquote>"How far should I go in anonymising data?"</blockquote>
-- **Specific tools**: Some researchers express a need for a concrete (improvement of a) tool, such as for pseudonymising video data, transcribing audio data, and sharing data with others. 
+- **Specific tools**: Some researchers express a need for a concrete (improvement of a) tool, such as for pseudonymising video data (n = 4), transcribing audio data (n = 4), and sharing data with others (n = 3). 
 
+
+Importantly, there are also researchers who indicate **not** to have run into any issues or to have received sufficient and useful help:
+<blockquote>The data manager and privacy officer of the faculty of humanities help a lot. This support is essential!</blockquote>
+<blockquote>"Tot nu toe heb ik niet veel problemen gehad. De institutional review board van onze afdeling kijkt altijd kritisch naar de onderzoeksvoorstellen, ook met name op omgaan met persoonsgegevens."</blockquote>
 
 ## Results summary [preliminary]
 
