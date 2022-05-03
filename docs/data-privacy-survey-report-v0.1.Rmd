@@ -1,7 +1,6 @@
 ---
 title: "Data Privacy Survey"
 subtitle: "Signalling challenges and improvements of privacy-related services for research"
-#author: "Dorien Huijser, Neha Moopen"
 author:
 - "Dorien Huijser"
 - "Neha Moopen"
@@ -19,7 +18,7 @@ output:
   html_document:
     toc: true
     toc_depth: 2
-    number_sections: true
+    number_sections: false
     toc_float: true
     theme: united
     highlight: tango
@@ -343,9 +342,6 @@ handling personal data in their research.
 ### Organisational and technical measures
 
 With respect to organisational and technical measures used to handle personal data, most researchers indicate they pseudonymise/anonymise their data. We cannot, however, assess whether the data is sufficiently pseudonymised/anonymised in line with the GDPR. Researchers also implement some form of access control and complete data management plans (DMPs). Agreements, such as NDAs, are utilized to some degree as well. On the other hand, GDPR-specific assessments such as DPIAs or privacy reviews are least used - as it stands, these assessments are still only carried out on a case-by-case basis.   
-
-With respect to organisational and technical measures used to handle personal data, most researchers indicate they pseudonymise/anonymise their data. We cannot, however, assess whether the data is sufficiently pseudonymised/anonymised in line with the GDPR. Researchers also implement some form of access control and complete data management plans (DMPs). Agreements, such as NDAs, are utilized to some degree as well. On the other hand, GDPR-specific assessments such as DPIAs or privacy reviews are least used. As it stands, these assessments are typically carried out on a case-by-case basis.   
-
  
 ```{r measuresused}
 
@@ -372,28 +368,29 @@ hpd_measures_plot <-
   print(hpd_measures_plot)
 ```
 
-```{r}
+```{r measuresusedtable}
 # table of measures used
-
-hpd_measures_table <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Orgmeasures_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Measures") %>%
-  select(-name) %>%
-  group_by(Measures) %>%
-  summarise(Count = length(Measures)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Measures = factor(Measures, levels=Measures)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
+#hpd_measures_table <- dppsurvey %>% 
+#  pivot_longer(cols = grep("^Orgmeasures_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "Measures") %>%
+#  select(-name) %>%
+#  group_by(Measures) %>%
+#  summarise(Count = length(Measures)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(Measures = factor(Measures, levels=Measures)) %>% # Update factor levels
+#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+#  map_df(rev) %>% # reverse order
+#  print()
 ```
 
 ### Storage media used
 
-To store personal data, most researchers rely on storage solutions provided by UU. Nonetheless, some researchers utilize non-UU solutions, including non-UU cloud storage. Several researchers also indicated they use 'Other' storage solutions - the survey responses do not provide more information on this option.
+To store personal data, most researchers rely on storage solutions provided by UU. Nonetheless, some researchers utilize non-UU solutions, including non-UU cloud storage. Several researchers also indicated they use 'Other' storage solutions. Examples of these include external
+institutions (e.g., University Medical Center, Trimbos Institute, Central Bureau of Statistics) and external repositories (e.g., DANS EASY, CLARIAH).
 
-```{r}
+
+```{r storagemediaplot}
 storage_used_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^Storage_medium_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
@@ -405,8 +402,8 @@ storage_used_plot <- dppsurvey %>%
   mutate(Storage = factor(Storage, levels=Storage)) %>% # Update factor levels
   ggplot(aes(x = Storage, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Storage",
-       caption = "Storage Media Used in Handling Personal Data") +
+  labs(x = "", title = "Storage media used",
+       caption = "Storage Media Used for Storing Personal Data") +
   coord_flip() +
   theme_classic() +
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
@@ -418,32 +415,31 @@ storage_used_plot <- dppsurvey %>%
 
 ```{r storagemedia}
 # table storage media used
-
-storage_used_table <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Storage_medium_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Storage") %>%
-  select(-name) %>%
-  group_by(Storage) %>%
-  summarise(Count = length(Storage)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Storage = factor(Storage, levels=Storage)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
+#storage_used_table <- dppsurvey %>% 
+#  pivot_longer(cols = grep("^Storage_medium_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "Storage") %>%
+#  select(-name) %>%
+#  group_by(Storage) %>%
+#  summarise(Count = length(Storage)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(Storage = factor(Storage, levels=Storage)) %>% # Update factor levels
+#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+#  map_df(rev) %>% # reverse order
+#  print()
 ```
 
 ### Consent forms: usage and content
 
-Only a small number of researchers indicated that consent forms were not applicable to their research or they didn't know what they were. When researchers do use consent forms, they often use forms approved by privacy officers or ethical committees. Researchers also indicated they tend to independently create and use forms. Departmental and UU-wide templates are also used to a fair extent, as well as 'Other' templates.
+Only a small number of researchers indicate that consent forms are not applicable to their research or they don't know what they are. When researchers do use consent forms, they often use forms approved by privacy officers or ethical committees. Researchers however also indicate they tend to independently create and use forms. Departmental and UU-wide templates are also used to a fair extent. Some researchers ("Other") indicate to use templates from external institutions, or no templates at all (e.g., because they use verbal consent or data from another party).
 
-Within the consent forms, most researchers provide information on the purposes for data collection and which data will be be used. Information on the data subject's rights and safeguards are included as well. Information on data sharing and reuse is presented, not as consistently as the aforementioned topics. 
+Within the consent forms, most researchers provide information on the purposes for data collection and which data will be be used. Information on the data subject's rights and safeguards are included as well. Information on data sharing and reuse is presented sometimes, but not as consistently as the aforementioned topics. 
 
-Most researchers indicate that 'regular' consent is explicitly requested, but consent to data sharing and further use is not always requested. This is a point of concern because it may not be sufficient to merely inform data subjects that their data may be shared or reused, but data subjects should explicitly provide permission for their data to be used beyond the research project they signed on to. 
+Most researchers indicate that 'regular' consent is explicitly requested, but consent to data sharing and further use is not always requested. This is a point of concern, because it may not be sufficient to merely inform data subjects that their data may be shared or reused, but data subjects should explicitly provide permission for their data to be used beyond the research project they signed on to. 
 
-Lastly, contact details of the DPO is not always included.
+Lastly, contact details of the DPO are not always included, whereas these always have to be provided (<a href = "https://gdpr-info.eu/art-13-gdpr/" target = "_blank">art. 13</a>)
 
-```{r}
+```{r consentforms}
 consent_usage_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^Consentforms_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
@@ -463,29 +459,22 @@ consent_usage_plot <- dppsurvey %>%
              color = "black",
              fill = "#FFCD00")
 
-  print(consent_usage_plot)
+#print(consent_usage_plot)
 
-```
-
-
-```{r consentforms}
 # table of consent forms used
+#consent_usage_table <- dppsurvey %>% 
+#  pivot_longer(cols = grep("^Consentforms_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "Consent_Forms") %>%
+#  select(-name) %>%
+#  group_by(Consent_Forms) %>%
+#  summarise(Count = length(Consent_Forms)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(Consent_Forms = factor(Consent_Forms, levels=Consent_Forms)) %>% # Update factor levels
+#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+#  map_df(rev) %>% # reverse order
+#  print()
 
-consent_usage_table <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Consentforms_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Consent_Forms") %>%
-  select(-name) %>%
-  group_by(Consent_Forms) %>%
-  summarise(Count = length(Consent_Forms)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Consent_Forms = factor(Consent_Forms, levels=Consent_Forms)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
-```
-
-```{r}
 consent_content_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^Consent_content_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
@@ -497,7 +486,7 @@ consent_content_plot <- dppsurvey %>%
   mutate(Consent_Content = factor(Consent_Content, levels=Consent_Content)) %>% # Update factor levels
   ggplot(aes(x = Consent_Content, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Consent Content",
+  labs(x = "", title = "Form Content",
        caption = "Consent Forms: Content") +
   coord_flip() +
   theme_classic() +
@@ -505,35 +494,29 @@ consent_content_plot <- dppsurvey %>%
              color = "black",
              fill = "#FFCD00")
 
-  print(consent_content_plot)
-
-```
-
-```{r}
+#print(consent_content_plot)
+grid.arrange(consent_usage_plot, consent_content_plot, nrow = 1)
 
 # table of content in consent forms
-
-consent_content_table <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Consent_content_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Consent_Content") %>%
-  select(-name) %>%
-  group_by(Consent_Content) %>%
-  summarise(Count = length(Consent_Content)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Consent_Content = factor(Consent_Content, levels=Consent_Content)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
+#consent_content_table <- dppsurvey %>% 
+#  pivot_longer(cols = grep("^Consent_content_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "Consent_Content") %>%
+#  select(-name) %>%
+#  group_by(Consent_Content) %>%
+#  summarise(Count = length(Consent_Content)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(Consent_Content = factor(Consent_Content, levels=Consent_Content)) %>% # Update factor levels
+#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+#  map_df(rev) %>% # reverse order
+#  print()
 ```
 
-### DPIA: familiarity and help used
+### Data Protection Impact Assessment (DPIA)
 
-Most of the researchers who responded to the survey indicated that they have never carried out a DPIA, nor had they ever heard of it.  
+Most of the researchers who responded to the survey indicate that they have never carried out a DPIA, nor had they ever heard of it. A small number of researchers have heard of DPIAs, but have not completed one. A similar number researchers indicated that they are familiar with and have completed a Data Protection Impact Assessment (DPIA). Most of these researchers received help from a Privacy Officer with their DPIAs and few received help from either RDM Support or Legal Affairs. Some researchers indicated they received 'Other' help or none at all.
 
-A small number of researchers have heard of DPIAs, but have not completed one. A similar number researchers indicated that they are familiar with and have completed a Data Protection Impact Assessment (DPIA). Most of these researchers received help from a Privacy Officer with their DPIAs and few recieved help from either RDM Support or Legal Affairs. Some researchers indicated they received 'Other' help or none at all.
-
-```{r}
+```{r dpia}
 DPIA_experience_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^DPIA_experience_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
@@ -542,7 +525,7 @@ DPIA_experience_plot <- dppsurvey %>%
   group_by(DPIA_experience) %>%
   summarise(Count = length(DPIA_experience)) %>%
   arrange(Count) %>% # Order by count
-  mutate(DPIA_exeperience = factor(DPIA_experience, levels=DPIA_experience)) %>% # Update factor levels
+  mutate(DPIA_experience = factor(DPIA_experience, levels=DPIA_experience)) %>% # Update factor levels
   ggplot(aes(x = DPIA_experience, y = Count)) + 
   geom_bar(stat = "identity") + 
   labs(x = "", title = "DPIA Experience",
@@ -553,29 +536,22 @@ DPIA_experience_plot <- dppsurvey %>%
              color = "black",
              fill = "#FFCD00")
 
-  print(DPIA_experience_plot)
-
-```
-
-```{r}
+#print(DPIA_experience_plot)
 
 # table  on experience with DPIAs
+#DPIA_experience_table <- dppsurvey %>% 
+#  pivot_longer(cols = grep("^DPIA_experience_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "DPIA_experience") %>%
+#  select(-name) %>%
+#  group_by(DPIA_experience) %>%
+#  summarise(Count = length(DPIA_experience)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(DPIA_experience = factor(DPIA_experience, levels=DPIA_experience)) %>% # Update factor levels
+#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+#  map_df(rev) %>% # reverse order
+#  print()
 
-DPIA_experience_table <- dppsurvey %>% 
-  pivot_longer(cols = grep("^DPIA_experience_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "DPIA_experience") %>%
-  select(-name) %>%
-  group_by(DPIA_experience) %>%
-  summarise(Count = length(DPIA_experience)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(DPIA_experience = factor(DPIA_experience, levels=DPIA_experience)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
-```
-
-```{r}
 DPIA_help_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^DPIA_Help_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
@@ -588,44 +564,38 @@ DPIA_help_plot <- dppsurvey %>%
   ggplot(aes(x = DPIA_help, y = Count)) + 
   geom_bar(stat = "identity") + 
   labs(x = "", title = "DPIA Help",
-       caption = "Help recieved with DPIAs") +
+       caption = "Help received with DPIAs") +
   coord_flip() +
   theme_classic() +
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
              color = "black",
              fill = "#FFCD00")
 
-  print(DPIA_help_plot)
-```
-
-
-```{r}
+#print(DPIA_help_plot)
+grid.arrange(DPIA_experience_plot, DPIA_help_plot, nrow = 1)
 
 # table on help with DPIAs
-
-DPIA_help_table <- dppsurvey %>% 
-  pivot_longer(cols = grep("^DPIA_Help_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "DPIA_help") %>%
-  select(-name) %>%
-  group_by(DPIA_help) %>%
-  summarise(Count = length(DPIA_help)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(DPIA_help = factor(DPIA_help, levels=DPIA_help)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
-
+#DPIA_help_table <- dppsurvey %>% 
+#  pivot_longer(cols = grep("^DPIA_Help_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "DPIA_help") %>%
+#  select(-name) %>%
+#  group_by(DPIA_help) %>%
+#  summarise(Count = length(DPIA_help)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(DPIA_help = factor(DPIA_help, levels=DPIA_help)) %>% # Update factor levels
+#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+#  map_df(rev) %>% # reverse order
+#  print()
 ```
 
-### Data sharing practices: externally and if so, which measures are used?
+### Data sharing practices
 
-While there are some researchers who don't share their data at all, most researchers who responded to the survey indicated they do not share data with external parties, but only within the UU. A smaller number of researchers indicated they share data within the EEA and a similar number selected 'Other' - but the survey does not provide information about what this means. There are researchers who share data outside the EEA, most of these researchers share data with countries deemed to have an adequate level of protection according the GDPR and a few share with countries without an adequate level of protection.
+While there are some researchers who don't share their data at all, most researchers who responded to the survey indicate they do not share data with external parties, but only within the UU. A smaller number of researchers indicated they share data within the EEA. Responses in the "Other" category however suggest that a lot of data actually is shared, for example with co-authors at another institution, students, or in "pseudonymised form". There are researchers who share data outside the EEA, most of these with countries deemed to have an adequate level of protection according the GDPR. Only a few share with countries without an adequate level of protection.
 
-Most researchers pseudonimize their data before sharing with external parties, though we cannot assess if this pseudonymisation is sufficient or not. Researchers also make use of approved tools, data transfer agreements, data processing agreements. Providing access without transfering the data is also a measure that is utilized. Fewer researchers indicated they involved a Privacy Officer, Data Manager while transferring data and the use of Standard Contractual Clauses appears limited.
+Most researchers pseudonimise their data before sharing with external parties, though we cannot assess if this pseudonymisation is sufficient. Researchers also make use of approved tools, data transfer agreements, data processing agreements, and providing access without transfering the data. Fewer researchers indicate that they involved a Privacy Officer or Data Manager while transferring data, and the use of Standard Contractual Clauses appears limited.
 
-
-```{r}
+```{r datasharing}
 external_sharing_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^Share_outside_UU_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
@@ -637,7 +607,7 @@ external_sharing_plot <- dppsurvey %>%
   mutate(external_sharing = factor(external_sharing, levels=external_sharing)) %>% # Update factor levels
   ggplot(aes(x = external_sharing, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Data Sharing (external)",
+  labs(x = "", title = "External Sharing",
        caption = "Data Sharing with External Parties") +
   coord_flip() +
   theme_classic() +
@@ -645,27 +615,21 @@ external_sharing_plot <- dppsurvey %>%
              color = "black",
              fill = "#FFCD00")
 
-  print(external_sharing_plot)
-```
+#print(external_sharing_plot)
 
-```{r}
-external_sharing_table <- dppsurvey %>% 
-external_sharing <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Share_outside_UU_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "external_sharing") %>%
-  select(-name) %>%
-  group_by(external_sharing) %>%
-  summarise(Count = length(external_sharing)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(external_sharing = factor(external_sharing, levels=external_sharing)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
+#external_sharing_table <- dppsurvey %>% 
+#  pivot_longer(cols = grep("^Share_outside_UU_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "external_sharing") %>%
+#  select(-name) %>%
+# group_by(external_sharing) %>%
+#  summarise(Count = length(external_sharing)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(external_sharing = factor(external_sharing, levels=external_sharing)) %>% # Update factor levels
+#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+#  map_df(rev) %>% # reverse order
+#  print()
 
-```
-
-```{r}
 sharing_measures_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^Share_measures_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
@@ -677,7 +641,7 @@ sharing_measures_plot <- dppsurvey %>%
   mutate(sharing_measures = factor(sharing_measures, levels=sharing_measures)) %>% # Update factor levels
   ggplot(aes(x = sharing_measures, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Data Sharing (protection practices)",
+  labs(x = "", title = "Sharing Measures",
        caption = "Protection measures taken while sharing data") +
   coord_flip() +
   theme_classic() +
@@ -685,31 +649,27 @@ sharing_measures_plot <- dppsurvey %>%
              color = "black",
              fill = "#FFCD00")
 
-  print(sharing_measures_plot)
+#print(sharing_measures_plot)
+
+grid.arrange(external_sharing_plot, sharing_measures_plot, nrow = 1)
+
+#sharing_measures_table <- dppsurvey %>% 
+#  pivot_longer(cols = grep("^Share_measures_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "sharing_measures") %>%
+#  select(-name) %>%
+#  group_by(sharing_measures) %>%
+#  summarise(Count = length(sharing_measures)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(sharing_measures = factor(sharing_measures, levels=sharing_measures)) %>% # Update factor levels
+#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+#  map_df(rev) %>% # reverse order
+#  print()
 ```
 
+### Data publishing
 
-```{r}
-sharing_measures_table <- dppsurvey %>% 
-sharing_measures <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Share_measures_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "sharing_measures") %>%
-  select(-name) %>%
-  group_by(sharing_measures) %>%
-  summarise(Count = length(sharing_measures)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(sharing_measures = factor(sharing_measures, levels=sharing_measures)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
-
-```
-
-### Data publishing: does that ever happen and if so, in what format. IF not: why not?
-
-```{r}
-
+```{r datapublishing}
 data_publishing_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^Data_publication_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
@@ -729,31 +689,27 @@ data_publishing_plot <- dppsurvey %>%
              color = "black",
              fill = "#FFCD00")
 
-  print(data_publishing_plot)
+print(data_publishing_plot)
+
+#data_publishing_table <- dppsurvey %>% 
+#  pivot_longer(cols = grep("^Data_publication_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "data_publishing") %>%
+#  select(-name) %>%
+#  group_by(data_publishing) %>%
+#  summarise(Count = length(data_publishing)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(data_publishing = factor(data_publishing, levels=data_publishing)) %>% # Update factor levels
+#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+#  map_df(rev) %>% # reverse order
+#  print()
 ```
 
-```{r}
-data_publishing_table <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Data_publication_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "data_publishing") %>%
-  select(-name) %>%
-  group_by(data_publishing) %>%
-  summarise(Count = length(data_publishing)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(data_publishing = factor(data_publishing, levels=data_publishing)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
+The majority of researchers who responded to the survey indicate that they do not publish their data in any way or form. The primary reason for not publishing data appears to be that researchers are still working on the data. Nonetheless, many researchers indicate that they don't want to/need to publish their data, or they cannot anonymise the data. Other reasons include a lack of legal basis, not knowing if they're allowed to publish the data, too much effort, publication is undesirable, or just not considered. Finally, only a few researchers indicate that they don't know how to publish data at all
 
-```
+If a publication is made, most researchers tend to publish the metadata only while fewer publish the entire data set. Researchers tend to publish anonymous data primarily, followed by pseudonymised data. As with previous responses, it is not possible to assess whether this anonymisation or pseudonymisation was adequate.
 
-The majority of researchers who responded to their survey indicated that they do not publish their data in any way or form. The primary reason for not publishing data appears to be that researchers are still working on the data. Nonetheless, many researchers indicate that they don't want to/need to publish their and 'Other' reasons were also indicated. A smaller group of researchers do not publish their data because they cannot anonymize the data. Other reasons include a lack of legal basis or not knowing if they're allowed to publish the data. Only a few researchers indicated they don't know how to publish data at all
-
-If a publication is made, most researchers tend to publish the metadata only while fewer publish the entire data set. Researchers tend to publish anonymous data primarily, followed by pseudonymized data. As with previous responses, it is not possible to assess whether this anonymisation or pseudonymisation was adequate.
-
-```{r}
-
+```{r publicationformat}
 publication_format_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^Publication_format_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
@@ -765,38 +721,29 @@ publication_format_plot <- dppsurvey %>%
   mutate(publication_format = factor(publication_format, levels=publication_format)) %>% # Update factor levels
   ggplot(aes(x = publication_format, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Data Publishing: Format",
+  labs(x = "", title = "Published Data Format",
        caption = "Format of Published Data") +
-  coord_flip() +
+  #coord_flip() +
   theme_classic() +
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
              color = "black",
              fill = "#FFCD00")
 
-  print(publication_format_plot)
+#print(publication_format_plot)
 
-```
-
-
-```{r pubformat}
-# publication format
-
-publication_format_table <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Publication_format_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "publication_format") %>%
-  select(-name) %>%
-  group_by(publication_format) %>%
-  summarise(Count = length(publication_format)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(publication_format = factor(publication_format, levels=publication_format)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
-
-```
-
-```{r}
+# publication format table
+#publication_format_table <- dppsurvey %>% 
+#  pivot_longer(cols = grep("^Publication_format_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "publication_format") %>%
+#  select(-name) %>%
+#  group_by(publication_format) %>%
+#  summarise(Count = length(publication_format)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(publication_format = factor(publication_format, levels=publication_format)) %>% # Update factor levels
+#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+#  map_df(rev) %>% # reverse order
+#  print()
 
 reasons_nopub_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^Reason_NoPub_[0-9]+$", names(dppsurvey), value=TRUE), 
@@ -809,7 +756,7 @@ reasons_nopub_plot <- dppsurvey %>%
   mutate(reasons_nopub = factor(reasons_nopub, levels=reasons_nopub)) %>% # Update factor levels
   ggplot(aes(x = reasons_nopub, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Data Publishing: Reasons for Not Publishing",
+  labs(x = "", title = "Why Not Published?",
        caption = "Reasons for Not Publishing Data") +
   coord_flip() +
   theme_classic() +
@@ -817,27 +764,22 @@ reasons_nopub_plot <- dppsurvey %>%
              color = "black",
              fill = "#FFCD00")
 
-  print(reasons_nopub_plot)
-```
+#print(reasons_nopub_plot)
+grid.arrange(publication_format_plot, reasons_nopub_plot, nrow = 1)
 
-
-```{r}
-
-# reasons for not publishing
-
-reasons_nopub_table <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Reason_NoPub_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "reasons_nopub") %>%
-  select(-name) %>%
-  group_by(reasons_nopub) %>%
-  summarise(Count = length(reasons_nopub)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(reasons_nopub = factor(reasons_nopub, levels=reasons_nopub)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
-
+# reasons for not publishing table
+#reasons_nopub_table <- dppsurvey %>% 
+#  pivot_longer(cols = grep("^Reason_NoPub_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "reasons_nopub") %>%
+#  select(-name) %>%
+#  group_by(reasons_nopub) %>%
+#  summarise(Count = length(reasons_nopub)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(reasons_nopub = factor(reasons_nopub, levels=reasons_nopub)) %>% # Update factor levels
+#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+#  map_df(rev) %>% # reverse order
+#  print()
 ```
 
 ## Existing support channels
@@ -946,11 +888,11 @@ sourcesusedplot <- dppsurvey %>%
 sourcesusedplot
 
 # Other sources used
-sourcesusedother <- 
-  dppsurvey$Sourcesused_19_TEXT[!is.na(dppsurvey$Sourcesused_19_TEXT)] %>%
-  unlist() %>%
-  str_trim() %>%
-  str_to_lower()
+#sourcesusedother <- 
+#  dppsurvey$Sourcesused_19_TEXT[!is.na(dppsurvey$Sourcesused_19_TEXT)] %>%
+#  unlist() %>%
+#  str_trim() %>%
+#  str_to_lower()
 ```
 
 
