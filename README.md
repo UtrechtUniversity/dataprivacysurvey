@@ -2,7 +2,8 @@
 
 This repository contains the code for analysing the data from the Data Privacy Survey. The code can be found in the `docs` folder as an R markdown file.
 
-A first glance of the result can be viewed in a <a href="docs/survey-first-glance.html" target="_blank">web browser</a>.
+- A first glance of the result can be viewed in a <a href="docs/survey-first-glance.html" target="_blank">web browser</a>.
+- Here, you can find <a href = "docs/data-privacy-survey-report-v0.1.html" target = "_blank">a first (semi-)full report of the findings</a>.
 
 As the raw dataset contains personal data in the form of demographic information, free text, and email addresses, it is not shared in this repository.
 
