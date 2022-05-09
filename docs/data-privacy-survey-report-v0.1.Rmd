@@ -92,7 +92,7 @@ library(gridExtra)
 
 ```{r readdata, cache=TRUE}
 # This file has multiple responses in separate columns
-datafile <- "../data/raw/Data_Privacy_Survey_20220502.csv"
+datafile <- "../data/raw/Data_Privacy_Survey_20220509.csv"
 dppsurvey <- fread(datafile, na.strings = "")
 
 # Skip the first 2 rows as they contain the question text
@@ -267,7 +267,7 @@ The one-on-one meetings are currently being conducted. More will be shared soon!
 
 Within the sample of the survey, it is clear that most researchers use tabular, textual, code and audio data as their primary research data format. The most encountered type of *personal* data that researchers indicate to work with are contact information, demographic information and direct identifiers. This can be either because these are the types of personal data that are indeed most common, or because researchers mostly recognize these types of data as being personal data.
 
-```{r datatypes}
+```{r datatypes, results = "asis"}
 # count
 #sum(!is.na(dppsurvey$Datatype_1))
 
@@ -276,6 +276,9 @@ Within the sample of the survey, it is clear that most researchers use tabular, 
 
 # text label
 #unique(dppsurvey$Datatype_1)[1]
+
+# For printing table in kable style
+library(knitr)
 
 # Table of data types
 datatypetable <- dppsurvey %>% 
@@ -288,8 +291,9 @@ datatypetable <- dppsurvey %>%
   arrange(Count) %>% # Order by count
   mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
   mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
+  map_df(rev) #%>% # reverse order
+  #print(kable())
+
 
 # Table of personal data types
 tablepersdata <- dppsurvey %>% 
@@ -302,8 +306,18 @@ tablepersdata <- dppsurvey %>%
   arrange(Count) %>% # Order by count
   mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype), # Update factor levels
          Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
+  map_df(rev) #%>% # reverse order
+  #print()
+
+kables(list(
+  kable(datatypetable, 
+        col.names = gsub("_", " ", names(datatypetable)), 
+        align = "l",
+        caption = "Types of data used among survey respondents"),
+  kable(tablepersdata, 
+        col.names = gsub("_", " ", names(tablepersdata)), 
+        align = "l",
+        caption = "Types of personal data used among survey respondents")))
 
 # Donut chart of personal data types --> Nr of categories = too large! But does work otherwise
 #perstypedonut <- dppsurvey %>% 
@@ -683,7 +697,7 @@ data_publishing_plot <- dppsurvey %>%
   geom_bar(stat = "identity") + 
   labs(x = "", title = "Data Publishing",
        caption = "Data Publishing: Frequency and Content") +
-  coord_flip() +
+  aes(stringr::str_wrap(data_publishing, 15), Count) + xlab(NULL) +
   theme_classic() +
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
              color = "black",
@@ -723,7 +737,7 @@ publication_format_plot <- dppsurvey %>%
   geom_bar(stat = "identity") + 
   labs(x = "", title = "Published Data Format",
        caption = "Format of Published Data") +
-  #coord_flip() +
+  aes(stringr::str_wrap(publication_format, 15), Count) + xlab(NULL) +
   theme_classic() +
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
              color = "black",
@@ -938,8 +952,13 @@ bettersupporttable <- dppsurvey %>%
   arrange(Count) %>% # Order by count
   mutate(bettersupport = factor(bettersupport, levels=bettersupport)) %>% # Update factor levels
   mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  print()
+  map_df(rev) #%>% # reverse order
+  #print()
+
+ kable(bettersupporttable, 
+        col.names = gsub("_", " ", names(bettersupporttable)), 
+        align = "l",
+        caption = "How can we improve personal data-related services?")
 ```
 
 ```{r selectopenquestions}
