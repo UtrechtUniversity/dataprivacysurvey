@@ -92,7 +92,7 @@ library(gridExtra)
 
 ```{r readdata, cache=TRUE}
 # This file has multiple responses in separate columns
-datafile <- "../data/raw/Data_Privacy_Survey_20220509.csv"
+datafile <- "../data/raw/Data_Privacy_Survey_20220522.csv"
 dppsurvey <- fread(datafile, na.strings = "")
 
 # Skip the first 2 rows as they contain the question text
@@ -164,7 +164,7 @@ target = "_blank">news item</a> on the UU intranet.
 - Via data support colleagues, who were asked to point researchers they were
 in contact with to the survey.
 
-Researchers could provide voluntarily whether they wanted to participate in the
+Researchers could decide voluntarily whether they wanted to participate in the
 survey. The survey only started after they had provided their consent. All 
 results reported here are from researchers who provided their active consent. 
 
@@ -259,7 +259,59 @@ address, demographic information, open text responses and email addresses), and
 no consent was obtained to share those details, we are unable to share them.
 
 ## One-on-one meetings
-The one-on-one meetings are currently being conducted. More will be shared soon!
+Besides the survey, we aimed to organise one-on-one meetings with researchers, to hear more in-depth experiences, challenges and needs concerning handling personal data in research. Survey respondents could voluntarily leave their email address at the end of the survey to be contacted by us.
+
+From the survey respondents, `r length(dppsurvey$Email_1_TEXT[!is.na(dppsurvey$Email_1_TEXT)])` researchers left their email address to be contacted. Of those, 20 replied to our email asking to meet up. So far, 12 one-on-one, mostly online, meetings of have been conducted, each taking about 30 minutes. During the meetings, at least one of the project coordinators was present, together with either the other project coordinator or the relevant faculty privacy officer. 
+
+Below, the division over faculties can be seen for all respondents that left their email address:
+
+```{r emailaddressplot}
+# Simple barplot of faculty division (WORKS, yet to prettify)
+emailsplot <- 
+  dppsurvey %>% 
+  filter(!is.na(Email_1_TEXT)) %>%
+  pivot_longer(cols = grep("Faculty_[0-9]$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Faculty") %>%
+  select(-name) %>%
+  group_by(Faculty) %>%
+  summarise(Count = length(Faculty)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Faculty = factor(Faculty, levels=Faculty)) %>% # Update factor levels
+  ggplot(aes(x = Faculty, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Faculties",
+       caption = "Faculties of those who left their email address") +
+  coord_flip() +
+  theme_classic() +
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+# Simple barplot of position division (WORKS, yet to prettify)
+positionemailplot <-
+  dppsurvey %>% 
+  filter(!is.na(Email_1_TEXT)) %>%
+  pivot_longer(cols = grep("Position_[0-9]$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Position") %>%
+  select(-name) %>%
+  group_by(Position) %>%
+  summarise(Count = length(Position)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Position = factor(Position, levels=Position)) %>% # Update factor levels
+  ggplot(aes(x = Position, y = Count)) + 
+  geom_bar(stat = "identity") + 
+  labs(x = "", title = "Positions",
+       caption = "Positions of those who left their email address") +
+  coord_flip() +
+  theme_classic() + 
+  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+             color = "black",
+             fill = "#FFCD00")
+
+grid.arrange(emailsplot, positionemailplot, nrow = 1)
+```
 
 # Results
 
@@ -910,7 +962,8 @@ sourcesusedplot
 ```
 
 
-## Challenges and needs
+## Challenges and needs (survey)
+
 ```{r obstacle}
 obstacleplot <- dppsurvey %>% 
   pivot_longer(cols = Obstacle, 
@@ -1009,8 +1062,12 @@ The open text responses reveal the following challenges and needs:
 
 
 Importantly, there are also researchers who indicate **not** to have run into any issues or to have received sufficient and useful help:
-<blockquote>The data manager and privacy officer of the faculty of humanities help a lot. This support is essential!</blockquote>
+<blockquote>"The data manager and privacy officer of the faculty of humanities help a lot. This support is essential!"</blockquote>
 <blockquote>"Tot nu toe heb ik niet veel problemen gehad. De institutional review board van onze afdeling kijkt altijd kritisch naar de onderzoeksvoorstellen, ook met name op omgaan met persoonsgegevens."</blockquote>
+
+## Challenges and needs (meetings)
+
+As the one-on-one meetings are currently conducted, a summary or the results will be added at a later time.
 
 # Results summary [preliminary]
 
@@ -1143,6 +1200,13 @@ researchers aware of privacy-related measures (see further Visibility).
 - Embedding privacy in existing materials and processes, such as in ethical
 applications, in the education of research master and PhD students, etc.
 
+# Discussion
+
+This report summarised the findings of the Data Privacy Survey and our recommendations on what to do with the input we have received. In order to interpret these results correctly, there are a few matters that need to be taken into account:
+
+1. The respondents of the survey represented only a small selection of all of UU's Scientific Personnel. Therefore, the results presented here should not be overgeneralized to represent all of UU's researchers. It is likely that at least part of the respondents had a specific reason to do so. For example, they may have explicitly wanted to raise their voice because of some bad experiences in handling personal data in research. Although it is important that these concerns be heard, they should not be interpreted as to speak for all UU researchers.   
+2. It is important to note that we, the writers of this report, cannot be considered fully objective in interpreting the survey results. The feedback received via this survey also involves our own services and possibly work performance. Although we have attempted to interpret the results of the survey without bias, it is possible that we have indeed introduced some, especially where the open questions and one-on-one meetings are concerned.   
+3. The questions in this survey intentionally do not address at which data support personnel the feedback is targeted. This also means that our recommendations do not specify Who within the organisation should pick them up. Preferably, these recommendations will be picked up by a  collaboration between data support at different levels of the organisation (departmental, faculty, central) and, if needed, beyond, to address researchers' concerns and improve the support surrounding the handling of personal data in research.
 
 # Technical information
 This document was last created on: `r as.character(Sys.Date())`.
