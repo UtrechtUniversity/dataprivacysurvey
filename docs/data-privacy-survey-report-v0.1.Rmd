@@ -92,7 +92,7 @@ library(gridExtra)
 
 ```{r readdata, cache=TRUE}
 # This file has multiple responses in separate columns
-datafile <- "../data/raw/Data_Privacy_Survey_20220522.csv"
+datafile <- "../data/raw/Data_Privacy_Survey_20220530.csv"
 dppsurvey <- fread(datafile, na.strings = "")
 
 # Skip the first 2 rows as they contain the question text
@@ -311,6 +311,18 @@ positionemailplot <-
              fill = "#FFCD00")
 
 grid.arrange(emailsplot, positionemailplot, nrow = 1)
+
+# Select email addresses
+emaildataset <- dppsurvey %>%
+  filter(!is.na(Email_1_TEXT)) %>%
+  select(contains(c("Faculty", "Dept", "Position", "Email_1"))) %>%
+  rename(Email = Email_1_TEXT) %>%
+  unite("Faculty", grep("Faculty",names(.), value = T), 
+        sep = ",", remove = TRUE, na.rm=TRUE) %>%
+  unite("Dept", grep("Dept",names(.), value = T), 
+        sep = ",", remove = TRUE, na.rm=TRUE) %>%
+  unite("Position", grep("Position",names(.), value = T), 
+        sep = ",", remove = TRUE, na.rm=TRUE)
 ```
 
 # Results
