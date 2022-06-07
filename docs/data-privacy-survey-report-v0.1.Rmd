@@ -92,7 +92,7 @@ library(gridExtra)
 
 ```{r readdata, cache=TRUE}
 # This file has multiple responses in separate columns
-datafile <- "../data/raw/Data_Privacy_Survey_20220530.csv"
+datafile <- "../data/raw/Data_Privacy_Survey_20220607.csv"
 dppsurvey <- fread(datafile, na.strings = "")
 
 # Skip the first 2 rows as they contain the question text
@@ -261,7 +261,7 @@ no consent was obtained to share those details, we are unable to share them.
 ## One-on-one meetings
 Besides the survey, we aimed to organise one-on-one meetings with researchers, to hear more in-depth experiences, challenges and needs concerning handling personal data in research. Survey respondents could voluntarily leave their email address at the end of the survey to be contacted by us.
 
-From the survey respondents, `r length(dppsurvey$Email_1_TEXT[!is.na(dppsurvey$Email_1_TEXT)])` researchers left their email address to be contacted. Of those, 20 replied to our email asking to meet up. So far, 12 one-on-one, mostly online, meetings of have been conducted, each taking about 30 minutes. During the meetings, at least one of the project coordinators was present, together with either the other project coordinator or the relevant faculty privacy officer. 
+From the survey respondents, `r length(dppsurvey$Email_1_TEXT[!is.na(dppsurvey$Email_1_TEXT)])` researchers left their email address to be contacted. Of those, 22 replied to our email asking to meet up. So far, 18 one-on-one, mostly online, meetings of have been conducted, each taking about 30 minutes. During the meetings, at least one of the project coordinators was present, together with either the other project coordinator or the relevant faculty privacy officer. 
 
 Below, the division over faculties can be seen for all respondents that left their email address:
 
