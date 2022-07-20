@@ -9,7 +9,7 @@ The survey is part of the <a href="https://utrechtuniversity.github.io/datapriva
 
 ## This repository
 
-This repository contains the code for analysing the data from the Data Privacy Survey. The code can be found in the current GitHub repository as an R markdown file. As the raw dataset contains personal data in the form of demographic information, free text, and email addresses, it is not shared in this repository.
+This repository contains the code for analysing the data from the Data Privacy Survey. The code can be found in the current GitHub repository (`src` folder) as an R markdown file. As the raw dataset contains personal data in the form of demographic information, free text, and email addresses, it is not shared in this repository. The code for pseudonymising the dataset is shared however (see `src` folder), for full transparency on how data were processed.
 
 - Here you can find <a href="docs/survey-first-glance.html" target="_blank">a first glance of the survey results</a>.
 - Here, you can find <a href = "docs/data-privacy-survey-report-v0.1.html" target = "_blank">a first (semi-)full report of the findings</a>.
