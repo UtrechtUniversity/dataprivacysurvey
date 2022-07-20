@@ -88,36 +88,30 @@ library(tidyverse)
 #install.packages("wordcloud2")
 library(wordcloud2)
 
-# install.packages("gridExtra")
+#install.packages("gridExtra")
 library(gridExtra)
+
+#install.packages("knitr")
+library(knitr)
 ```
 
-```{r readdata, cache=TRUE}
-# This file has multiple responses in separate columns
-datafile <- "data/raw/Data_Privacy_Survey_20220607.csv"
-dppsurvey <- fread(datafile, na.strings = "")
+```{r readdata}
+# TO DO: write code that looks for files in both pseud and processed folders 
+# and picks the latest one
 
-# Skip the first 2 rows as they contain the question text
-dppsurvey <- dppsurvey[-c(1, 2), ]
+# Find most recent data file in data/pseud folder
+data_files <- list.files(path = "data/pseud")
+filenamedates <- as.Date(str_extract(pattern = "[0-9]+-[0-9]+-[0-9]+", 
+                                     string = data_files),
+                         format = "%Y-%m-%d")
+most_recent_date <- filenamedates[order(filenamedates, 
+                                        decreasing = TRUE)][1]
 
-# Skip the previews
-dppsurvey <- dppsurvey[-grep("preview",
-                             dppsurvey$DistributionChannel), ]
+datafile <- paste0("data/pseud/", 
+                   most_recent_date,
+                   "_dppsurvey.csv")
 
-# Convert Duration and Progress into a numeric variable
-dppsurvey$Duration <- as.numeric(dppsurvey$`Duration (in seconds)`)
-dppsurvey$Progress <- as.numeric(dppsurvey$Progress)
-
-# Skip unnecessary columns
-dppsurvey <- dppsurvey[,-c("StartDate","EndDate","Status","IPAddress", 
-                           "Duration (in seconds)", "Finished", "RecordedDate", 
-                           "ResponseId", "RecipientLastName", "RecipientFirstName",
-                           "RecipientEmail", "ExternalReference", "LocationLatitude",
-                           "LocationLongitude", "DistributionChannel", "UserLanguage")]
-
-# Select only consented data
-dppsurvey <- dppsurvey %>% 
-  filter(Consent == "Yes")
+dppsurvey <- fread(datafile)
 ```
 
 ### Survey questions 
@@ -268,10 +262,10 @@ From the survey respondents, `r length(dppsurvey$Email_1_TEXT[!is.na(dppsurvey$E
 Below, the division over faculties can be seen for all respondents that left their email address:
 
 ```{r emailaddressplot}
-# Simple barplot of faculty division (WORKS, yet to prettify)
+# Simple barplot of faculty division - Need to drop NA
 emailsplot <- 
   dppsurvey %>% 
-  filter(!is.na(Email_1_TEXT)) %>%
+  filter(Email == "Yes") %>%
   pivot_longer(cols = grep("Faculty_[0-9]$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
                values_to = "Faculty") %>%
@@ -293,7 +287,7 @@ emailsplot <-
 # Simple barplot of position division (WORKS, yet to prettify)
 positionemailplot <-
   dppsurvey %>% 
-  filter(!is.na(Email_1_TEXT)) %>%
+  filter(Email == "Yes") %>%
   pivot_longer(cols = grep("Position_[0-9]$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
                values_to = "Position") %>%
@@ -313,18 +307,6 @@ positionemailplot <-
              fill = "#FFCD00")
 
 grid.arrange(emailsplot, positionemailplot, nrow = 1)
-
-# Select email addresses
-emaildataset <- dppsurvey %>%
-  filter(!is.na(Email_1_TEXT)) %>%
-  select(contains(c("Faculty", "Dept", "Position", "Email_1"))) %>%
-  rename(Email = Email_1_TEXT) %>%
-  unite("Faculty", grep("Faculty",names(.), value = T), 
-        sep = ",", remove = TRUE, na.rm=TRUE) %>%
-  unite("Dept", grep("Dept",names(.), value = T), 
-        sep = ",", remove = TRUE, na.rm=TRUE) %>%
-  unite("Position", grep("Position",names(.), value = T), 
-        sep = ",", remove = TRUE, na.rm=TRUE)
 ```
 
 # Results
@@ -343,9 +325,6 @@ Within the sample of the survey, it is clear that most researchers use tabular, 
 # text label
 #unique(dppsurvey$Datatype_1)[1]
 
-# For printing table in kable style
-library(knitr)
-
 # Table of data types
 datatypetable <- dppsurvey %>% 
   pivot_longer(cols = grep("^Datatype_[0-9]+$", names(dppsurvey), value=TRUE), 
@@ -359,7 +338,6 @@ datatypetable <- dppsurvey %>%
   mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
   map_df(rev) #%>% # reverse order
   #print(kable())
-
 
 # Table of personal data types
 tablepersdata <- dppsurvey %>% 
@@ -1027,36 +1005,6 @@ bettersupporttable <- dppsurvey %>%
         align = "l",
         caption = "How can we improve personal data-related services?")
 ```
-
-```{r selectopenquestions}
-opentextresponses <- dppsurvey %>% 
-  select(
-    contains(c("Faculty", "Dept", "Position")),
-    Better_support_9_TEXT,
-    Challenges,
-    Infotools_missing
-  ) %>%
-  unite("Faculty", grep("Faculty",names(.), value = T), 
-        sep = ", ", remove = TRUE, na.rm=TRUE) %>%
-  unite("Dept", grep("Dept",names(.), value = T), 
-        sep = ", ", remove = TRUE, na.rm=TRUE) %>%
-  unite("Position", grep("Position",names(.), value = T), 
-        sep = ", ", remove = TRUE, na.rm=TRUE) %>%
-  rename(Bettersupport = Better_support_9_TEXT) %>%
-  mutate(
-    Bettersupport = str_to_lower(str_trim(Bettersupport)),
-    Challenges = str_to_lower((str_trim(Challenges))),
-    Infotools_missing = str_to_lower(str_trim(Infotools_missing))
-  ) %>%
-  filter_at(vars(Bettersupport, 
-                 Challenges, 
-                 Infotools_missing), 
-            any_vars(!is.na(.)))
-
-todaysdate <- as.character(Sys.Date())
-write.csv(opentextresponses, file.path(paste0("data/raw/", todaysdate, "_dppsurvey_opentextresponses.csv")))
-```
-
 
 The open text responses reveal the following challenges and needs:
 

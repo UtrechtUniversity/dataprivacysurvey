@@ -94,7 +94,7 @@ library(gridExtra)
 
 ```{r readdata}
 # This file has multiple responses in separate columns
-datafile <- "data/raw/Data_Privacy_Survey_20220607.csv"
+datafile <- "../data/raw/Data_Privacy_Survey_20220607.csv"
 dppsurvey <- fread(datafile, na.strings = "")
 
 # Skip the first 2 rows as they contain the question text
@@ -1054,7 +1054,7 @@ opentextresponses <- dppsurvey %>%
             any_vars(!is.na(.)))
 
 todaysdate <- as.character(Sys.Date())
-write.csv(opentextresponses, file.path(paste0("data/raw/", todaysdate, "_dppsurvey_opentextresponses.csv")))
+write.csv(opentextresponses, file.path(paste0("../data/raw/", todaysdate, "_dppsurvey_opentextresponses.csv")))
 ```
 
 
