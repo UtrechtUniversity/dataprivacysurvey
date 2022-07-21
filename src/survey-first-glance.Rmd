@@ -2,6 +2,8 @@
 title: "survey-first-glance"
 author: "Dorien Huijser"
 date: "8 April 2022"
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "docs") })
 output: html_document
 ---
 
@@ -777,7 +779,7 @@ dppsurvey %>%
   theme(legend.position = "bottom")
 
 todaysdate <- as.character(Sys.Date())
-write.csv(emaildataset, file.path(paste0("../../", todaysdate, "_emailaddresses.csv")))
+write.csv(emaildataset, file.path(paste0("../", todaysdate, "_emailaddresses.csv")))
 ```
 
 ## Technical info

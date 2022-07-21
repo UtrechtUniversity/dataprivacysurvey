@@ -14,6 +14,8 @@ abstract: |
   collaborators can improve their services and support concerning personal data 
   in research. The current report contains a summary of the results of this 
   survey, as well as points of action to be taken.
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "docs") })
 output:
   html_document:
     toc: true
@@ -90,7 +92,7 @@ library(wordcloud2)
 library(gridExtra)
 ```
 
-```{r readdata, cache=TRUE}
+```{r readdata}
 # This file has multiple responses in separate columns
 datafile <- "../data/raw/Data_Privacy_Survey_20220607.csv"
 dppsurvey <- fread(datafile, na.strings = "")
