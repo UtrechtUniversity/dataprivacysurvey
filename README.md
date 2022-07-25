@@ -4,12 +4,12 @@ In the second quarter of 2022, Utrecht University (UU) Research Data Management 
 
 The survey is part of the <a href="https://utrechtuniversity.github.io/dataprivacyproject" target="_blank">Data Privacy Project</a>, an RDM Support  project to improve information, tools and services surrounding personal data in research. More information about this survey can be found in the following files:
 
-- The <a href="https://utrechtuniversity.github.io/dataprivacyproject/assets/docs/survey-privacy-statement.pdf" target="_blank">survey's privacy statement</a>
-- The <a href="https://utrechtuniversity.github.io/dataprivacyproject/assets/docs/survey-questions-qualtrics.pdf" target="_blank">full survey</a>.
+- The <a href="assets/survey-privacy-statement.pdf" target="_blank">survey's privacy statement</a>
+- The <a href="assets/survey-questions-qualtrics.pdf" target="_blank">full survey</a>.
 
 ## This repository
 
-This repository contains the code for analysing the data from the Data Privacy Survey. The code can be found in the current GitHub repository (`src` folder) as an R markdown file. As the raw dataset contains personal data in the form of demographic information, free text, and email addresses, it is not shared in this repository. The code for pseudonymising the dataset is shared however (see `src` folder), for full transparency on how data were processed.
+This repository contains the code for analysing the data from the Data Privacy Survey. The code can be found in the current GitHub repository (`src` folder) as an R markdown file. As the raw dataset contains personal data in the form of demographic information, free text, and email addresses, it is not shared in this repository. The code for pseudonymising the dataset is shared however (see `src` folder), for full transparency on how the survey data were processed.
 
 - Here you can find <a href="docs/survey-first-glance.html" target="_blank">a first glance of the survey results</a>.
 - Here, you can find <a href = "docs/data-privacy-survey-report-v0.1.html" target = "_blank">a first (semi-)full report of the findings</a>.
