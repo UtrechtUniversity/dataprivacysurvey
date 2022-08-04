@@ -1,0 +1,31 @@
+/* Whole document: */
+body{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 11pt;
+  }
+
+/* Headers */
+h1{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 24pt;
+  }
+h2{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 18pt;
+}
+h3{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 16pt;
+}
+h4{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14pt;
+}
+h5{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 13pt;
+}
+h6{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 12pt;
+}
