@@ -119,7 +119,7 @@ data_files$filenamedates <- as.Date(str_extract(pattern = "[0-9]+-[0-9]+-[0-9]+"
                          format = "%Y-%m-%d")
 
 # Sort by date (descending = most recent one first)
-setorder(data_files, -filenamedates)
+setorder(data_files, -filenamedates, na.last = TRUE)
 
 # Get most recent file
 datafile <- paste0("../data/",
@@ -134,9 +134,9 @@ dppsurvey <- fread(datafile)
 The [Data Privacy Survey](#data-and-material-availability) was created by the project 
 coordinators (DH, NM) with input from a wide variety of experts, consisting of 
 privacy experts, data managers, data consultants, and IT staff (e.g., information 
-security,  research engineering). The final version of the survey 
-consisted of 19-23 questions (the exact number differing depending on given 
-answers), which were separated into 5 sections:
+security,  research engineering). The survey consisted of 19-23 questions 
+(the exact number differing depending on given answers), which were separated 
+into 5 sections:
 
 1. **About you and your research**: 5 questions about the faculty, department, 
 position, and type of (personal) data the researcher works with.
@@ -197,7 +197,7 @@ UU researchers only. A small selection of respondents indicated to work at
 another part of the organisation, being mainly University College Utrecht and 
 the University Corporate Office.
 
-As can be seen in the figure below, most respondents were relatively early 
+Most of the survey respondents were relatively early 
 career researchers (PhDs, junior researchers and postdoctoral researchers). 
 We suspect that this is because 1) there simply are more people in these positions
 than there are in the others, and 2) early-career researchers may experience a 
@@ -238,7 +238,9 @@ position_per_faculty <- dppsurvey %>%
   theme_classic() + 
   geom_col() +
   scale_fill_manual(values = UU_pallette) +
-  labs(x = "", title = "Faculty and Position representation") +
+  labs(x = "", 
+       title = "Faculty and Position representation",
+       caption = "Survey respondents per faculty and position") +
   scale_y_discrete(expand = expansion(add = 4)) + # make field larger to see label
   #scale_x_continuous(expand = expansion(add = 3)) + 
   geom_label(aes(label = after_stat(y), group = Faculty), # totals per faculty
@@ -320,7 +322,9 @@ emailsplot <-
   mutate(Faculty = factor(Faculty, levels=Faculty)) %>% # Update factor levels
   ggplot(aes(x = Faculty, y = Count)) + 
   geom_bar(stat = "identity", fill = "#FFCD00") + 
-  labs(x = "", title = "Faculty representation of researchers spoken to") +
+  labs(x = "", 
+       title = "Faculty representation one-on-one meetings",
+       caption = "Faculty representation of researchers spoken to in one-on-one meetings") +
   coord_flip() +
   theme_classic() +
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
@@ -372,8 +376,9 @@ emailsplot
 ## Analysis
 From the raw Qualtrics output, we first cleaned and split the data into different
 data files (cleaned and closed survey responses, open text responses, email
-addresses, see the <a href="../src/pseudonymise-data.R" target="_blank">
-pseudonymise-data.R</a> script for details). Both the open text responses and 
+addresses, see the 
+<a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/src/pseudonymise-data.R" 
+target="_blank">pseudonymise-data.R</a> script for details). Both the open text responses and 
 the notes made during the one-on-one meetings were separately and manually scored
 to enable the extraction of action points. 
 
@@ -400,12 +405,14 @@ details, we are unable to share them in this repository.
 ## Types of research data {.tabset}
 ### University-wide
 
-Between all survey respondents, it is clear that most researchers at UU have 
-tabular, textual, code and audio data as their primary research data format. 
+To investigate the types of research that was represented in the sample, we 
+asked which types of data, and specifically which types of *personal* data the 
+respondents worked with. Most respondents indicated to use tabular, textual, 
+code and audio data as their primary research data format. 
 In terms of *personal* data types, contact information, demographic information 
-and direct identifiers seem to be the most common among the respondents. This 
+and direct identifiers were most common among the respondents. This 
 can be either because these are the types of personal data that are indeed most 
-common, but possibly also because researchers mostly recognize these types of 
+common, but possibly also because researchers mostly recognise these types of 
 data as being personal data.
 
 ```{r datatypes, results = "asis"}
@@ -474,6 +481,7 @@ kables(list(
                   position = "left")))
 ```
 
+
 When comparing faculties, it appears that most personal data is processed in the
 faculties of Social and Behavioural Sciences (FSBS), although the faculties of 
 Science and Veterinary Medicine also seem to process quite some personal data.
@@ -500,7 +508,9 @@ datatypegraphs <- dppsurvey %>%
   geom_bar(stat = "identity", fill = "#FFCD00") + 
   facet_wrap(~Faculty, ncol = 4,
              labeller = label_wrap_gen(width=14)) +
-  labs(x = "", title = "Personal data types across Faculties (%)") +
+  labs(x = "", 
+       title = "Personal data types across Faculties (%)",
+       caption = "Percentage of the total sample size of personal data used in every UU faculty") +
   coord_flip() +
   theme_classic() +
   geom_text(aes(label = paste0(Percentage, "%")),
@@ -1312,9 +1322,9 @@ Secondly, many researchers seemed to implement access control and encryption,
 and complete a Data Management Plan (DMP) during their project(s). This is to
 be expected, as most funders nowadays require a DMP and many DMP templates 
 explicitly address topics like pseudonymisation, access control and encryption. 
-On the other hand, GDPR-specific assessments such as DPIAs or privacy reviews 
-were least used - as it stands, these assessments are still only carried out on 
-a case-by-case basis.
+On the other hand, GDPR-specific assessments such as Data Protection Impact 
+Assessments (DPIAs) or privacy reviews were least used - as it stands, these 
+assessments are still only carried out on a case-by-case basis.
  
 ```{r measuresused, warning=FALSE, message=FALSE}
 measures_plot <- 
@@ -1400,9 +1410,14 @@ asd
 
 ### Storage media used {.tabset}
 #### University-wide results
-To store personal data, most researchers rely on storage solutions provided by UU. Nonetheless, some researchers utilize non-UU solutions, including non-UU cloud storage. Several researchers also indicated they use 'Other' storage solutions. Examples of these include external
-institutions (e.g., University Medical Center, Trimbos Institute, Central Bureau of Statistics) and external repositories (e.g., DANS EASY, CLARIAH).
-
+When working with personal data, it is important to choose a sufficiently 
+secure storage medium. Luckily, most respondents indicated to rely on storage 
+solutions that are provided or recommended by UU - and in most cases are indeed
+safe for storing personal data. Nonetheless, some respondents indicated to use 
+non-UU solutions, including cloud solutions that UU advises against using. 
+Several respondents also indicated that they use other storage solutions, such 
+as those of external institutions (e.g., University Medical Center, Trimbos 
+Institute, Central Bureau of Statistics) and repositories (e.g., DANS EASY, CLARIAH).
 
 ```{r storagemediaplot}
 storage_used_plot <- dppsurvey %>% 
@@ -1427,22 +1442,6 @@ storage_used_plot <- dppsurvey %>%
   print(storage_used_plot)
 ```
 
-```{r storagemedia}
-# table storage media used
-#storage_used_table <- dppsurvey %>% 
-#  pivot_longer(cols = grep("^Storage_medium_[0-9]+$", names(dppsurvey), value=TRUE), 
-#               values_drop_na = TRUE,
-#               values_to = "Storage") %>%
-#  select(-name) %>%
-#  group_by(Storage) %>%
-#  summarise(Count = length(Storage)) %>%
-#  arrange(Count) %>% # Order by count
-#  mutate(Storage = factor(Storage, levels=Storage)) %>% # Update factor levels
-#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-#  map_df(rev) %>% # reverse order
-#  print()
-```
-
 #### Faculty-specific results
 Here are some specific results
 
@@ -1450,13 +1449,31 @@ Here are some specific results
 
 ### Consent forms: usage and content {.tabset}
 #### University-wide results
-Only a small number of researchers indicate that consent forms are not applicable to their research or they don't know what they are. When researchers do use consent forms, they often use forms approved by privacy officers or ethical committees. Researchers however also indicate they tend to independently create and use forms. Departmental and UU-wide templates are also used to a fair extent. Some researchers ("Other") indicate to use templates from external institutions, or no templates at all (e.g., because they use verbal consent or data from another party).
+Consent is currently the legal basis most often used in researcher performed at 
+UU. Luckily, only a small number of respondents indicated that consent forms 
+are not applicable to their research or they don't know what they are. The consent
+forms most often used seem to be approved by privacy officers or ethical 
+committees. Some respondents however indicated to independently create and use 
+consent forms. A handful of respondents indicated to use templates from external 
+institutions, or no templates at all (e.g., because they use verbal consent or 
+data from another party).
 
-Within the consent forms, most researchers provide information on the purposes for data collection and which data will be be used. Information on the data subject's rights and safeguards are included as well. Information on data sharing and reuse is presented sometimes, but not as consistently as the aforementioned topics. 
+The mere fact that researchers make use of a consent form and information letter 
+of course does not mean these forms are of sufficient quality. Therefore, we 
+asked respondents what they typically include in their information to 
+participants. Most respondents indicated to provide at least the basic 
+information on the purposes for data collection and which data will be be used. 
+Information on the data subjects' rights and safeguards are often included as 
+well. 
 
-Most researchers indicate that 'regular' consent is explicitly requested, but consent to data sharing and further use is not always requested. This is a point of concern, because it may not be sufficient to merely inform data subjects that their data may be shared or reused, but data subjects should explicitly provide permission for their data to be used beyond the research project they signed on to. 
+Information and consent on data sharing and reuse is apparently not included as 
+often. This is a point of concern, because not obtaining consent for sharing 
+personal data for reuse may mean that data collected for a specific research
+project may not be reused again, reducing the scientific value of the data.
 
-Lastly, contact details of the DPO are not always included, whereas these always have to be provided (<a href = "https://gdpr-info.eu/art-13-gdpr/" target = "_blank">art. 13</a>)
+Finally, contact details of the Data Protection Officer (DPO) are not always 
+included either, whereas these always have to be provided when working with
+personal data (<a href = "https://gdpr-info.eu/art-13-gdpr/" target = "_blank">art. 13</a>)
 
 ```{r consentforms}
 consent_usage_plot <- dppsurvey %>% 
@@ -1470,29 +1487,14 @@ consent_usage_plot <- dppsurvey %>%
   mutate(Consent_Forms = factor(Consent_Forms, levels=Consent_Forms)) %>% # Update factor levels
   ggplot(aes(x = Consent_Forms, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Consent Forms",
-       caption = "Consent Forms: Usage") +
+  labs(x = "", 
+       title = "Consent Forms",
+       caption = "Usage of consent forms") +
   coord_flip() +
   theme_classic() +
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
              color = "black",
              fill = "#FFCD00")
-
-#print(consent_usage_plot)
-
-# table of consent forms used
-#consent_usage_table <- dppsurvey %>% 
-#  pivot_longer(cols = grep("^Consentforms_[0-9]+$", names(dppsurvey), value=TRUE), 
-#               values_drop_na = TRUE,
-#               values_to = "Consent_Forms") %>%
-#  select(-name) %>%
-#  group_by(Consent_Forms) %>%
-#  summarise(Count = length(Consent_Forms)) %>%
-#  arrange(Count) %>% # Order by count
-#  mutate(Consent_Forms = factor(Consent_Forms, levels=Consent_Forms)) %>% # Update factor levels
-#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-#  map_df(rev) %>% # reverse order
-#  print()
 
 consent_content_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^Consent_content_[0-9]+$", names(dppsurvey), value=TRUE), 
@@ -1505,8 +1507,9 @@ consent_content_plot <- dppsurvey %>%
   mutate(Consent_Content = factor(Consent_Content, levels=Consent_Content)) %>% # Update factor levels
   ggplot(aes(x = Consent_Content, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Form Content",
-       caption = "Consent Forms: Content") +
+  labs(x = "", 
+       title = "Content of forms",
+       caption = "Typical content of an informed consent form") +
   coord_flip() +
   theme_classic() +
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
@@ -1515,20 +1518,6 @@ consent_content_plot <- dppsurvey %>%
 
 #print(consent_content_plot)
 grid.arrange(consent_usage_plot, consent_content_plot, nrow = 1)
-
-# table of content in consent forms
-#consent_content_table <- dppsurvey %>% 
-#  pivot_longer(cols = grep("^Consent_content_[0-9]+$", names(dppsurvey), value=TRUE), 
-#               values_drop_na = TRUE,
-#               values_to = "Consent_Content") %>%
-#  select(-name) %>%
-#  group_by(Consent_Content) %>%
-#  summarise(Count = length(Consent_Content)) %>%
-#  arrange(Count) %>% # Order by count
-#  mutate(Consent_Content = factor(Consent_Content, levels=Consent_Content)) %>% # Update factor levels
-#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-#  map_df(rev) %>% # reverse order
-#  print()
 ```
 
 #### Faculty-specific results
@@ -1538,7 +1527,14 @@ Here are some specific results
 
 ### Data Protection Impact Assessment (DPIA) {.tabset}
 #### University-wide results
-Most of the researchers who responded to the survey indicate that they have never carried out a DPIA, nor had they ever heard of it. A small number of researchers have heard of DPIAs, but have not completed one. A similar number researchers indicated that they are familiar with and have completed a Data Protection Impact Assessment (DPIA). Most of these researchers received help from a Privacy Officer with their DPIAs and few received help from either RDM Support or Legal Affairs. Some researchers indicated they received 'Other' help or none at all.
+A Data Protection Impact Assessment (DPIA) is a legal instrument to assess the
+risks involved for data subjects, and helps determine the necessary safeguards to
+reduce those risks to an acceptable level. Despite it being an important legal
+instrument, most respondents indicated to never have carried one out, or heard of it,
+for that matter. A minority of the sample had heard of it, or has completed one. 
+Currrently, the desired scenario is that researchers get help from a privacy 
+officer when performing a DPIA, and the results seem to indicate that this is
+indeed the case in the majority of cases.
 
 ```{r dpia}
 DPIA_experience_plot <- dppsurvey %>% 
@@ -1552,29 +1548,14 @@ DPIA_experience_plot <- dppsurvey %>%
   mutate(DPIA_experience = factor(DPIA_experience, levels=DPIA_experience)) %>% # Update factor levels
   ggplot(aes(x = DPIA_experience, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "DPIA Experience",
+  labs(x = "", 
+       title = "Experience with DPIAs",
        caption = "Familiarity and experience with DPIAs") +
   coord_flip() +
   theme_classic() +
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
              color = "black",
              fill = "#FFCD00")
-
-#print(DPIA_experience_plot)
-
-# table  on experience with DPIAs
-#DPIA_experience_table <- dppsurvey %>% 
-#  pivot_longer(cols = grep("^DPIA_experience_[0-9]+$", names(dppsurvey), value=TRUE), 
-#               values_drop_na = TRUE,
-#               values_to = "DPIA_experience") %>%
-#  select(-name) %>%
-#  group_by(DPIA_experience) %>%
-#  summarise(Count = length(DPIA_experience)) %>%
-#  arrange(Count) %>% # Order by count
-#  mutate(DPIA_experience = factor(DPIA_experience, levels=DPIA_experience)) %>% # Update factor levels
-#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-#  map_df(rev) %>% # reverse order
-#  print()
 
 DPIA_help_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^DPIA_Help_[0-9]+$", names(dppsurvey), value=TRUE), 
@@ -1587,7 +1568,8 @@ DPIA_help_plot <- dppsurvey %>%
   mutate(DPIA_help = factor(DPIA_help, levels=DPIA_help)) %>% # Update factor levels
   ggplot(aes(x = DPIA_help, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "DPIA Help",
+  labs(x = "", 
+       title = "Help received with DPIAs",
        caption = "Help received with DPIAs") +
   coord_flip() +
   theme_classic() +
@@ -1595,22 +1577,7 @@ DPIA_help_plot <- dppsurvey %>%
              color = "black",
              fill = "#FFCD00")
 
-#print(DPIA_help_plot)
 grid.arrange(DPIA_experience_plot, DPIA_help_plot, nrow = 1)
-
-# table on help with DPIAs
-#DPIA_help_table <- dppsurvey %>% 
-#  pivot_longer(cols = grep("^DPIA_Help_[0-9]+$", names(dppsurvey), value=TRUE), 
-#               values_drop_na = TRUE,
-#               values_to = "DPIA_help") %>%
-#  select(-name) %>%
-#  group_by(DPIA_help) %>%
-#  summarise(Count = length(DPIA_help)) %>%
-#  arrange(Count) %>% # Order by count
-#  mutate(DPIA_help = factor(DPIA_help, levels=DPIA_help)) %>% # Update factor levels
-#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-#  map_df(rev) %>% # reverse order
-#  print()
 ```
 
 #### Faculty-specific results
@@ -1620,9 +1587,22 @@ Blabla
 
 ### Data sharing practices {.tabset}
 #### University-wide results
-While there are some researchers who don't share their data at all, most researchers who responded to the survey indicate they do not share data with external parties, but only within the UU. A smaller number of researchers indicated they share data within the EEA. Responses in the "Other" category however suggest that a lot of data actually is shared, for example with co-authors at another institution, students, or in "pseudonymised form". There are researchers who share data outside the EEA, most of these with countries deemed to have an adequate level of protection according the GDPR. Only a few share with countries without an adequate level of protection.
+To investigate how often data are being shared and under which circumstances, we
+asked respondents if and with which parties they typically share their research
+data, and which measures they usually take to do so securely. While there were 
+some respondents who indicated not to share their data at all, most respondents
+seem to only share research data within the organisation, and otherwise within the
+European Economic Area (EEA). This is relatively good news, as such transfers 
+usually require little, if any, additional safeguards. Responses in the "Other" 
+category, however, suggest that a lot of data actually are shared, for example 
+with co-authors at another institution, students, or in "pseudonymised form".
 
-Most researchers pseudonimise their data before sharing with external parties, though we cannot assess if this pseudonymisation is sufficient. Researchers also make use of approved tools, data transfer agreements, data processing agreements, and providing access without transfering the data. Fewer researchers indicate that they involved a Privacy Officer or Data Manager while transferring data, and the use of Standard Contractual Clauses appears limited.
+Concerning the measures used before sharing data, most repondents indicated to
+pseudonymise their data, though we cannot assess the quality of such 
+pseudonymisation. Researchers also seemed to use approved tools, agreements, 
+and providing access without data transfer. Only a few respondents indicated that 
+they involved a data expert while transferring data, and the use of Standard 
+Contractual Clauses appears limited.
 
 ```{r datasharing}
 external_sharing_plot <- dppsurvey %>% 
@@ -1636,28 +1616,14 @@ external_sharing_plot <- dppsurvey %>%
   mutate(external_sharing = factor(external_sharing, levels=external_sharing)) %>% # Update factor levels
   ggplot(aes(x = external_sharing, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "External Sharing",
+  labs(x = "", 
+       title = "External sharing",
        caption = "Data Sharing with External Parties") +
   coord_flip() +
   theme_classic() +
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
              color = "black",
              fill = "#FFCD00")
-
-#print(external_sharing_plot)
-
-#external_sharing_table <- dppsurvey %>% 
-#  pivot_longer(cols = grep("^Share_outside_UU_[0-9]+$", names(dppsurvey), value=TRUE), 
-#               values_drop_na = TRUE,
-#               values_to = "external_sharing") %>%
-#  select(-name) %>%
-# group_by(external_sharing) %>%
-#  summarise(Count = length(external_sharing)) %>%
-#  arrange(Count) %>% # Order by count
-#  mutate(external_sharing = factor(external_sharing, levels=external_sharing)) %>% # Update factor levels
-#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-#  map_df(rev) %>% # reverse order
-#  print()
 
 sharing_measures_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^Share_measures_[0-9]+$", names(dppsurvey), value=TRUE), 
@@ -1670,7 +1636,8 @@ sharing_measures_plot <- dppsurvey %>%
   mutate(sharing_measures = factor(sharing_measures, levels=sharing_measures)) %>% # Update factor levels
   ggplot(aes(x = sharing_measures, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Sharing Measures",
+  labs(x = "", 
+       title = "Sharing measures",
        caption = "Protection measures taken while sharing data") +
   coord_flip() +
   theme_classic() +
@@ -1678,22 +1645,8 @@ sharing_measures_plot <- dppsurvey %>%
              color = "black",
              fill = "#FFCD00")
 
-#print(sharing_measures_plot)
-
 grid.arrange(external_sharing_plot, sharing_measures_plot, nrow = 1)
 
-#sharing_measures_table <- dppsurvey %>% 
-#  pivot_longer(cols = grep("^Share_measures_[0-9]+$", names(dppsurvey), value=TRUE), 
-#               values_drop_na = TRUE,
-#               values_to = "sharing_measures") %>%
-#  select(-name) %>%
-#  group_by(sharing_measures) %>%
-#  summarise(Count = length(sharing_measures)) %>%
-#  arrange(Count) %>% # Order by count
-#  mutate(sharing_measures = factor(sharing_measures, levels=sharing_measures)) %>% # Update factor levels
-#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-#  map_df(rev) %>% # reverse order
-#  print()
 ```
 
 #### Faculty-specific
@@ -1716,7 +1669,8 @@ data_publishing_plot <- dppsurvey %>%
   mutate(data_publishing = factor(data_publishing, levels=data_publishing)) %>% # Update factor levels
   ggplot(aes(x = data_publishing, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Data Publishing",
+  labs(x = "", 
+       title = "Data Publishing",
        caption = "Data Publishing: Frequency and Content") +
   aes(stringr::str_wrap(data_publishing, 15), Count) + xlab(NULL) +
   theme_classic() +
@@ -1725,24 +1679,21 @@ data_publishing_plot <- dppsurvey %>%
              fill = "#FFCD00")
 
 print(data_publishing_plot)
-
-#data_publishing_table <- dppsurvey %>% 
-#  pivot_longer(cols = grep("^Data_publication_[0-9]+$", names(dppsurvey), value=TRUE), 
-#               values_drop_na = TRUE,
-#               values_to = "data_publishing") %>%
-#  select(-name) %>%
-#  group_by(data_publishing) %>%
-#  summarise(Count = length(data_publishing)) %>%
-#  arrange(Count) %>% # Order by count
-#  mutate(data_publishing = factor(data_publishing, levels=data_publishing)) %>% # Update factor levels
-#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-#  map_df(rev) %>% # reverse order
-#  print()
 ```
 
-The majority of researchers who responded to the survey indicate that they do not publish their data in any way or form. The primary reason for not publishing data appears to be that researchers are still working on the data. Nonetheless, many researchers indicate that they don't want to/need to publish their data, or they cannot anonymise the data. Other reasons include a lack of legal basis, not knowing if they're allowed to publish the data, too much effort, publication is undesirable, or just not considered. Finally, only a few researchers indicate that they don't know how to publish data at all
+Open science and privacy are often seen as conflicting, as sharing personal data 
+cannot be done just like that, but requires at the very least a valid legal 
+basis and additional safeguards. Therefore, in our experience, to date not many 
+datasets that contain personal data are shared for reuse purposes, and the survey
+respondents seemed to confirm this experience, as the majority of the respondents
+indicated not to publish their data, or only in anonymised form (again, we cannot
+be certain whether the data were indeed entirely anonymised).
 
-If a publication is made, most researchers tend to publish the metadata only while fewer publish the entire data set. Researchers tend to publish anonymous data primarily, followed by pseudonymised data. As with previous responses, it is not possible to assess whether this anonymisation or pseudonymisation was adequate.
+The primary reason for not publishing data appears to be that researchers were 
+still working on the data, they don't want to/need to publish their data, or 
+they cannot anonymise the data. Other reasons given by the respondents included 
+that publishing data is too much effort, publication is undesirable, or just not 
+considered.
 
 ```{r publicationformat}
 publication_format_plot <- dppsurvey %>% 
@@ -1756,29 +1707,14 @@ publication_format_plot <- dppsurvey %>%
   mutate(publication_format = factor(publication_format, levels=publication_format)) %>% # Update factor levels
   ggplot(aes(x = publication_format, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Published Data Format",
+  labs(x = "", 
+       title = "Published Data Format",
        caption = "Format of Published Data") +
   aes(stringr::str_wrap(publication_format, 15), Count) + xlab(NULL) +
   theme_classic() +
   geom_label(aes(label = Count), position=position_dodge(width=1.2),
              color = "black",
              fill = "#FFCD00")
-
-#print(publication_format_plot)
-
-# publication format table
-#publication_format_table <- dppsurvey %>% 
-#  pivot_longer(cols = grep("^Publication_format_[0-9]+$", names(dppsurvey), value=TRUE), 
-#               values_drop_na = TRUE,
-#               values_to = "publication_format") %>%
-#  select(-name) %>%
-#  group_by(publication_format) %>%
-#  summarise(Count = length(publication_format)) %>%
-#  arrange(Count) %>% # Order by count
-#  mutate(publication_format = factor(publication_format, levels=publication_format)) %>% # Update factor levels
-#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-#  map_df(rev) %>% # reverse order
-#  print()
 
 reasons_nopub_plot <- dppsurvey %>% 
   pivot_longer(cols = grep("^Reason_NoPub_[0-9]+$", names(dppsurvey), value=TRUE), 
@@ -1791,7 +1727,8 @@ reasons_nopub_plot <- dppsurvey %>%
   mutate(reasons_nopub = factor(reasons_nopub, levels=reasons_nopub)) %>% # Update factor levels
   ggplot(aes(x = reasons_nopub, y = Count)) + 
   geom_bar(stat = "identity") + 
-  labs(x = "", title = "Why Not Published?",
+  labs(x = "", 
+       title = "Why Not Published?",
        caption = "Reasons for Not Publishing Data") +
   coord_flip() +
   theme_classic() +
@@ -1799,22 +1736,7 @@ reasons_nopub_plot <- dppsurvey %>%
              color = "black",
              fill = "#FFCD00")
 
-#print(reasons_nopub_plot)
 grid.arrange(publication_format_plot, reasons_nopub_plot, nrow = 1)
-
-# reasons for not publishing table
-#reasons_nopub_table <- dppsurvey %>% 
-#  pivot_longer(cols = grep("^Reason_NoPub_[0-9]+$", names(dppsurvey), value=TRUE), 
-#               values_drop_na = TRUE,
-#               values_to = "reasons_nopub") %>%
-#  select(-name) %>%
-#  group_by(reasons_nopub) %>%
-#  summarise(Count = length(reasons_nopub)) %>%
-#  arrange(Count) %>% # Order by count
-#  mutate(reasons_nopub = factor(reasons_nopub, levels=reasons_nopub)) %>% # Update factor levels
-#  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-#  map_df(rev) %>% # reverse order
-#  print()
 ```
 
 #### Faculty
@@ -1826,34 +1748,75 @@ asdfasdf
 The second part of the survey concerned the visibility and use of existing 
 support channels. 
 
-### Faculty privacy officer {.tabset}
-#### University-wide
+### Faculty privacy officer
 When asked whether respondents know who their faculty
-privacy officer is, most respondents indicated that they do 
+privacy officer is, a little over half of the respondents indicated that they do 
 not (Yes: `r sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)` 
-(`r round(sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)/dim(dppsurvey)[1]*100,0)`%), No: 
+(`r round(sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)/sum(!is.na(dppsurvey$Know_PO))*100,0)`%), No: 
 `r sum(dppsurvey$Know_PO=="No", na.rm=TRUE)` 
-(`r round(sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)/dim(dppsurvey)[1]*100,0)`%), NA: 
-`r sum(is.na(dppsurvey$Know_PO))` 
-(`r round(sum(is.na(dppsurvey$Know_PO))/dim(dppsurvey)[1]*100,0)`%)). This 
-suggests either that researchers have simply never required help from their privacy 
-officer, or that the faculty privacy officers could increase their visibility
-within their faculties.
+(`r round(sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)/sum(!is.na(dppsurvey$Know_PO))*100,0)`%)).
 
-#### Faculty-specific
-important info for faculty POs: how visible are they?
+When comparing faculties (see below), it is striking that the faculties where the
+most personal data seems to be processed, the majority of respondents is not 
+aware of their faculty privacy officer. This suggests either that researchers 
+have simply never required help from their privacy officer, or that the faculty 
+privacy officers could increase their visibility within their faculties.
 
-### {-}
+```{r knowpoplot, warning = FALSE, message = FALSE}
+knowpoplot <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Faculty_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Faculty") %>%
+  select(-name) %>%
+  group_by(Faculty, Know_PO) %>%
+  summarise(Count = length(Know_PO)) %>%
+  arrange(Count) %>% # Order by count
+  filter(!is.na(Know_PO)) %>%
+  mutate(Know_PO = factor(Know_PO, levels=Know_PO)) %>% # Update factor levels
+  ggplot(aes(x = Know_PO, y = Count)) + 
+  geom_bar(stat = "identity", fill = "#FFCD00") + 
+  facet_wrap(~Faculty, ncol = 4,
+             labeller = label_wrap_gen(width=14)) +
+  labs(x = "", 
+       title = "Awareness of the privacy officer",
+       caption = "Awareness of the privacy officer across UU faculties") +
+  coord_flip() +
+  theme_classic() +
+  geom_label(aes(label = Count),
+             #vjust = 0.5, 
+             hjust = "inward", #-0.2,
+             label.size = NA, #1,
+             color = "black") +
+  theme(axis.title.x = element_text(size = 10),
+        axis.line = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 10),
+        axis.ticks = element_blank(),
+        #panel.background = element_rect(fill = NA, color = "black"),
+        panel.background = element_blank(),
+        panel.border=element_blank(), #rect(fill = NA),
+        panel.spacing.y = unit(1, "lines"),
+        panel.grid.major.y = element_line(),
+        panel.grid.minor=element_blank(),
+        plot.background=element_blank(),
+        strip.background = element_rect(color="white",
+                                        size=1.5),
+        strip.text = element_text(family = "Verdana",
+                                  size = 10,
+                                  face = "bold"))
+
+knowpoplot
+
+```
 
 ### Looking for help {.tabset}
 #### University-wide
 When asked whether respondents have ever looked for support in the form of 
-information, tools, or support an overwheling majority indicated that they have,
-as can be seen in the graph below. Most respondents that looked for support
-indicate however that they haven't always found the suport they were looking for.
-Together with the results from the previous question about privacy officers,
-this suggests that the visibility of the current support channels could be 
-improved.
+information, tools, or in-person support, an overwheling majority indicated that 
+they have, as can be seen in the graph below. Most respondents that looked for support
+indicated, however, that they haven't always found the support they were looking for.
+Together with the results from the previous question, this suggests that the 
+visibility of the current support channels could be improved.
 
 ```{r existingsupport}
 # Ever looked for help with privacy?
@@ -1907,15 +1870,19 @@ Hello world
 
 ### Channels used to find support {.tabset}
 #### University-wide
-The graph below indicates which channels respondents to the survey used most 
+The graph below indicates which channels respondents used most 
 when looking for information about handling personal data. Note that this was 
 a multiple choice question, and so the numbers do no add up to the total number
-of survey respondents. As shown below, all sources mentioned are to some extent
+of survey respondents. As shown below, all sources mentioned were to some extent
 consulted by the respondents. However, there is large differentiation between 
 these sources. The university website and intranet are the most visited online 
-resources for information about handline personal data. Notably, colleagues 
+resources for information about handling personal data. Notably, colleagues 
 appear to play an important role as well in informing researchers
-about how to handle personal data.
+about how to handle personal data. This suggests that the better informed 
+researchers are, the more positive the effect is on their colleagues as well. 
+Moreover, this also suggests that in-person support may be a more effective way 
+of increasing awareness of privacy-related practices than more "distant" 
+information sources. 
 
 ```{r sourcesused}
 # Sources used to find information and help
@@ -1938,13 +1905,6 @@ sourcesusedplot <- dppsurvey %>%
              fill = "#FFCD00")
 
 sourcesusedplot
-
-# Other sources used
-#sourcesusedother <- 
-#  dppsurvey$Sourcesused_19_TEXT[!is.na(dppsurvey$Sourcesused_19_TEXT)] %>%
-#  unlist() %>%
-#  str_trim() %>%
-#  str_to_lower()
 ```
 
 #### Faculty
@@ -1979,10 +1939,12 @@ obstacleplot <- dppsurvey %>%
 obstacleplot
 ```
 
-As can be seen above, most researchers experience privacy an obstacle for 
-open science and research data management. It is therefore important to aim for
-better service and support in this area. What this support should look like 
-differs a bit: 
+As can be seen above, most researchers experience privacy to be an obstacle for 
+open science and research data management in some way. It is therefore important 
+to aim for support in this area. What this support should look like, however,  
+differs a bit. As can be seen below, accessible information and visible support
+channels seem to be the most wanted improvements in the current support, closely
+followed by UU-wide policy on the topic, and privacy-related walk-in hours. 
 
 ```{r bettersupport}
 bettersupporttable <- dppsurvey %>% 
@@ -2004,33 +1966,159 @@ bettersupporttable <- dppsurvey %>%
         caption = "How can we improve personal data-related services?")
 ```
 
-The open text responses reveal the following challenges and needs:
+## Challenges and needs (open text responses and one-on-one meetings)
 
-- **Knowledge gaps**: A selection of researchers use the space in the open questions to ask knowledge-related questions, such as: "How far should one go before data can be considered fully anonymous?" (n = 5), "What counts as personal data?" (n = 7), "How to make sure data are fully deleted?" (n = 1), and "What to do when only a selection of data subjects has consented to data sharing?" (n = 1). These questions can be addressed in future support efforts, such as to be developed information materials and trainings.
-- **Time-intensive and bureaucratic**: Processes are often experienced as being time-inefficient, and sometimes longer and more bureaucratic than necessary. Some researchers argue that (part of) this burden should be relieved or carried by support staff:
-<blockquote>"Sharing data costs a lot of time and is inefficient when you do not do it often"</blockquote>
-<blockquote>"Minder acties die gericht zijn op inhoudelijk trainen van WP en meer uit handen nemen van deze groep."</blockquote>
+As mentioned in the [Methods section](#analysis), the responses on the following 
+open questions, and the notes taken during the one-on-one meetings with 
+researchers were coded to allow for easier analysis. From the survey, the 
+following questions were coded:
+
+- "Which challenges concerning the handling of personal data do you run into 
+most often?"
+- "What specific **information** or **tools** about handling personal data are 
+you missing from existing sources?"
+- "What can we do better to support you in handling personal data in research?" 
+(responses to the "Other" option)
+
+The codes that were assigned in both the survey and the meeting notes can be 
+seen in the word cloud below: the larger the font, the more often the code 
+was assigned. The meaning of each code is explained in the file 
+<a href = "../data/processed/codes-freq_survey_meetings.csv" target = "_blank">"codes-freq_survey_meetings.csv"</a>. 
+Please note that there is overlap between the open questions in the survey and
+the meeting notes, and therefore some codes may have been applied twice for the 
+same researcher. 
+
+```{r opentextcloud}
+# Open most recent open text responses and coded meeting notes
+opentextfile <- "../data/coded/dppsurvey_opentextresponses_coded.xlsx"
+opentext <- read_excel(opentextfile, sheet = "opentextresponses")
+opencodes <- read_excel(opentextfile, sheet = "codes")
+opentools <- read_excel(opentextfile, sheet = "tools")
+
+interviewcodes <- read_excel(interviewfile, sheet = "codes")
+interviewtools <- read_excel(interviewfile, sheet = "tools")
+
+# Merge open text responses and meeting notes codes (used the same codes)
+totalcodes <- merge(opencodes, 
+                    interviewcodes, 
+                    by = c("Code", "Meaning"),
+                    suffixes = c("_survey","_interview"))
+
+# Count total times mentioned across survey and interviews
+totalcodes <- totalcodes %>%
+  mutate(Times_mentioned_total = `Times mentioned_survey`+ `Times mentioned_interview`) %>%
+  arrange(desc(Times_mentioned_total))
+
+# Prepare wordcloud
+totalcodes_wc <- totalcodes %>%
+  select(Code, Times_mentioned_total) %>%
+  mutate(word = Code,
+         freq = Times_mentioned_total,
+         .keep = "none")
+
+library(wordcloud2)
+wordcloudcodes <- wordcloud2(data = totalcodes_wc, 
+                             color=rep_len(UU_pallette, nrow(totalcodes_wc)),
+                             fontFamily = "Open Sans",
+                             minRotation = 0, 
+                             maxRotation = 0,
+                             rotateRatio = 1)
+wordcloudcodes
+
+# Save coded dataset to processed folder
+write.csv(totalcodes, "../data/processed/codes-freq_survey_meetings.csv")
+
+# For in-text reference, count total times certain tools are mentioned
+totaltools <- merge(opentools, 
+                    interviewtools, 
+                    by = c("Name tool", "Explanation"),
+                    suffixes = c("_survey","_interview"))
+
+# Count total times mentioned across survey and interviews
+totaltools <- totaltools %>%
+  mutate(Times_mentioned_total = `Times mentioned_survey`+ `Times mentioned_interview`) %>%
+  mutate(Name_tool = `Name tool`) %>%
+  select(-`Name tool`) %>%
+  arrange(desc(Times_mentioned_total))
+```
+
+Below we go into the most frequently mentioned challenge/need expressed:
+
+### Visibility and findability
+`r totalcodes$Meaning[totalcodes$Code == "visibility"]` (mentioned 
+`r totalcodes$Times_mentioned_total[totalcodes$Code == "visibility"]` times). 
+Some respondents indicate not to know where to go for help with privacy-related
+matters. One researcher indicates to prefer having 1 place to go to for all
+data-related questions. As a matter of fact, many faculties have such a 
+"one-stop-shop" in place, but responses such as these indicate that their 
+visibility may be improved.
+
+Closely related to visibility is findability. Many researchers point out that 
+available information is difficult to find, or it is confusing which source 
+should be followed. As an example, one researcher from the faculty of Humanities
+was determined that they found some useful information at the RDM Support website.
+However, upon closer inspection, it appeared that this information arose from
+another data management-related website with the UU logo on it. 
+
+<blockquote>"UU biedt ontzettend veel aan, maar je moet veel websites bezoeken 
+om alles te vinden [...] Een duidelijk overzicht voor welke informatie je
+waar moet zijn zou fijn zijn."</blockquote>
+
+### Specific tools
+Some (`r totalcodes$Times_mentioned_total[totalcodes$Code == "tools"]`) 
+researchers expressed a need for a concrete (improvement of a) tool, such 
+as for:
+
+- `r totaltools$Explanation[totaltools$Name_tool == "transcription"]`(mentioned 
+`r totaltools$Times_mentioned_total[totaltools$Name_tool == "transcription"]` 
+times)
+- `r totaltools$Explanation[totaltools$Name_tool == "computing-critical"]`(mentioned 
+`r totaltools$Times_mentioned_total[totaltools$Name_tool == "computing-critical"]` 
+times)
+- `r totaltools$Explanation[totaltools$Name_tool == "pseudonymising-video"]`(mentioned 
+`r totaltools$Times_mentioned_total[totaltools$Name_tool == "pseudonymising-video"]` 
+times)
+
+### More hands-on support
+Many respondents (mentioned 
+`r totalcodes$Times_mentioned_total[totalcodes$Code == "hands-on"]` 
+times) indicated that support staff could sometimes provide support 
+in a more hands-on fashion, rather than abstract advice and telling researchers 
+how *not* to do things. Some researchers add that privacy professionals have a 
+tendency to cling to the letter of the law, instead of looking at how to apply 
+the GDPR in practice:
+
+<blockquote>"Soms zijn we door deze regels heiliger dan de paus."</blockquote>
+<blockquote>"Actual getting-your-hands-dirty support: not the kind that tells 
+you what to do, but also the kind that helps you by doing.</blockquote>
+
+### Less bureaucracy
+Processes are often experienced as being time-inefficient, and sometimes longer 
+and more bureaucratic than necessary. Some researchers argue that (part of) this 
+burden should be relieved or carried by support staff:
+
+<blockquote>"Sharing data costs a lot of time and is inefficient when you do 
+not do it often"</blockquote>
+<blockquote>"Minder acties die gericht zijn op inhoudelijk trainen van WP en 
+meer uit handen nemen van deze groep."</blockquote>
+
+### Unclear processes and guidelines
+
 - **Unclear expectations and support channels**: There is unclarity in the exact requirements for researchers: what does the process look like? Who should they ask for help, and with what kinds of questions?
 <blockquote>"There is no one who tells at the start of your PhD how you should handle your data. [...] I think new PhD students should get a basic course on data management and privacy."</blockquote>
-- **More hands-on support**: Some researchers find that support staff could sometimes provide support in a more hands-on fashion, rather than abstract advice and telling researchers how *not* to do things. Some researchers add that privacy professionals have a tendency to cling to the letter of the law, instead of looking at how to apply the GDPR in practice:
-<blockquote>"I find that there is a severe lack of trust in employees"</blockquote>
-<blockquote>"Soms zijn we door deze regels heiliger dan de paus."</blockquote>
+
+
+- **Knowledge gaps**: A selection of researchers use the space in the open questions to ask knowledge-related questions, such as: "How far should one go before data can be considered fully anonymous?" (n = 5), "What counts as personal data?" (n = 7), "How to make sure data are fully deleted?" (n = 1), and "What to do when only a selection of data subjects has consented to data sharing?" (n = 1). These questions can be addressed in future support efforts, such as to be developed information materials and trainings.
+
+
 - **Specific data types**: Many researchers express the need for practical guidelines, tools and templates, and on specific types of data (e.g., etnographic, historic, linguistic, video data, etc.) or in specific scenarios. Multiple researchers indicate that existing solutions are not always suitable for their type of research, or that there are no (standardised) guidelines available at all.
 <blockquote>"De informatie is gewoon veel te generiek, er zouden templates moeten zijn per type onderzoek."</blockquote>
 <blockquote>"Veel templates en uitlegmodellen spreken over data, data packages en metadata, maar die woorden zijn niet ingebed in historisch onderzoek. Er ontstaat al snel verwarring over wat historici nu precies moeten met archiefmateriaal in het licht van privacy."</blockquote>
-- **Specific tools**: Some researchers express a need for a concrete (improvement of a) tool, such as for pseudonymising video data (n = 4), transcribing audio data (n = 4), and sharing data with others (n = 3). 
-
 
 Importantly, there are also researchers who indicate **not** to have run into any issues or to have received sufficient and useful help:
 <blockquote>"The data manager and privacy officer of the faculty of humanities help a lot. This support is essential!"</blockquote>
 <blockquote>"Tot nu toe heb ik niet veel problemen gehad. De institutional review board van onze afdeling kijkt altijd kritisch naar de onderzoeksvoorstellen, ook met name op omgaan met persoonsgegevens."</blockquote>
 
-ALSO INTERESTING
-"actual getting your hands dirty support. not the kind that tells you what to do, but also the kind that helps you by doing.
-
-"i find a lot of challenges because it's the first time i'm including personal data. but the data manager and privacy officer of the faculty of humanities help a lot. this support is essential!"
-
-"vooral meer gecentraliseerd. uu biedt ontzettend veel aan maar je moet veel websites bezoeken om alles te vinden en zoeken op de uu website is waardeloos (ik google vaak en kom dan bij relevante uu sites uit). een duidelijk overzicht voor welke informatie je waar moet zijn zou fijn zijn. nu teveel versnipperd."
 
 ### Faculty-specific
 asdfadf
