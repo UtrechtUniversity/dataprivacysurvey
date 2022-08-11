@@ -1,10 +1,68 @@
+/* Much of the css in this file has been copied with HUGE THANKS from 
+https://rstudio4edu.github.io/rstudio4edu-book/book-fancy.html#book-fancy */
+
+@import url('https://fonts.googleapis.com/css2?family=Merriweather&family=Open+Sans&display=swap');
+
+/*____Code Chunks____*/
+.sourceCode pre {
+    margin: 0 !important; /* makes space above and below symmetrical*/
+  }
+  .sourceCode {
+    margin-bottom: 0.85em; /* adds same amount of margin as a <p> would */
+  }
+  
+/* Copy code button */
+.copy {
+    width: inherit;
+    background-color: #e2e2e2 ;
+    border: none;
+    border-radius: 2px;
+    float: right;
+    font-size: 60%;
+    padding: 4px 4px 4px 4px;
+  }
+  
+
+  /* Fonts */
+   /*.book.font-family-1*/body{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11pt;
+   }
+   h1, h2, h3, h4 {
+    font-family: 'Merriweather', serif;
+    /*color: #2f5275;*/
+  }
+  .title {
+    font-family: 'Merriweather', serif;
+    font-size: 3em !important;
+    /*color: #5699cc;*/
+   }
+  .subtitle {
+    font-family: 'Merriweather', serif;
+    /*color: #2c6793;*/
+  }
+  
+
+/* Body Links */
+a {
+  color: #C00A35;
+}
+
+a:hover {
+color: #890726; /* darker color when hovering */
+/* text-decoration: none; */ /* Removes underline when hovering*/
+}
+
+/* OLD */ 
 /* Whole document: */
-body{
+/*body{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 11pt;
   }
-
+*/
 /* Headers */
+
+/*
 h1{
     font-family: Georgia, 'Times New Roman', Times, serif;
     font-size: 24pt;
@@ -29,3 +87,4 @@ h6{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 12pt;
 }
+*/
