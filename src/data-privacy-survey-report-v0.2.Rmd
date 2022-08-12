@@ -2,9 +2,9 @@
 title: "Data Privacy Survey"
 subtitle: "Challenges and needs of privacy-related services for research at Utrecht University"
 author:
-- "Dorien Huijser"
-- "Neha Moopen"
-date: "`r format(Sys.time(), '%d %B %Y')`"
+- "Dorien Huijser, Research Data Management Support, Utrecht University"
+- "Neha Moopen, Research Data Management Support, Utrecht University"
+date: "Version: `r format(Sys.time(), '%Y-%m-%d')`"
 abstract: |
   In the second quarter of 2022, Utrecht University (UU) Research Data Management 
   Support (RDM Support) sent out a survey among all scientific personnel at UU: 
@@ -31,7 +31,7 @@ knit: (function(inputFile, encoding) {
 output:
   html_document:
     toc: true
-    toc_depth: 2
+    toc_depth: 3
     number_sections: false
     toc_float: true
     theme: united
@@ -39,13 +39,18 @@ output:
     code_folding: hide
     df_print: paged
     css: style.css
+    includes:
+      in_header: "../includes/header.html"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.align = "center")
 ```
 
-# Introduction
+# Introduction {#introduction}
 Scientific research often includes some form of personal data. The amount of 
 personal data that is processed in research is likely underestimated, as 
 researchers may be unaware of what personal data are or whether they are being 
@@ -82,7 +87,7 @@ UU that aims to provide actionable and FAIR (Findable, Accessible, Interoperable
 Reusable) information and tools for researchers to handle personal data in their 
 research. 
 
-# Methods
+# Methods {#methods}
 ```{r dependencies}
 # install.packages("data.table")
 library(data.table)
@@ -130,7 +135,7 @@ datafile <- paste0("../data/",
 dppsurvey <- fread(datafile)
 ```
 
-## Survey questions 
+## Survey questions {#survey-questions}
 The [Data Privacy Survey](#data-and-material-availability) was created by the project 
 coordinators (DH, NM) with input from a wide variety of experts, consisting of 
 privacy experts, data managers, data consultants, and IT staff (e.g., information 
@@ -158,7 +163,7 @@ there was a very large variation; range:
 `r round(min(dppsurvey$Duration)/60, 1)` minutes - 
 `r round(max(dppsurvey$Duration)/3600/24,1)` days).
 
-## Procedure online survey
+## Procedure online survey {#procedure-online-survey}
 The survey was created in Qualtrics and distributed from March 21st, 2022 
 onwards via several communication channels to reach as many UU researchers as 
 possible:
@@ -181,7 +186,7 @@ survey. All results reported here are from researchers who provided their active
 consent, worked at Utrecht University and indicated to work with some type of 
 research data.
 
-## Online survey respondents
+## Online survey respondents {#online-survey-respondents}
 The survey was filled out by `r dim(dppsurvey)[1]` UU researchers. As can be 
 seen in the figure below, we received responses from each UU faculty, but the 
 distribution was not equal: the faculties of Science and Social and Behavioural 
@@ -277,7 +282,7 @@ position_per_faculty
 
 ```
 
-## One-on-one meetings
+## One-on-one meetings {#one-on-one-meetings}
 Besides the online survey, we organised one-on-one meetings with researchers, to 
 hear about their personal experiences, challenges and needs concerning the handling 
 of personal data in their research. Survey respondents could voluntarily leave 
@@ -373,7 +378,7 @@ emailsplot
 #donutchart
 ```
 
-## Analysis
+## Analysis {#analysis}
 From the raw Qualtrics output, we first cleaned and split the data into different
 data files (cleaned and closed survey responses, open text responses, email
 addresses, see the 
@@ -386,7 +391,7 @@ Below we report on the descriptive statistics or summaries from most of the
 survey questions. As we did not formulate hypotheses, no statistical analyses 
 were performed. 
 
-## Data and material availability
+## Data and material availability {#data-and-material-availability}
 All survey-related documentation can be found in the <a href="https://github.com/UtrechtUniversity/dataprivacysurvey" 
 target = "_blank">dedicated survey repository</a>. It contains:
 
@@ -401,8 +406,8 @@ As the dataset contains personal information (demographic information, open text
 responses, email addresses, etc.), and no consent was obtained to share those 
 details, we are unable to share them in this repository.
 
-# Results
-## Types of research data {.tabset}
+# Results {#results}
+## Types of research data {#types-of-research-data .tabset}
 ### University-wide
 
 To investigate the types of research that was represented in the sample, we 
@@ -1307,12 +1312,12 @@ geo_datatypegraphs
 
 ## {-}
 
-## Current practices in handling personal data
+## Current practices in handling personal data {#current-practices}
 
 The first part of the survey addressed the researchers' current practices in 
 handling personal data in their research.
 
-### Organisational and technical measures {.tabset}
+### Organisational and technical measures {#organisational-technical-measures .tabset}
 #### University-wide results
 With respect to organisational and technical measures used to handle personal 
 data, most respondents indicated that they pseudonymise/anonymise their data. 
@@ -1408,7 +1413,7 @@ asd
 
 ### {-}
 
-### Storage media used {.tabset}
+### Storage media used {#storage-media-used .tabset}
 #### University-wide results
 When working with personal data, it is important to choose a sufficiently 
 secure storage medium. Luckily, most respondents indicated to rely on storage 
@@ -1447,7 +1452,7 @@ Here are some specific results
 
 ### {-}
 
-### Consent forms: usage and content {.tabset}
+### Consent forms: usage and content {consent-forms .tabset}
 #### University-wide results
 Consent is currently the legal basis most often used in researcher performed at 
 UU. Luckily, only a small number of respondents indicated that consent forms 
@@ -1525,7 +1530,7 @@ Here are some specific results
 
 ### {-}
 
-### Data Protection Impact Assessment (DPIA) {.tabset}
+### Data Protection Impact Assessment (DPIA) {#dpia .tabset}
 #### University-wide results
 A Data Protection Impact Assessment (DPIA) is a legal instrument to assess the
 risks involved for data subjects, and helps determine the necessary safeguards to
@@ -1585,7 +1590,7 @@ Blabla
 
 ### {-}
 
-### Data sharing practices {.tabset}
+### Data sharing practices {#data-sharing .tabset}
 #### University-wide results
 To investigate how often data are being shared and under which circumstances, we
 asked respondents if and with which parties they typically share their research
@@ -1654,7 +1659,7 @@ Blabla
 
 ### {-}
 
-### Data publishing {.tabset}
+### Data publishing {#data-publishing .tabset}
 #### University-wide
 
 ```{r datapublishing}
@@ -1744,11 +1749,11 @@ asdfasdf
 
 ### {-}
 
-## Existing support channels
+## Existing support channels {#existing-support-channels}
 The second part of the survey concerned the visibility and use of existing 
 support channels. 
 
-### Faculty privacy officer
+### Faculty privacy officer {#faculty-privacy-officer}
 When asked whether respondents know who their faculty
 privacy officer is, a little over half of the respondents indicated that they do 
 not (Yes: `r sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)` 
@@ -1809,7 +1814,7 @@ knowpoplot
 
 ```
 
-### Looking for help {.tabset}
+### Looking for help {#looking-for-help .tabset}
 #### University-wide
 When asked whether respondents have ever looked for support in the form of 
 information, tools, or in-person support, an overwheling majority indicated that 
@@ -1868,7 +1873,7 @@ Hello world
 
 ### {-}
 
-### Channels used to find support {.tabset}
+### Channels used to find support {#support-channels .tabset}
 #### University-wide
 The graph below indicates which channels respondents used most 
 when looking for information about handling personal data. Note that this was 
@@ -1911,7 +1916,7 @@ sourcesusedplot
 
 ### {-}
 
-## Challenges and needs (survey)
+## Challenges and needs (survey) {#challenges-needs-survey}
 
 ```{r obstacle}
 obstacleplot <- dppsurvey %>% 
@@ -1965,7 +1970,7 @@ bettersupporttable <- dppsurvey %>%
         caption = "How can we improve personal data-related services?")
 ```
 
-## Challenges and needs (open questions, one-on-one meetings)
+## Challenges and needs (open questions, one-on-one meetings) {#challenges-needs-open}
 
 As mentioned in the [Methods section](#analysis), the responses on the following 
 open questions, and the notes taken during the one-on-one meetings with 
@@ -2044,7 +2049,7 @@ totaltools <- totaltools %>%
 **Below we go into the most frequently mentioned challenges/needs expressed
 by researchers in the survey (open questions) and one-one-one meetings:**
 
-### Visibility and findability
+### Visibility and findability {#visibility-and-findability}
 `r totalcodes$Meaning[totalcodes$Code == "visibility"]` (mentioned 
 `r totalcodes$Times_mentioned_total[totalcodes$Code == "visibility"]` times). 
 Some respondents indicated not to know where to go for help with privacy-related
@@ -2066,7 +2071,7 @@ another data management-related website with the UU logo on it.
 om alles te vinden [...] Een duidelijk overzicht voor welke informatie je
 waar moet zijn zou fijn zijn."</blockquote>
 
-### Specific tools
+### Specific tools {#specific-tools}
 Some (`r totalcodes$Times_mentioned_total[totalcodes$Code == "tools"]`) 
 researchers expressed a need for a concrete (improvement of a) tool, such 
 as for:
@@ -2081,7 +2086,7 @@ times)
 `r totaltools$Times_mentioned_total[totaltools$Name_tool == "pseudonymising-video"]` 
 times)
 
-### Hands-on support
+### Hands-on support {#hands-on-support}
 Many (`r totalcodes$Times_mentioned_total[totalcodes$Code == "hands-on"]`) 
 researchers indicated that support staff could sometimes provide support 
 in a more hands-on fashion, rather than abstract advice and telling researchers 
@@ -2095,7 +2100,7 @@ times):
 <blockquote>"Actual getting-your-hands-dirty support: not the kind that tells 
 you what to do, but also the kind that helps you by doing."</blockquote>
 
-### Less bureaucracy
+### Less bureaucracy {#less-bureaucracy}
 Processes were often experienced as time-inefficient, and sometimes longer 
 and more bureaucratic than necessary (mentioned by 
 `r totalcodes$Times_mentioned_total[totalcodes$Code == "quicker"]` researchers).
@@ -2112,7 +2117,7 @@ meer uit handen nemen van deze groep."</blockquote>
 <blockquote>"Sharing data costs a lot of time and is inefficient when you do 
 not do it often"</blockquote>
 
-### Unclear processes and guidelines
+### Unclear processes and guidelines {#unclear-processes-and-guidelines}
 Many (`r totalcodes$Times_mentioned_total[totalcodes$Code == "unclear-process"]`) 
 researchers complained that it was unclear what was expected of them when 
 they processed personal data in their research, or that they would like to have more,
@@ -2126,7 +2131,7 @@ on this topic, for example on:
 - Different processes for different types of research (e.g., student projects vs.
 large longitudinal projects, `r totalcodes$Times_mentioned_total[totalcodes$Code == "different-processes"]`)
 
-### Information and education
+### Information and education {#information-and-education}
 A large part of the respondents expressed a need for more (clear) information 
 and education with respect to handling personal data in research. In general, 
 researchers indicated that the information offered to them should be 
@@ -2136,7 +2141,7 @@ consistent across resources (`r totalcodes$Times_mentioned_total[totalcodes$Code
 possibly in the form of templates (`r totalcodes$Times_mentioned_total[totalcodes$Code == "templates"]`). 
 Luckily, some researchers indicated to already be happy with existing materials (`r totalcodes$Times_mentioned_total[totalcodes$Code == "positive-existing-materials"]`).
 
-#### Information for specific research or data types
+#### Information for specific research or data types {#specific-info}
 Many researchers indicated to have a need for more tailored information for specific
 types of data or research 
 (`r totalcodes$Times_mentioned_total[totalcodes$Code == "data-specific"]`), 
@@ -2152,7 +2157,7 @@ en metadata, maar die woorden zijn niet ingebed in historisch onderzoek. Er
 ontstaat al snel verwarring over wat historici nu precies moeten met 
 archiefmateriaal in het licht van privacy."</blockquote>
 
-#### Frequently asked questions
+#### Frequently asked questions {#faq}
 A selection of researchers used the space in the open questions and/or the meetings 
 to ask knowledge-related questions. These can be used in future support efforts,
 such as the 
@@ -2175,7 +2180,7 @@ Related: when is reusing data fir different purposes allowed? (e.g., education
 data, data collected by students, `r totalcodes$Times_mentioned_total[totalcodes$Code == "info-reuse"][1]`)
 - How to collaborate with multiple institutions? (`r totalcodes$Times_mentioned_total[totalcodes$Code == "collaboration"]`)
 
-#### Education and onboarding
+#### Education and onboarding {#education-and-onboarding}
 The need for more educational resources was also recognised by a selection of the
 respondents. Concretely, researchers could be educated more in the following ways:
 
@@ -2188,20 +2193,20 @@ and/or teachers (`r totalcodes$Times_mentioned_total[totalcodes$Code == "educati
 
 <blockquote>"There is no one who tells at the start of your PhD how you should handle your data. [...] I think new PhD students should get a basic course on data management and privacy."</blockquote>
 
-### ... or simply no issues
+### ... or simply no issues {#no-issues}
 Notably, there were also researchers who indicated **not** to have run into issues 
 (yet), or to have received sufficient and useful help (`r totalcodes$Times_mentioned_total[totalcodes$Code == "positive-existing-support"]`). For example:
 
 <blockquote>"The data manager and privacy officer of the faculty of humanities help a lot. This support is essential!"</blockquote>
 <blockquote>"Tot nu toe heb ik niet veel problemen gehad. De institutional review board van onze afdeling kijkt altijd kritisch naar de onderzoeksvoorstellen, ook met name op omgaan met persoonsgegevens."</blockquote>
 
-# Conclusion
+# Conclusion {#conclusion}
 This report summarised the findings of the Data Privacy Survey and subsequent
 one-on-one meetings with researchers. Our aim was to investigate the current
 practices, challenges and needs of Utrecht  University (UU) researchers in the
 handling of personal data. 
 
-## Results summary
+## Results summary {#results-summary}
 In short, we have found that:
 
 - Personal data are processed in each faculty and across all academic positions
@@ -2232,8 +2237,8 @@ processes and guidelines, and specific information and education.
 Together, these findings suggest that there is still a lot to be gained
 regarding awareness and secure practices in scientific research with personal data.
 
-## Recommendations
-### Increased visibility and findability
+## Recommendations {#recommendations}
+### Increased visibility and findability {#increased-visibility-and-findability}
 The findings show that the visibility of existing support for handling personal 
 data can be increased at UU. This includes visibility of privacy officers, 
 legal affairs and Research Data Management Support, as well as faculty- or 
@@ -2261,7 +2266,7 @@ visited to look for information according to the survey.
 first-line support can visit important faculty or department events, offer to
 give a workshop, and keep short lines of contact with department heads.
 
-### More hands-on support
+### More hands-on support {#more-hands-on-support}
 In line with the [findings described above](#hands-on-support), more hands-on 
 support is desirable. This can for example be reached by:
 
@@ -2284,7 +2289,7 @@ them with the world for reuse (if possible).
 - Increasing contact between support staff and researchers to understand the 
 issues they are dealing with that require a solution.
 
-### Decreased administrative burden
+### Decreased administrative burden {#decreased-administrative-burden}
 
 In line with the [findings described above](#less-bureaucracy), it is desirable
 to attempt to decrease the administrative burden on researchers. We suggest that 
@@ -2312,7 +2317,7 @@ included there again as well. Finally, the processing register also requires
 information on (among others) the type and sensitivity of personal data, 
 which is a third system where this information will be registered.
 
-### Education and outreach
+### Education and outreach {#education-and-outreach}
 
 Many problems seem to arise from the fact that privacy has not been taken into
 account from the design phase of a research project. This leads to research
@@ -2329,8 +2334,8 @@ researchers aware of privacy-related measures (see further Visibility).
 - Embedding privacy in existing materials and processes, such as in ethical
 applications, in the education of research master and PhD students, etc.
 
-### Specific information and tools
-The specific [information](#frequenty-asked-questions) and 
+### Specific information and tools {#specific-info-tools}
+The specific [information](#faq) and 
 [tools](specific-tools) described above can be addressed in current and future
 support efforts. One of these is the 
 <a href="https://utrechtuniversity.github.io/dataprivacyproject">Data Privacy Project</a>, 
@@ -2338,7 +2343,7 @@ from which this Data Privacy Survey forms a part. Other efforts may include the
 updating of websites from RDM Support, faculties, or ethical committees, and the
 updating of services offered by the IT department.
 
-## Discussion
+## Discussion {#discussion}
 
 In order to interpret the results described in this report correctly, there 
 are a few matters that need to be taken into account:
@@ -2364,7 +2369,7 @@ data support at different levels of the organisation (departmental, faculty,
 central) and, if needed, beyond, to address researchers' concerns and improve 
 the support surrounding the handling of personal data in research.
 
-# Technical information
+# Technical information {#technical-information}
 This document was last created on: `r as.character(Sys.Date())`. It was 
 created in the following environment:
 
