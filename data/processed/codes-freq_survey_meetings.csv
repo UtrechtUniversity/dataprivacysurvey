@@ -1,0 +1,72 @@
+"","Code","Meaning","Times mentioned_survey","Times mentioned_interview","Times_mentioned_total"
+"1","visibility","It should be clear where to go for help (to whom or which webpage, etc.)",15,12,27
+"2","tools","Specific tools needed (specified in tab ""tools"")",21,5,26
+"3","hands-on","More hands-on support is needed, and less advising, finger-pointing or obstructing research projects",18,5,23
+"4","quicker","Less turnaround times needed, privacy process takes too much time and is bureaucratic",13,8,21
+"5","unclear-process","Unclarity in the processes a researcher has to go through when working with personal data",11,8,19
+"6","guidelines","Clear, practical guidelines are needed",10,4,14
+"7","templates","Templates for agreements and documents needed (Dutch and English) on an accessible location",6,8,14
+"8","education","Privacy should be part of education of master and PhD students",9,3,12
+"9","findability","Information is not well findable across websites and intranet",7,4,11
+"10","positive-existing-support","Positive reaction about existing support staff",2,8,10
+"11","strict","Rules are applied are too strictly, and there is not much room for discussion or practical solutions",5,5,10
+"12","data-specific","Overarching: information on how the GDPR applies to specific situations",7,2,9
+"13","divide-responsibilities","Less administrative work for researchers and more support to do these tasks are needed, so that researchers can focus on their research",6,3,9
+"14","dpia-process","The DPIA process takes too long, is too difficult, and places too much of a burden on researchers",8,1,9
+"15","info-personal-data","What (still) counts as personal data?",8,1,9
+"16","info-simple","Keep information simple, concrete, and short/easy overview",4,5,9
+"17","no-issues","No specific issues in handling personal data",8,1,9
+"18","students","What should students be able to do or not do? E.g. for a thesis, do they have to go through privacy scan/DPIA/ethical review too?",4,5,9
+"19","availability","Data support staff should be available better, or should be involved in all/more projects",3,5,8
+"20","datastorage","How to store different types of personal data?",6,2,8
+"21","info-consistent","Keep information consistent across time, resources and people",7,1,8
+"22","datasharing","What can be shared and with whom?",7,0,7
+"23","support-collab","There should be collaboration between different (levels of) data support, possibly at different institutions to come to agreements",3,3,6
+"24","info-anonymous","When are data truly anonymous?",5,0,5
+"25","info-informing-toomuch","Information is needed on the balance between informing data subjects too little vs. too much. Too much can scare off or hurt trust in research, but that is never discussed in existing guidelines.",1,4,5
+"26","onboarding","Privacy and/or RDM are not/should be part of the employee onboarding procedure",1,4,5
+"27","open-vs-privacy","Open science and privacy are experienced as contradicting",5,0,5
+"28","collaboration","How to collaborate with multiple institutions/controllers?",1,3,4
+"29","education-supervisors","Supervisors (PIs, professors, teachers) should be educated in terms of privacy",3,1,4
+"30","info-reuse","How to reuse data for different purposes (e.g., education data, data collected by students, courtroom data)?",3,1,4
+"31","info-reuse","How to reuse data for different purposes (e.g., education data, data collected by students, courtroom data)?",3,1,4
+"32","info-reuse","How to reuse data for different purposes (e.g., education data, data collected by students, courtroom data)?",3,1,4
+"33","info-reuse","How to reuse data for different purposes (e.g., education data, data collected by students, courtroom data)?",3,1,4
+"34","positive-existing-materials","Positive reaction about existing materials, e.g., Handling Personal Data workshop, DMP course, Research Integrity course at FSW, DMPonline, etc.",1,3,4
+"35","responsibility","Who is responsible or has the authority to make the right decisions when handling personal data? Do privacy officers/DPO have to be seen as gatekeepers (similar to an ethical committee) or as advisers? Do researchers have to listen to the advise, or is that their own responsibility?",1,3,4
+"36","anonymise-how","How to anonymise or pseudonymise specific types of data?",2,1,3
+"37","assessment-steps","Tool/summary of what to think about, where researchers can assess what steps are necessary to go through",1,2,3
+"38","data-video","How does the GDPR apply to video data? (e.g., when sharing or storing data)",2,1,3
+"39","different-processes","Different types of research may have different requirements and processes (e.g., student projects vs. large longitudinal projects)",3,0,3
+"40","info-pregdpr","How to handle data from before the GDPR was in force?",1,2,3
+"41","security","How to keep systems secure?",2,1,3
+"42","unclear-info","Information that is present is unclear or not relevant (e.g. what is and is not allowed)",2,1,3
+"43","course","A course on how to deal with privacy is needed",0,2,2
+"44","data-etnography","How does the GDPR apply to etnographic/anthropological data?",2,0,2
+"45","data-history","How does the GDPR apply to historic data?",1,1,2
+"46","data-students","How to deal with data from students (e.g., grades)?",0,2,2
+"47","datastorage-paper","How to store and manage data on paper?",2,0,2
+"48","digital-consent","How to easily collect digital consent, what are the requirements?",0,2,2
+"49","documents","How to write certain documents (e.g., privacy statements, contracts, etc.)?",2,0,2
+"50","info-managing","Information on how to manage personal data is needed",2,0,2
+"51","recruiting-issues","It is difficult to recruit new participants due to privacy regulations",1,1,2
+"52","rights-request","When and how to comply with a data subject's related right?",0,2,2
+"53","accessing-personal-data","It is difficult to access personal data",1,0,1
+"54","broad-consent","It is difficult to formulate a specific research question in advance, especially for large studies collecting a lot of data",0,1,1
+"55","changing-rules","When rules change, how does that affect what researchers need to do?",0,1,1
+"56","data-classification","When are data classified as basic, sensitive, etc.?",0,1,1
+"57","data-geo","How does the GDPR apply to geosciences data?",1,0,1
+"58","data-language","How does the GDPR apply to language data?",1,0,1
+"59","data-neuro","How does the GDPR apply to neuroscience data?",1,0,1
+"60","ethics-when","When is ethical permission required?",1,0,1
+"61","final-ok","When is it ok to move forward? When is  there a green stamp/final OK for privacy?",0,1,1
+"62","info-deletion","How to properly delete data?",1,0,1
+"63","info-hardware","What should be considered regarding hardware (i.e. security, e.g., audio- or videorecorders)?",1,0,1
+"64","info-participant-outreach","information on how to securely reach out to data subjects is needed",1,0,1
+"65","international-collab","What to take into account when collaborating internationally? E.g., privacy regulations of other countries?",1,0,1
+"66","lack-of-trust","There is a lack of trust in UU employees",1,0,1
+"67","no-pseud-possible","What to do when pseudonymisation or anonymisation is not possible? (e.g., because the personal data is the data of interest)",0,1,1
+"68","post-consent","How to go about asking consent after the fact? E.g., finding information which data subjects have not explicitly consented to",1,0,1
+"69","public-interest","Can we use public interest for research and under which circumstances?",0,1,1
+"70","recognition","Researchers are not getting the recognition for taking privacy into account",0,1,1
+"71","sharing-no-consent","What to do when just a part of the data subjects consent to data sharing?",1,0,1
