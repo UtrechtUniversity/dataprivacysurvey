@@ -43,6 +43,13 @@ output:
       in_header: "../includes/header.html"
 ---
 
+# TODO
+Split up in 2 reports:
+
+- Recommendations: Intro, Conclusion, Recommendations (iets sterker formuleren)
+- Report: Methods, Results --> ook per faculteit
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, 
                       warning = FALSE, 
@@ -1487,6 +1494,36 @@ Together, these findings suggest that there is still a lot to be gained
 regarding awareness and secure practices in scientific research with personal data.
 
 ## Recommendations {#recommendations}
+Logische flow: 
+
+- Teveel werk 
+- Information provision
+  - op teveel plekken, 
+  - te weinig bruikbare informatie: concrete informatie bijv. templates (data processing agreements, DPIA) en tools. User 
+     story: gaan gewoon zelf googlen en komen dan niet op de goeie uit. Daarna weer 
+     veel tijd kwijt om dit recht te trekken maar soms te laat.
+  - wat wordt aangeraden door UU
+  - inhoudelijk: op tijd beginnen, 
+- Meedenken/hands-on support. Meer denken vanuit onderzoek, meer idee hebben waar onderzoek over gaat, wat het betekent om onderzoek te doen, waar onderzoekers tegenaan lopen en wat haalbare oplossingen zijn. 
+- Administratie rondom onderzoek is een chaos en teveel en teveel verschillen tussen faculteiten
+
+
+---
+Awareness: start early
+
+Information findability
+Doorzoekbaarheid huidige pagina's, cluster informatie op 1 plek, verwijs naar 
+eigen pagina's. 
+
+Als ze info vinden: hebben ze er dan wat aan?
+Wekle informatie nodig
+Duurt te lang: meer staff of betere informatie
+
+Aan de slag met privacy in onderzoek: mag het wat minder admin
+
+
+
+
 ### Increased visibility and findability {#increased-visibility-and-findability}
 The findings show that the visibility of existing support for handling personal 
 data can be increased at UU. This includes visibility of privacy officers, 
