@@ -1,0 +1,472 @@
+---
+title: "Data Privacy Survey"
+subtitle: "Recommendations for improving privacy-related services for research at Utrecht University"
+author:
+- "Dorien Huijser, Research Data Management Support, Utrecht University"
+- "Rik Janssen, Information Technology Services, Utrecht University"
+date: "Version: `r format(Sys.time(), '%Y-%m-%d')`"
+abstract: |
+  In the second quarter of 2022, Utrecht University (UU) Research Data Management 
+  Support (RDM Support) sent out a survey among all scientific personnel at UU: 
+  the Data Privacy Survey. The aim of this survey was to investigate 1) How UU 
+  researchers currently deal with personal data in research, 2) What challenges 
+  they run into when handling personal data in research, and 3) How support at
+  UU can improve their services concerning personal data in research. The 
+  results show that most researchers know to take into account 
+  privacy in their projects. However, there are vast differences in knowledge 
+  on this topic, as well as confusion on topics such as data sharing, 
+  anonymisation, and the administrative requirements surrounding privacy. Taken
+  together, the survey shows that researchers could benefit from research support
+  that is more visible in the organisation and more hands-on (i.e., advise that is
+  immediately applicable instead of more general). Additionally, more awareness 
+  of the most important privacy-related topics, and how to deal with them in 
+  research seems desirable, both for newly employed and existing researchers.
+  Finally, many researchers indicate to experience a high administrative burden 
+  that is partly caused by privacy-related documentation before starting a 
+  project. Finding a way to decrease this burden while still complying with 
+  legal and policy regulations will likely help to increase compliance and 
+  help researchers focus on performing high-quality research.
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../docs") })
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: false
+    toc_float: true
+    theme: united
+    highlight: tango
+    code_folding: hide
+    df_print: paged
+    css: style.css
+    includes:
+      in_header: "../includes/header.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.align = "center")
+```
+
+```{r sourcescript, include=FALSE, cache=FALSE}
+knitr::read_chunk('plot-data.R')
+```
+
+# Introduction {#introduction}
+Scientific research often includes some form of personal data. The amount of 
+personal data that is processed in research is likely underestimated, as 
+researchers may be unaware of what personal data are or whether they are being 
+collected. With the implementation of the General Data Protection Regulation
+(GDPR) in 2018, stricter legal requirements apply to handling personal data and 
+its sharing and publication. In our own experience, the number and complexity of 
+questions on handling personal data in scientific research at Utrecht University
+(UU) is increasing. 
+
+Our premise at <a href = "https://uu.nl/rdm" target = "_blank">Research Data 
+Management Support</a> (RDM Support) is to assist researchers with any issues 
+surrounding the management of their research data, including research data that 
+contains personal data. To understand how we can best help researchers with 
+their privacy-related questions and needs, we wanted to investigate:
+
+1. To what extent are UU researchers aware of privacy legislation and practices?
+2. What data privacy issues do UU researchers typically run into?
+3. What support do UU researchers need to handle personal data?
+
+To answer these questions, we set up an online survey and planned one-on-one 
+meetings with a selection of UU researchers. This report summarises our findings,
+and describes recommendations to improve privacy-related services for research
+at Utrecht University. For a full description of the methods and results, please 
+refer to the
+<a href = "data-privacy-survey-report" target = "_blank">Data Privacy Survey Report</a>.
+
+This survey was part of a larger project at UU, the <a href = "https://utrechtuniversity.github.io/dataprivacyproject/" 
+target = "_blank">Data Privacy Project</a>^[The Data Privacy Project is funded 
+by Utrecht University’s Research IT program and a Digital Competence Center 
+grant from the Dutch Organization for Scientific Research (NWO). It is led by Utrecht 
+University's <a href="https://uu.nl/rdm/" target = "_blank">Research Data 
+Management Support</a>, in collaboration with the University Library, 
+Information Technology Services, first- and second-line privacy officers, 
+information security, and others.]. This project is a data support effort within 
+UU that aims to provide actionable and FAIR (Findable, Accessible, Interoperable, 
+Reusable) information and tools for researchers to handle personal data in their 
+research. 
+
+# Methods summary {#methods}
+```{r dependencies}
+```
+
+```{r readdata}
+```
+
+The Data Privacy Survey consisted of two main parts:
+
+- An online survey that was sent to all of UU's scientific personnel via email, 
+asking about researchers' common data types, current practices
+in handling personal data in their research, awareness of data support channels, 
+and challenges and needs in this area (n = `r dim(dppsurvey)[1]`).
+- One-on-one meetings with individual researchers to talk about their experiences,
+challenges and needs in this area (n = 27).
+
+All relevant materials (including this report) can be found in the 
+<a href = "https://github.com/utrechtuniversity/dataprivacysurvey" target = "_blank">GitHub repository</a>.
+
+# Results summary {#results-summary}
+In short, we found that:
+
+- Personal data are processed in each faculty and across all academic positions
+at Utrecht University, but mostly among the faculties of Science and Social and
+Behavioural Sciences, and among early-career researchers.
+- Most researchers deal with tabular, textual, code, and audiovisual data, which
+contain mainly demographics, contact information, and direct identifiers.
+- Most researchers seem to be at least familiar with concepts like anonymisation 
+and pseudonymisation, access control, and UU-approved tools for handling personal 
+data. However, the knowledge level differs quite a bit. For example:
+  - some researchers seem to store data on locations that officially are not allowed.
+  - information to study participants is sometimes lacking all the required information, 
+  such as contact information from the Data Protection Officer, and information and
+  consent for sharing data for reuse purposes.
+  - about half of the sample is not familiar with the concept of a Data 
+  Protection Impact Assessment.
+  - data are often shared, but not all the right measures are always taken to 
+  do so securely. 
+- Privacy is sometimes found to be an obstacle for open science, also confirmed by 
+a relatively low amount of published datasets.
+- Not all help is found equally well. For example, about half of the respondents
+indicated not to be aware of their faculty privacy officer, and many researchers
+resort to the UU website, intranet, and colleagues for help.
+- Researchers may benefit from greater visibility and findability of support, 
+specific tools. more and more hands-on support, more clear and less bureaucratic
+processes and guidelines, and specific information and education.
+
+Together, these findings suggest that there is still a lot to be gained
+regarding awareness and secure practices in scientific research with personal data.
+
+## Recommendations {#recommendations}
+Logische flow: 
+
+- Teveel werk, we moeten het minder belastend maken
+- Information provision
+  - op teveel plekken, 
+  - te weinig bruikbare informatie: concrete informatie bijv. templates (data processing agreements, DPIA) en tools. User 
+     story: gaan gewoon zelf googlen en komen dan niet op de goeie uit. Daarna weer 
+     veel tijd kwijt om dit recht te trekken maar soms te laat.
+  - wat wordt aangeraden door UU
+  - inhoudelijk: op tijd beginnen, 
+- Meedenken/hands-on support. Meer denken vanuit onderzoek, meer idee hebben waar onderzoek over gaat, wat het betekent om onderzoek te doen, waar onderzoekers tegenaan lopen en wat haalbare oplossingen zijn. 
+- Administratie rondom onderzoek is een chaos en teveel en teveel verschillen tussen faculteiten
+
+
+---
+Awareness: start early
+
+Information findability
+Doorzoekbaarheid huidige pagina's, cluster informatie op 1 plek, verwijs naar 
+eigen pagina's. 
+
+Als ze info vinden: hebben ze er dan wat aan?
+Wekle informatie nodig
+Duurt te lang: meer staff of betere informatie
+
+Aan de slag met privacy in onderzoek: mag het wat minder admin
+
+
+
+# OLD STUFF
+### Increased visibility and findability {#increased-visibility-and-findability}
+The findings show that the visibility of existing support for handling personal 
+data can be increased at UU. This includes visibility of privacy officers, 
+legal affairs and Research Data Management Support, as well as faculty- or 
+department-level support. 
+
+As shown by the fact that many respondents consult with colleagues for 
+information and support, personal contact with supporters will likely be more 
+effective at increasing awareness and uptake of secure privacy practices than a 
+passive website that may not always answer all possible questions.
+
+Some suggestions for increasing visibility and findability:
+
+- Make sure there is (sufficient) support available to help researchers in time.
+If there is no support available, the odds are that researchers may not ask for 
+help at all and thus forget important privacy elements in the design of their 
+research project.
+- Make sure support staff are easy to find. For example, give them a clear location
+on the university website and/or on the intranet. Also indicate who is available
+for what type of support and for which target audience (e.g., "all UU 
+researchers", "employees from the Faculty of Humanities", etc.)
+- Make sure information on handling personal data in research is easy to find.
+The UU website and intranet seem the most suitable places, as these are the most
+visited to look for information according to the survey. 
+- Make researchers actively aware of existing support channels. For example,
+first-line support can visit important faculty or department events, offer to
+give a workshop, and keep short lines of contact with department heads.
+
+### More hands-on support {#more-hands-on-support}
+In line with the [findings described above](#hands-on-support), more hands-on 
+support is desirable. This can for example be reached by:
+
+- More collaboration between different types of data support. For example, at UU
+there is a clear distinction between privacy officers (employed by faculties),
+data managers (employed by the University Library and some faculties), information
+security officers (Information Technology Services) and research engineers 
+(Information Technology Services). However, in practice there is often overlap 
+between either or all of these positions. Regular collaboration between these 
+parties can:
+  - help privacy and security experts understand the perspective of the 
+  researcher and possibly how to apply their advice in practice,
+  - help data managers and research engineers understand the GDPR requirements 
+  and translate those to practice, and
+  - enable reuse of solutions already applied in earlier cases that either 
+  party may not be aware of.
+- Together with researchers, developing suitable practical solutions (tools, 
+protocols, etc.) for specific scenarios and/or types of research, and sharing 
+them with the world for reuse (if possible).
+- Increasing contact between support staff and researchers to understand the 
+issues they are dealing with that require a solution.
+
+### Decreased administrative burden {#decreased-administrative-burden}
+
+In line with the [findings described above](#less-bureaucracy), it is desirable
+to attempt to decrease the administrative burden on researchers. We suggest that 
+the bureaucracy issues can be partly attributed to:
+
+1. Understaffing: it is currently difficult for data support staff to review 
+*all* research projects involving personal data at UU. This can lead to 
+projects with issues being noticed too late and researchers having 
+to make changes to their project after the fact. This creates unnecessary 
+administrative burden that could have been prevented had researchers been 
+in contact with support staff from early on. 
+2. Lack of unifying policy on steps to take when working with personal data: At
+the moment each faculty has its own procedure, or has none at all. This can 
+create confusion among both researchers and support staff on which steps to take
+when, who to contact for help, or who is responsible for deciding on compliance.
+3. Lack of integration between systems and staff: having to fill out the same
+thing multiple times may be caused by the fact that different administrative
+systems are used for different purposes. Integration of these systems may lead
+to a relief of the administrative burden experienced by researchers. <br>For 
+example, DMPonline is used at UU for registering Data Management Plans. However, 
+DMP templates do not include sufficient questions about how personal data are 
+handled, and thus a privacy scan may be additionally required. Privacy is 
+sometimes part of an ethical application, and so this same information may be 
+included there again as well. Finally, the processing register also requires 
+information on (among others) the type and sensitivity of personal data, 
+which is a third system where this information will be registered.
+
+### Education and outreach {#education-and-outreach}
+
+Many problems seem to arise from the fact that privacy has not been taken into
+account from the design phase of a research project. This leads to research
+support staff being contacted too late in the process, who then has to tell the
+researcher to retrospectively make changes in their design in order to move 
+forward. Such scenarios may be prevented by, for example:
+
+- Including the basic of handling personal data and contact details of support
+staff in onboarding processes when researchers are newly hired.
+- Educating researchers on taking privacy into account in the designing phase
+of their project. 
+- Organising outreach events, such as the "Privacy and Security week" making
+researchers aware of privacy-related measures (see further Visibility).
+- Embedding privacy in existing materials and processes, such as in ethical
+applications, in the education of research master and PhD students, etc.
+
+### Specific information and tools {#specific-info-tools}
+The specific [information](#faq) and 
+[tools](specific-tools) described above can be addressed in current and future
+support efforts. One of these is the 
+<a href="https://utrechtuniversity.github.io/dataprivacyproject">Data Privacy Project</a>, 
+from which this Data Privacy Survey forms a part. Other efforts may include the
+updating of websites from RDM Support, faculties, or ethical committees, and the
+updating of services offered by the IT department.
+
+---
+
+## TO PROCESS IN RECOMMENDATIONS
+### Visibility and findability {#visibility-and-findability}
+`r totalcodes$Meaning[totalcodes$Code == "visibility"]` (mentioned 
+`r totalcodes$Times_mentioned_total[totalcodes$Code == "visibility"]` times). 
+Some respondents indicated not to know where to go for help with privacy-related
+matters, others mentioned that there should be *more* support personnel available
+(`r totalcodes$Times_mentioned_total[totalcodes$Code == "availability"]`). 
+One researcher said to prefer having one place to go to for all
+data-related questions. As a matter of fact, many faculties have such a 
+"one-stop-shop" in place, but responses such as these indicate that their 
+visibility may be improved.
+
+Closely related to visibility is findability. Many researchers point out that 
+available information is difficult to find, or it is confusing which source 
+should be followed. As an example, one researcher from the faculty of Humanities
+was determined that they found some useful information at the RDM Support website.
+However, upon closer inspection, it appeared that this information arose from
+another data management-related website with the UU logo on it. 
+
+<blockquote>"UU biedt ontzettend veel aan, maar je moet veel websites bezoeken 
+om alles te vinden [...] Een duidelijk overzicht voor welke informatie je
+waar moet zijn zou fijn zijn."</blockquote>
+
+### Specific tools {#specific-tools}
+Some (`r totalcodes$Times_mentioned_total[totalcodes$Code == "tools"]`) 
+researchers expressed a need for a concrete (improvement of a) tool, such 
+as for:
+
+- `r totaltools$Explanation[totaltools$Name_tool == "transcription"]` (mentioned 
+`r totaltools$Times_mentioned_total[totaltools$Name_tool == "transcription"]` 
+times)
+- `r totaltools$Explanation[totaltools$Name_tool == "computing-critical"]` (mentioned 
+`r totaltools$Times_mentioned_total[totaltools$Name_tool == "computing-critical"]` 
+times)
+- `r totaltools$Explanation[totaltools$Name_tool == "pseudonymising-video"]` (mentioned 
+`r totaltools$Times_mentioned_total[totaltools$Name_tool == "pseudonymising-video"]` 
+times)
+
+### Hands-on support {#hands-on-support}
+Many (`r totalcodes$Times_mentioned_total[totalcodes$Code == "hands-on"]`) 
+researchers indicated that support staff could sometimes provide support 
+in a more hands-on fashion, rather than abstract advice and telling researchers 
+how *not* to do things. Some researchers added that privacy professionals sometimes
+have a tendency to cling to the letter of the law, leading to significant
+delays in their project, instead of looking at how to concretely solve existing 
+issues in practice (mentioned `r totalcodes$Times_mentioned_total[totalcodes$Code == "strict"]` 
+times): 
+
+<blockquote>"Soms zijn we door deze regels heiliger dan de paus."</blockquote>
+<blockquote>"Actual getting-your-hands-dirty support: not the kind that tells 
+you what to do, but also the kind that helps you by doing."</blockquote>
+
+### Less bureaucracy {#less-bureaucracy}
+Processes were often experienced as time-inefficient, and sometimes longer 
+and more bureaucratic than necessary (mentioned by 
+`r totalcodes$Times_mentioned_total[totalcodes$Code == "quicker"]` researchers).
+For example, the DPIA process was mentioned explicitly 
+(`r totalcodes$Times_mentioned_total[totalcodes$Code == "dpia-process"]` times),
+as well as having to fill out too many forms with overlapping content (e.g.,
+Privacy Scan, Data Management Plan, DPIA). Some 
+(`r totalcodes$Times_mentioned_total[totalcodes$Code == "divide-responsibilities"]`) 
+researchers argued that (part of) this burden should be relieved or 
+carried by support staff:
+
+<blockquote>"Minder acties die gericht zijn op inhoudelijk trainen van WP en 
+meer uit handen nemen van deze groep."</blockquote>
+<blockquote>"Sharing data costs a lot of time and is inefficient when you do 
+not do it often"</blockquote>
+
+### Unclear processes and guidelines {#unclear-processes-and-guidelines}
+Many (`r totalcodes$Times_mentioned_total[totalcodes$Code == "unclear-process"]`) 
+researchers complained that it was unclear what was expected of them when 
+they processed personal data in their research, or that they would like to have more,
+or more practical guidelines (`r totalcodes$Times_mentioned_total[totalcodes$Code == "guidelines"]`)
+on this topic, for example on:
+
+- What steps do researchers need to take? (`r totalcodes$Times_mentioned_total[totalcodes$Code == "assessment-steps"]`)
+- Who should researcher ask for help in which situation?
+- `r totalcodes$Meaning[totalcodes$Code=="responsibility"]` (`r totalcodes$Times_mentioned_total[totalcodes$Code == "responsibility"]`)
+- `r totalcodes$Meaning[totalcodes$Code=="changing-rules"]` (`r totalcodes$Times_mentioned_total[totalcodes$Code == "changing-rules"]`)
+- Different processes for different types of research (e.g., student projects vs.
+large longitudinal projects, `r totalcodes$Times_mentioned_total[totalcodes$Code == "different-processes"]`)
+
+### Information and education {#information-and-education}
+A large part of the respondents expressed a need for more (clear) information 
+and education with respect to handling personal data in research. In general, 
+researchers indicated that the information offered to them should be 
+more clear (`r totalcodes$Times_mentioned_total[totalcodes$Code == "unclear-info"]`), 
+simpler `r totalcodes$Times_mentioned_total[totalcodes$Code == "info-simple"]`, 
+consistent across resources (`r totalcodes$Times_mentioned_total[totalcodes$Code == "info-consistent"]`), 
+possibly in the form of templates (`r totalcodes$Times_mentioned_total[totalcodes$Code == "templates"]`). 
+Luckily, some researchers indicated to already be happy with existing materials (`r totalcodes$Times_mentioned_total[totalcodes$Code == "positive-existing-materials"]`).
+
+#### Information for specific research or data types {#specific-info}
+Many researchers indicated to have a need for more tailored information for specific
+types of data or research 
+(`r totalcodes$Times_mentioned_total[totalcodes$Code == "data-specific"]`), 
+for example for etnographic data 
+(`r totalcodes$Times_mentioned_total[totalcodes$Code == "data-etnography"]`),
+historical data (`r totalcodes$Times_mentioned_total[totalcodes$Code == "data-history"]`), 
+or video data (`r totalcodes$Times_mentioned_total[totalcodes$Code == "data-video"]`).
+
+<blockquote>"De informatie is gewoon veel te generiek, er zouden templates 
+moeten zijn per type onderzoek."</blockquote>
+<blockquote>"Veel templates en uitlegmodellen spreken over data, data packages 
+en metadata, maar die woorden zijn niet ingebed in historisch onderzoek. Er 
+ontstaat al snel verwarring over wat historici nu precies moeten met 
+archiefmateriaal in het licht van privacy."</blockquote>
+
+#### Frequently asked questions {#faq}
+A selection of researchers used the space in the open questions and/or the meetings 
+to ask knowledge-related questions. These can be used in future support efforts,
+such as the 
+<a href="https://utrechtuniversity.github.io/dataprivacyhandbook" target="_blank">Data 
+Privacy Handbook</a>, future courses, or other future information campaigns to 
+better address researchers' needs. Below are examples of the most commonly 
+asked questions:
+
+- When are data still personal (`r totalcodes$Times_mentioned_total[totalcodes$Code == "info-personal-data"]`), 
+how to anonymise data (`r totalcodes$Times_mentioned_total[totalcodes$Code == "anonymise-how"]`),
+and when are data anonymised sufficiently (`r totalcodes$Times_mentioned_total[totalcodes$Code == "info-anonymous"]`)?
+- What are the privacy-related requirements for students? (`r totalcodes$Times_mentioned_total[totalcodes$Code == "students"]`)
+- How to store different types of personal data? (`r totalcodes$Times_mentioned_total[totalcodes$Code == "datastorage"]`)
+- Data sharing: what data can be shared and with whom? (`r totalcodes$Times_mentioned_total[totalcodes$Code == "datasharing"]`)
+- How to find a balance between informing data subjects too little vs. providing
+too much privacy-related information that will scare them off or hurt their 
+trust in research? (`r totalcodes$Times_mentioned_total[totalcodes$Code == "info-informing-toomuch"]`)
+- How to balance open science and privacy? (`r totalcodes$Times_mentioned_total[totalcodes$Code == "open-vs-privacy"]`).
+Related: when is reusing data fir different purposes allowed? (e.g., education 
+data, data collected by students, `r totalcodes$Times_mentioned_total[totalcodes$Code == "info-reuse"][1]`)
+- How to collaborate with multiple institutions? (`r totalcodes$Times_mentioned_total[totalcodes$Code == "collaboration"]`)
+
+#### Education and onboarding {#education-and-onboarding}
+The need for more educational resources was also recognised by a selection of the
+respondents. Concretely, researchers could be educated more in the following ways:
+
+- Privacy and/or research data management as part of the master or PhD 
+curriculum (`r totalcodes$Times_mentioned_total[totalcodes$Code == "education"]`)
+- Privacy as part of the onboarding procedure of new employees (`r totalcodes$Times_mentioned_total[totalcodes$Code == "onboarding"]`)
+- Mandatory privacy training for supervisors, principal investigators, professors, 
+and/or teachers (`r totalcodes$Times_mentioned_total[totalcodes$Code == "education-supervisors"]`)
+- A course on how to handle personal data in research (`r totalcodes$Times_mentioned_total[totalcodes$Code == "course"]`)
+
+<blockquote>"There is no one who tells at the start of your PhD how you should handle your data. [...] I think new PhD students should get a basic course on data management and privacy."</blockquote>
+
+### ... or simply no issues {#no-issues}
+Notably, there were also researchers who indicated **not** to have run into issues 
+(yet), or to have received sufficient and useful help (`r totalcodes$Times_mentioned_total[totalcodes$Code == "positive-existing-support"]`). For example:
+
+<blockquote>"The data manager and privacy officer of the faculty of humanities help a lot. This support is essential!"</blockquote>
+<blockquote>"Tot nu toe heb ik niet veel problemen gehad. De institutional review board van onze afdeling kijkt altijd kritisch naar de onderzoeksvoorstellen, ook met name op omgaan met persoonsgegevens."</blockquote>
+
+
+---
+
+
+## Discussion {#discussion}
+
+In order to interpret the results described in this report correctly, there 
+are a few matters that need to be taken into account:
+
+1. The respondents of the survey represented only a small selection of all of 
+UU's Scientific Personnel. Therefore, the results presented here should not be 
+overgeneralised to represent all of UU's researchers. It is likely that at least 
+part of the respondents had a specific reason to do so. For example, they may 
+have explicitly wanted to raise their voice because of some bad experiences 
+they had. Although it is important that these concerns be heard, they should not 
+be interpreted as to speak for all UU researchers.   
+2. It is important to note that we, the writers of this report, cannot be 
+considered fully objective in interpreting the survey results. The feedback 
+received via this survey also involves our own services and possibly work 
+performance. Although we have attempted to interpret the results of the survey 
+without bias, it is possible that we have indeed introduced some, especially 
+where the open questions and one-on-one meetings are concerned.   
+3. The questions in this survey intentionally do not address at which data 
+support personnel the feedback is targeted. This also means that our 
+recommendations do not specify Who within the organisation should pick them up. 
+Preferably, these recommendations will be picked up by a  collaboration between 
+data support at different levels of the organisation (departmental, faculty, 
+central) and, if needed, beyond, to address researchers' concerns and improve 
+the support surrounding the handling of personal data in research.
+
+# Technical information {#technical-information}
+This document was last created on: `r as.character(Sys.Date())`. It was 
+created in the following environment:
+
+```{r sessioninfo}
+sessionInfo()
+```
