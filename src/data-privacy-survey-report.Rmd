@@ -52,6 +52,7 @@ knitr::opts_chunk$set(echo = FALSE,
 
 ```{r sourcescript, include=FALSE, cache=FALSE}
 knitr::read_chunk('plot-data.R')
+source("plot-data.R", local = knitr::knit_global())
 ```
 
 # Introduction {#introduction}
@@ -79,23 +80,50 @@ meetings with a selection of UU researchers. This report describes our methods,
 results and the future steps that data support at UU can take to improve their 
 services concerning privacy in research.
 
-This survey was part of a larger project at UU, the <a href = "https://utrechtuniversity.github.io/dataprivacyproject/" 
-target = "_blank">Data Privacy Project</a>^[The Data Privacy Project is funded 
-by Utrecht University’s Research IT program and a Digital Competence Center 
-grant from the Dutch Organization for Scientific Research (NWO). It is led by Utrecht 
-University's <a href="https://uu.nl/rdm/" target = "_blank">Research Data 
-Management Support</a>, in collaboration with the University Library, 
-Information Technology Services, first- and second-line privacy officers, 
-information security, and others.]. This project is a data support effort within 
-UU that aims to provide actionable and FAIR (Findable, Accessible, Interoperable, 
-Reusable) information and tools for researchers to handle personal data in their 
-research. 
+This survey was part of a larger project at UU, the 
+<a href = "https://utrechtuniversity.github.io/dataprivacyproject/" target = "_blank">Data Privacy Project</a>^[The 
+Data Privacy Project is funded by Utrecht University’s Research IT program and 
+a Digital Competence Center grant from the Dutch Organization for Scientific 
+Research (NWO). It is led by Utrecht University's 
+<a href="https://uu.nl/rdm/" target = "_blank">Research Data Management Support</a>, 
+in collaboration with the University Library, Information Technology Services, 
+first- and second-line privacy officers, information security, and others.]. 
+This project is a data support effort within UU that aims to provide 
+actionable and FAIR (Findable, Accessible, Interoperable, Reusable) information 
+and tools for researchers to handle personal data in their research. 
 
 # Methods {#methods}
 ```{r dependencies}
 ```
 
 ```{r readdata}
+```
+
+```{r labelsfsw}
+# The labels of the FSW Departments are too long to display properly in a graph.
+# Therefore they are shortened in this block
+dppsurvey <- dppsurvey %>%
+  mutate(Dept_FSW_3 = recode(Dept_FSW_3, 
+                             "Development & Education of Youth in Diverse Societies" = "Pedagogy in Diverse Societies"),
+         Dept_FSW_4 = recode(Dept_FSW_4,
+                             "Clinical Child & Family Studies" = "Clinical Child & Family"),
+         Dept_FSW_5 = recode(Dept_FSW_5,
+                             "Interdisciplinary Social Science" = "Interdisc. Social Sci"),
+         Dept_FSW_12 = recode(Dept_FSW_12, 
+                              "Social Health & Organisational Psychology" = "Social, Health & Org."))
+```
+
+```{r facultydatasets}
+# Read in faculty datasets
+dppsurvey_science <- dppsurvey %>% filter(!is.na(Faculty_5))
+dppsurvey_fsw <- dppsurvey %>% filter(!is.na(Faculty_6))
+dppsurvey_geo <- dppsurvey %>% filter(!is.na(Faculty_1))
+dppsurvey_vet <- dppsurvey %>% filter(!is.na(Faculty_7))
+dppsurvey_leg <- dppsurvey %>% filter(!is.na(Faculty_3))
+dppsurvey_hum <- dppsurvey %>% filter(!is.na(Faculty_2))
+```
+
+```{r uucolors}
 ```
 
 ## Survey questions {#survey-questions}
@@ -149,7 +177,8 @@ survey. All results reported here are from researchers who provided their active
 consent, worked at Utrecht University and indicated to work with some type of 
 research data.
 
-## Online survey respondents {#online-survey-respondents}
+## Online survey respondents {#online-survey-respondents .tabset}
+### UU-wide
 The survey was filled out by `r dim(dppsurvey)[1]` UU researchers. As can be 
 seen in the figure below, we received responses from each UU faculty, but the 
 distribution was not equal: the faculties of Science and Social and Behavioural 
@@ -170,9 +199,6 @@ career researchers (PhDs, junior researchers and postdoctoral researchers).
 We suspect that this is because 1) there simply are more people in these positions
 than there are in the others, and 2) early-career researchers may experience a 
 greater need for support with respect to handling personal data.
-
-```{r uucolors}
-```
 
 ```{r facultyplot}
 # Plot of positions per faculty
@@ -236,7 +262,131 @@ position_per_faculty
 
 ```
 
-## One-on-one meetings {#one-on-one-meetings}
+### Science
+There were `r dim(dppsurvey_science)[1]` respondents from the Science faculty 
+in the online survey. It took them a median of 
+`r round(median(dppsurvey_science$Duration/60), 1)` minutes to complete it
+(ranging from `r round(min(dppsurvey_science$Duration)/60, 1)` minutes to 
+`r round(max(dppsurvey_science$Duration)/3600/24,1)` days). In the graph below,
+the representation of each department within the Science faculty is visualised. 
+
+```{r sciencedepartments}
+plotdepartments(dppsurvey_science, "Science", 
+                 title = "Departments and Positions Science", 
+                 caption = "Survey respondents per department and position in the Science faculty")
+```
+
+Most respondents in the online survey seemed to come from the Information and
+Computing Sciences (ICS) and Pharmaceutical Sciences departments, and were 
+relatively early career researchers (PhD/junior/postdoc researcher, 
+assistant/associate professor). This makes sense, as more personal data is 
+likely processed in the fields of ICS and pharmaceuticals, compared to, for 
+example, mathematics.
+
+### FSBS
+There were `r dim(dppsurvey_fsw)[1]` respondents from the Faculty of Social and
+Behavioural Sciences (FSBS) in the online survey. It took them a median of 
+`r round(median(dppsurvey_fsw$Duration/60), 1)` minutes to complete it (ranging 
+from `r round(min(dppsurvey_fsw$Duration)/60, 1)` minutes to 
+`r round(max(dppsurvey_fsw$Duration)/3600/24,1)` days). In the graph below,
+the representation of each department within FSBS is visualised. 
+
+```{r fswdepartments}
+plotdepartments(dppsurvey_fsw, "FSW", 
+                 title = "Departments and Positions FSBS", 
+                 caption = "Survey respondents per department and position at FSBS")
+```
+
+Most respondents in the online survey seemed to come from the Education department, 
+although closely followed by Methodology and Statistics and Interdisciplinary 
+Social Sciences. Additionally, respondents from the Faculty of Social and 
+Behavioural Sciences were mostly either PhD/junior/post-doc researcher or 
+Assistant/Associate professors. 
+
+### Humanities
+There were `r dim(dppsurvey_hum)[1]` respondents from the Faculty of Humanities
+in the online survey. It took them a median of 
+`r round(median(dppsurvey_hum$Duration/60), 1)` minutes to complete it (ranging 
+from `r round(min(dppsurvey_hum$Duration)/60, 1)` minutes to 
+`r round(max(dppsurvey_hum$Duration)/3600/24,1)` days). In the graph below,
+the representation of each department within the Faculty of Humanities is visualised. 
+
+```{r humdepartments}
+plotdepartments(dppsurvey_hum, "Humanities", 
+                 title = "Departments and Positions Humanities", 
+                 caption = "Survey respondents per department and position at the Faculty of Humanities")
+```
+
+The majority of Humanities researchers responding to the survey were employed 
+at the department of Languages, Literature and Communicaiton. This makes sense, 
+as likely a lot of personal data is processed there. Position-wise, there was 
+quite some variability, although most respondents indicated to be either 
+PhD/junior/postdoc researcher or Assistant/Associate Professor. 
+
+### Veterinary Medicine
+There were `r dim(dppsurvey_vet)[1]` respondents from the Faculty of Veterinary
+Medicine in the online survey. It took them a median of 
+`r round(median(dppsurvey_vet$Duration/60), 1)` minutes to complete it (ranging 
+from `r round(min(dppsurvey_vet$Duration)/60, 1)` minutes to 
+`r round(max(dppsurvey_vet$Duration)/3600/24,1)` days). In the graph below,
+the representation of each department within the Faculty of Veterinary Medicine 
+is visualised. 
+
+```{r vetdepartments}
+plotdepartments(dppsurvey_vet, "DGK", 
+                 title = "Departments and Positions Veterinary Medicine", 
+                 caption = "Survey respondents per department and position at the Faculty of Veterinary Medicine")
+```
+
+Most respondents from the Veterinary Medicine faculty were employed at the 
+department of Population Health Sciences. This makes sense as this is likely 
+the department in which the largest amount of personal data is processed in 
+research. Interestingly, the respondents consisted only of Assistant/Associate 
+professors and PhD/junior/postdoc researchers, but also support staff and teachers.
+
+### LEG
+There were `r dim(dppsurvey_leg)[1]` respondents from the Faculty of Law, 
+Economics, and Governance (LEG) in the online survey. It took them a median of 
+`r round(median(dppsurvey_leg$Duration/60), 1)` minutes to complete it (ranging 
+from `r round(min(dppsurvey_leg$Duration)/60, 1)` minutes to 
+`r round(max(dppsurvey_leg$Duration)/3600/24,1)` days). In the graph below,
+the representation of each department within the Faculty of Law, Economics, and 
+Governance (LEG) is visualised. 
+
+```{r legdepartments}
+plotdepartments(dppsurvey_leg, "REBO", 
+                 title = "Departments and Positions LEG", 
+                 caption = "Survey respondents per department and position at the Faculty of Law, Economics, and Governance")
+```
+
+Most LEG respondents came from the Governance department, closely followed by 
+the department of Law. Respondents were mostly Assistant/Associate professors, 
+with some PhD/junior/postdoc researchers and a few professors.
+
+### Geo
+There were `r dim(dppsurvey_hum)[1]` respondents from the Faculty of Geosciences
+in the online survey. It took them a median of 
+`r round(median(dppsurvey_geo$Duration/60), 1)` minutes to complete it (ranging 
+from `r round(min(dppsurvey_geo$Duration)/60, 1)` minutes to 
+`r round(max(dppsurvey_geo$Duration)/3600/24,1)` days). In the graph below,
+the representation of each department within the Faculty of Geosciences is visualised. 
+
+```{r geodepartments}
+plotdepartments(dppsurvey_geo, "Geo", 
+                 title = "Departments and Positions Geosciences", 
+                 caption = "Survey respondents per department and position at the Faculty of Geosciences")
+```
+
+From the Geosciences faculty, most respondents were employed at the department 
+of Sustainable Development, followed by Human Geography and Spatial Planning. 
+Respondents were mostly PhD/junior/postdoc researchers and Assistant/Associate 
+professors. Earth Sciences did not have many respondents, which makes sense as 
+it is less likely that personal data are being processed there in the research 
+context. 
+
+### {-}
+
+## One-on-one meetings {#one-on-one-meetings .tabset}
 Besides the online survey, we organised one-on-one meetings with researchers, to 
 hear about their personal experiences, challenges and needs concerning the handling 
 of personal data in their research. Survey respondents could voluntarily leave 
@@ -249,42 +399,60 @@ What are your general experiences in handling personal data in research?
 - What support would you need to help you handle personal data in your research?
 - Do you have a concrete need for support at the moment?
 
- From the survey respondents, 
-`r sum(dppsurvey$Email == "Yes", na.rm=TRUE)` researchers left their email 
-address to be contacted. Of those, 28 researchers indicated that they were 
-willing to meet with us. So far, 27 one-on-one online 
-meetings have been conducted, each taking about 30 minutes. During the meetings,
-one of the project coordinators (DH) was always present, together with either the
-other project coordinator (NM) or the relevant faculty privacy officer. Before
-the privacy officer was invited to the meeting, the researcher's consent to do 
-so was always asked first.
-
-Below, the division over faculties can be seen for all interviewees. For privacy
-reasons, the positions of the interviewees are not displayed here. 
+All of the one-on-one meetings were conducted online and took approximately 30
+minutes. During the meetings, one of the project coordinators (DH) was always 
+present, together with either the other project coordinator (NM) or the 
+relevant faculty privacy officer. Before the privacy officer was invited to 
+the meeting, the researcher's consent to do so was always obtained first.
 
 ```{r read-opentext}
 ```
+
+```{r opentext-faculties}
+# Filter interview and open text responses codes on Science faculty
+interviews_science <- interviews %>% filter(grepl("Science(?!s)", Faculty, perl = TRUE))
+interviews_fsw <- interviews %>% filter(grepl("Social and Beh*", Faculty, perl = TRUE))
+interviews_leg <- interviews %>% filter(grepl("Law Economics", Faculty, perl = TRUE))
+interviews_geo <- interviews %>% filter(grepl("Geosciences", Faculty, perl = TRUE))
+interviews_vet <- interviews %>% filter(grepl("Veterinary", Faculty, perl = TRUE))
+interviews_hum <- interviews %>% filter(grepl("Humanities", Faculty, perl = TRUE))
+
+opentext_science <- opentext %>% filter(grepl("Science(?!s)", Faculty, perl = TRUE))
+opentext_fsw <- opentext %>% filter(grepl("Social and Beh*", Faculty, perl = TRUE))
+opentext_leg <- opentext %>% filter(grepl("Law Economics", Faculty, perl = TRUE))
+opentext_geo <- opentext %>% filter(grepl("Geosciences", Faculty, perl = TRUE))
+opentext_vet <- opentext %>% filter(grepl("Veterinary", Faculty, perl = TRUE))
+opentext_hum <- opentext %>% filter(grepl("Humanities", Faculty, perl = TRUE))
+```
+
+### UU-wide
+From the survey respondents, `r sum(dppsurvey$Email == "Yes", na.rm=TRUE)`
+researchers left their email address to be contacted. Of those, 28 researchers 
+indicated that they were willing to meet with us. Below, the division over 
+faculties can be seen for all interviewees.
 
 ```{r emailaddressplot}
 meetings_faculties <- data.frame(Faculty = str_trim(unlist(str_split(interviews$Faculty, 
                                                                      ",")), 
                                                     side = "both"))
-emailsplot <-
-  meetings_faculties %>%
+
+meetings_faculties %>%
   group_by(Faculty) %>%
   summarise(Count = length(Faculty)) %>%
   arrange(Count) %>% # Order by count
   mutate(Faculty = factor(Faculty, levels=Faculty)) %>% # Update factor levels
-  ggplot(aes(x = Faculty, y = Count)) + 
+  mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+  arrange(Percentage) %>% # Order by %
+  ggplot(aes(x = Faculty, y = Percentage)) + 
   geom_bar(stat = "identity", fill = "#FFCD00") + 
   labs(x = "", 
        title = "Faculty representation one-on-one meetings",
        caption = "Faculty representation of researchers spoken to in one-on-one meetings") +
   coord_flip() +
   theme_classic() +
-  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+  geom_label(aes(label = paste0(Percentage, "%")), position=position_dodge(width=1.2),
              vjust = 0.5, 
-             hjust = -0.2, #"inward",
+             hjust = 'inward', #-0.2,
              label.size = NA, #1,
              label.padding = unit(0.35, "lines"),
              color = "black",
@@ -300,25 +468,118 @@ emailsplot <-
         panel.grid.minor=element_blank(),
         plot.background=element_blank())
 
-emailsplot
 ```
+
+### Science
+
+From the survey respondents, `r sum(dppsurvey_science$Email == "Yes", na.rm=TRUE)` 
+researchers from the Science faculty left their email address to be contacted,
+although not all researchers indicated to be willing to meet with us when 
+contacted. So far, `r dim(interviews_science)[1]` online meetings have been 
+conducted, each with the project coordinators. Below, the division over 
+positions can be seen for all interviewees from the Science faculty.
+
+```{r positionsmeetings-science}
+positionsmeetings(interviews_science,
+                  title = "Positions one-on-one meetings Science",
+                  caption = "Positions of Science researchers in one-on-one meetings")
+```
+
+### FSBS
+
+From the survey respondents, `r sum(dppsurvey_fsw$Email == "Yes", na.rm=TRUE)` 
+researchers from the faculty of Social and Behavioural Sciences (FSBS) left their 
+email address to be contacted, although not all researchers indicated to be 
+willing to meet with us when contacted. So far, `r dim(interviews_fsw)[1]` 
+online meetings have been conducted, most of them with a privacy officer present. 
+Below, the division over positions can be seen for all interviewees from the 
+faculty of Social and Behavioural Sciences (FSBS).
+
+```{r positionsmeetings-fsw}
+positionsmeetings(interviews_fsw,
+                  title = "Positions one-on-one meetings FSBS",
+                  caption = "Positions of researchers of the Faculty of Social and Behavioural Sciences in one-on-one meetings")
+```
+
+### Humanities
+
+From the survey respondents, `r sum(dppsurvey_hum$Email == "Yes", na.rm=TRUE)` 
+researchers from the Humanities faculty left their email address to be contacted,
+although not all researchers indicated to be willing to meet with us when 
+contacted. So far, `r dim(interviews_hum)[1]` online meetings have been 
+conducted, all of them with a privacy officer present. Below, the division over 
+positions can be seen for all interviewees from the Humanities faculty.
+
+```{r positionsmeetings-hum}
+positionsmeetings(interviews_hum,
+                  title = "Positions one-on-one meetings Humanities",
+                  caption = "Positions of Humanities researchers in one-on-one meetings")
+```
+
+### Veterinary Medicine
+
+From the survey respondents, `r sum(dppsurvey_vet$Email == "Yes", na.rm=TRUE)` 
+researchers from the faculty of Veterinary Medicine left their email address to be contacted,
+although not all researchers indicated to be willing to meet with us when 
+contacted. So far, `r dim(interviews_vet)[1]` online meetings have been 
+conducted, most of them with a privacy officer present. Below, the division over 
+positions can be seen for all interviewees from the faculty of Veterinary Medicine.
+
+```{r positionsmeetings-vet}
+positionsmeetings(interviews_vet,
+                  title = "Positions one-on-one meetings Veterinary Medicine",
+                  caption = "Positions of researchers from the Faculty of Veterinary Medicine in one-on-one meetings")
+```
+
+### LEG
+
+From the survey respondents, `r sum(dppsurvey_leg$Email == "Yes", na.rm=TRUE)` 
+researchers from the faculty of Law, Economics, and Governance (LEG) left their email address to be contacted,
+although not all researchers indicated to be willing to meet with us when 
+contacted. So far, `r dim(interviews_leg)[1]` online meetings have been 
+conducted, most of them with a privacy officer present.  Below, the division over 
+positions can be seen for all interviewees from the faculty of Law, Economics, and Governance (LEG).
+
+```{r positionsmeetings-leg}
+positionsmeetings(interviews_leg,
+                  title = "Positions one-on-one meetings LEG",
+                  caption = "Positions of researchers from the Faculty of Law, Economics, and Governance in one-on-one meetings")
+```
+
+### Geo
+
+From the survey respondents, `r sum(dppsurvey_geo$Email == "Yes", na.rm=TRUE)` 
+researchers from the Geosciences faculty left their email address to be contacted,
+although not all researchers indicated to be willing to meet with us when 
+contacted. So far, `r dim(interviews_geo)[1]` online meetings have been 
+conducted. Below, the division over 
+positions can be seen for all interviewees from the Geosciences faculty.
+
+```{r positionsmeetings-geo}
+positionsmeetings(interviews_geo,
+                  title = "Positions one-on-one meetings Geosciences",
+                  caption = "Positions of Geosciences researchers in one-on-one meetings")
+```
+
+### {-}
 
 ## Analysis {#analysis}
 From the raw Qualtrics output, we first cleaned and split the data into different
 data files (cleaned and closed survey responses, open text responses, email
 addresses, see the 
 <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/src/pseudonymise-data.R" 
-target="_blank">pseudonymise-data.R</a> script for details). Both the open text responses and 
-the notes made during the one-on-one meetings were separately and manually scored
-to enable the extraction of action points. 
+target="_blank">pseudonymise-data.R</a> script for details). Both the open text 
+responses and the notes made during the one-on-one meetings were separately and 
+manually scored to enable the extraction of action points. 
 
 Below we report on the descriptive statistics or summaries from most of the 
 survey questions. As we did not formulate hypotheses, no statistical analyses 
 were performed. 
 
 ## Data and material availability {#data-and-material-availability}
-All survey-related documentation can be found in the <a href="https://github.com/UtrechtUniversity/dataprivacysurvey" 
-target = "_blank">dedicated survey repository</a>. It contains:
+All survey-related documentation can be found in the 
+<a href="https://github.com/UtrechtUniversity/dataprivacysurvey" target = "_blank">dedicated 
+survey repository</a>. It contains:
 
 - The 
 <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/assets/survey-questions-qualtrics.pdf"
@@ -333,7 +594,7 @@ details, we are unable to share them in this repository.
 
 # Results {#results}
 ## Types of research data {#types-of-research-data .tabset}
-### University-wide
+### UU-wide
 
 To investigate the types of research that was represented in the sample, we 
 asked which types of data, and specifically which types of *personal* data the 
@@ -345,10 +606,11 @@ can be either because these are the types of personal data that are indeed most
 common, but possibly also because researchers mostly recognise these types of 
 data as being personal data.
 
-```{r datatypes}
+```{r datatypesuu}
+datatypes(dppsurvey)
 ```
-
-
+<br>
+    
 When comparing faculties, it appears that most personal data is processed in the
 faculties of Social and Behavioural Sciences (FSBS), although the faculties of 
 Science and Veterinary Medicine also seem to process quite some personal data.
@@ -404,6 +666,59 @@ datatypegraphs <- dppsurvey %>%
 datatypegraphs
 ```
 
+### Science
+
+As with the university-wide data, researchers from the Science faculty indicated
+that they also most often used tabular data, textual data and code/theoretical 
+models in their research. The same goes for the types of *personal* data: the
+same top-3 types are used here as in the entire university (demographic 
+information, contact information, direct identifiers). 
+
+```{r datatypesscience}
+datatypes(dppsurvey_science)
+```
+<br>
+  
+As a large part of the researchers from the Science faculty indicated not to use
+*any* personal data whatsoever in their research, it may be useful to 
+investigate in which departments these researchers work. In the figure below,
+the division of personal data types per Science department is plotted. As can be
+expected, the departments of Biology, Physics and Mathematics do not seem to 
+process much personal data, whereas in the Information and Computing Sciences
+and Pharmaceutical Sciences departments, the most personal data is processed. This
+makes sense considering the types of research performed in these departments.
+
+```{r datatypesdeptsscience}
+datatypesdepartments(dppsurvey_science, "Science",
+                     caption = "Personal data types used in each department of the Science faculty")
+```
+
+### FSBS
+
+As with the university-wide data, researchers from the faculty of Social and
+Behavioural Sciences (FSBS) indicated that they also most often used tabular data, 
+textual data and code/theoretical models in their research. The same goes for 
+the types of *personal* data: demographic and contact information are most often
+used. Interestingly, sensitive demographic information is used much more relative
+to  the UU-wide responses.
+
+```{r datatypesfsw}
+datatypes(dppsurvey_fsw)
+```
+<br>
+  
+When comparing the types of personal data across departments of the faculty, the
+departments of Sociology and Cultural Anthropology seem to process the least
+amount of personal data - although these departments may also simply be 
+underrepresented in the survey sample. Most other departments process quite some
+personal data, as can be expected from a faculty of which the research focuses
+almost exclusively on humans. 
+
+```{r datatypesdeptsfsw}
+datatypesdepartments(dppsurvey_fsw, "FSW",
+                     caption = "Personal data types used in each department of the Faculty of Social and Behavioural Sciences")
+```
+
 ### Humanities
 As with the university-wide data, researchers from the faculty of Humanities 
 indicated that they also most frequently used tabular data, textual data and 
@@ -411,75 +726,11 @@ audio data in their research. The same goes for the types of *personal* data: th
 same top-3 types are present here as in the entire university (demographic 
 information, contact information, direct identifiers). 
 
-```{r hum-datatypes, results = "asis"}
-# Table of data types
-hum_datatypetable <- dppsurvey %>% 
-  filter(!is.na(Faculty_2)) %>%
-  pivot_longer(cols = grep("^Datatype_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Datatype") %>%
-  select(-name) %>%
-  group_by(Datatype) %>%
-  summarise(Count = length(Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  mutate(Frequency = paste0(Count, 
-                            " (",
-                            Percentage,
-                            "%)")) %>%
-  select(-Count, -Percentage)
-
-# Table of personal data types
-hum_personaldatatypes <- dppsurvey %>%
-  filter(!is.na(Faculty_2)) %>%
-  pivot_longer(cols = grep("^Personaldata_type_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Personal_Datatype") %>%
-  select(-name) %>%
-  group_by(Personal_Datatype)
-
-hum_tablepersdata <- hum_personaldatatypes %>%
-  summarise(Count = length(Personal_Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype), # Update factor levels
-         Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  mutate(Frequency = paste0(Count, 
-                            " (",
-                            Percentage,
-                            "%)"),
-  ) %>%
-  select(-Count, -Percentage)
-
-kables(list(
-  kbl(hum_datatypetable,
-      col.names = gsub("_", 
-                       " ", 
-                       names(hum_datatypetable)), 
-      align = "l",
-      caption = "<b>Types of data used</b>",
-      valign = 't') %>%
-    kable_classic(latex_options = "hover",
-                  full_width = F, 
-                  html_font = "Verdana",
-                  font_size = 12,
-                  position = "float_left"),
-  kbl(hum_tablepersdata, 
-      col.names = gsub("_", 
-                       " ", 
-                       names(hum_tablepersdata)), 
-      align = "l",
-      caption = "<b>Types of <i>personal</i> data used</b>",
-      valign = 't') %>%
-    kable_classic(latex_options = "hover",
-                  full_width = F,
-                  html_font = "Verdana",
-                  font_size = 12,
-                  position = "left")))
+```{r datatypeshum}
+datatypes(dppsurvey_hum)
 ```
-
+<br>
+  
 If we look at the different departments within the faculty, it is clear that
 mostly the departments of Languages, Literature and Communication, and of Media
 and Culture Studies process personal data in their research. Especially 
@@ -487,47 +738,9 @@ researchers at the department of Languages, Literature and Communication seem to
 process a lot of personal data, which makes sense considering the type of research
 performed there.
 
-```{r hum-personaldataplot}
-# Graph
-hum_datatypegraphs <- hum_personaldatatypes %>%
-  pivot_longer(cols = grep("^Dept_Humanities_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Department") %>%
-  select(-name) %>%
-  group_by(Department, Personal_Datatype) %>%
-  summarise(Count = length(Personal_Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
-  ggplot(aes(x = Personal_Datatype, y = Count)) + 
-  geom_bar(stat = "identity", fill = "#FFCD00") + 
-  facet_wrap(~Department, ncol = 3,
-             labeller = label_wrap_gen(width=14)) +
-  labs(x = "", title = "Personal data types across Humanities departments") +
-  coord_flip() +
-  theme_classic() +
-  geom_text(aes(label = Count),
-             #vjust = 0.5, 
-             hjust = "inward", #-0.2, #"inward",
-             color = "black") +
-  theme(axis.title.x = element_text(size = 10),
-        axis.line = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 10),
-        axis.ticks = element_blank(),
-        #panel.background = element_rect(fill = NA, color = "black"),
-        panel.background = element_blank(),
-        panel.border=element_blank(), #rect(fill = NA),
-        panel.spacing.y = unit(1, "lines"),
-        panel.grid.major.y = element_line(),
-        panel.grid.minor=element_blank(),
-        plot.background=element_blank(),
-        strip.background = element_rect(color="white",
-                                        size=1.5),
-        strip.text = element_text(family = "Verdana",
-                                  size = 10,
-                                  face = "bold"))
-
-hum_datatypegraphs
+```{r datatypesdeptshum}
+datatypesdepartments(dppsurvey_hum, "Humanities",
+                     caption = "Personal data types used in each department of the Faculty of Humanities")
 ```
 
 ### Veterinary Medicine
@@ -541,121 +754,19 @@ demographic information, direct identifiers and contact information are also
 the most common types of personal data researchers at this faculty seem to 
 deal with.
 
-```{r dgk-datatypes, results = "asis"}
-# Table of data types
-dgk_datatypetable <- dppsurvey %>% 
-  filter(!is.na(Faculty_7)) %>%
-  pivot_longer(cols = grep("^Datatype_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Datatype") %>%
-  select(-name) %>%
-  group_by(Datatype) %>%
-  summarise(Count = length(Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  mutate(Frequency = paste0(Count, 
-                            " (",
-                            Percentage,
-                            "%)")) %>%
-  select(-Count, -Percentage)
-
-# Table of personal data types
-dgk_personaldatatypes <- dppsurvey %>%
-  filter(!is.na(Faculty_7)) %>%
-  pivot_longer(cols = grep("^Personaldata_type_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Personal_Datatype") %>%
-  select(-name) %>%
-  group_by(Personal_Datatype)
-
-dgk_tablepersdata <- dgk_personaldatatypes %>%
-  summarise(Count = length(Personal_Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype), # Update factor levels
-         Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  mutate(Frequency = paste0(Count, 
-                            " (",
-                            Percentage,
-                            "%)"),
-  ) %>%
-  select(-Count, -Percentage)
-
-kables(list(
-  kbl(dgk_datatypetable,
-      col.names = gsub("_", 
-                       " ", 
-                       names(dgk_datatypetable)), 
-      align = "l",
-      caption = "<b>Types of data used</b>",
-      valign = 't') %>%
-    kable_classic(latex_options = "hover",
-                  full_width = F, 
-                  html_font = "Verdana",
-                  font_size = 12,
-                  position = "float_left"),
-  kbl(dgk_tablepersdata, 
-      col.names = gsub("_", 
-                       " ", 
-                       names(dgk_tablepersdata)), 
-      align = "l",
-      caption = "<b>Types of <i>personal</i> data used</b>",
-      valign = 't') %>%
-    kable_classic(latex_options = "hover",
-                  full_width = F,
-                  html_font = "Verdana",
-                  font_size = 12,
-                  position = "left")))
+```{r datatypesvet}
+datatypes(dppsurvey_vet)
 ```
-
+<br>
+  
 When looking at each department separately, it is clear that researchers in the
 department of Population Health Sciences process the large majority of the 
 personal data within the faculty. Of course, it may also be possible that this 
 department was simply more represented in the survey than the other departments.
 
-```{r dgk-personaldataplot}
-# Graph
-dgk_datatypegraphs <- dgk_personaldatatypes %>%
-  pivot_longer(cols = grep("^Dept_DGK_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Department") %>%
-  select(-name) %>%
-  group_by(Department, Personal_Datatype) %>%
-  summarise(Count = length(Personal_Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
-  ggplot(aes(x = Personal_Datatype, y = Count)) + 
-  geom_bar(stat = "identity", fill = "#FFCD00") + 
-  facet_wrap(~Department, ncol = 3,
-             labeller = label_wrap_gen(width=14)) +
-  labs(x = "", title = "Personal data types across Veterinary Medicine") +
-  coord_flip() +
-  theme_classic() +
-  geom_text(aes(label = Count),
-             #vjust = 0.5, 
-             hjust = "inward", #-0.2, #"inward",
-             color = "black") +
-  theme(axis.title.x = element_text(size = 10),
-        axis.line = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 10),
-        axis.ticks = element_blank(),
-        #panel.background = element_rect(fill = NA, color = "black"),
-        panel.background = element_blank(),
-        panel.border=element_blank(), #rect(fill = NA),
-        panel.spacing.y = unit(1, "lines"),
-        panel.grid.major.y = element_line(),
-        panel.grid.minor=element_blank(),
-        plot.background=element_blank(),
-        strip.background = element_rect(color="white",
-                                        size=1.5),
-        strip.text = element_text(family = "Verdana",
-                                  size = 10,
-                                  face = "bold"))
-
-dgk_datatypegraphs
+```{r datatypesdeptsvet}
+datatypesdepartments(dppsurvey_vet, "DGK",
+                     caption = "Personal data types used in each department of the Faculty of Veterinary Medicine")
 ```
 
 ### LEG
@@ -666,121 +777,19 @@ the types of *personal* data: the same top-3 types are present here as in the
 entire university (demographic information, contact information, 
 direct identifiers). 
 
-```{r leg-datatypes, results = "asis"}
-# Table of data types
-leg_datatypetable <- dppsurvey %>% 
-  filter(!is.na(Faculty_3)) %>%
-  pivot_longer(cols = grep("^Datatype_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Datatype") %>%
-  select(-name) %>%
-  group_by(Datatype) %>%
-  summarise(Count = length(Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  mutate(Frequency = paste0(Count, 
-                            " (",
-                            Percentage,
-                            "%)")) %>%
-  select(-Count, -Percentage)
-
-# Table of personal data types
-leg_personaldatatypes <- dppsurvey %>%
-  filter(!is.na(Faculty_3)) %>%
-  pivot_longer(cols = grep("^Personaldata_type_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Personal_Datatype") %>%
-  select(-name) %>%
-  group_by(Personal_Datatype)
-
-leg_tablepersdata <- leg_personaldatatypes %>%
-  summarise(Count = length(Personal_Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype), # Update factor levels
-         Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  mutate(Frequency = paste0(Count, 
-                            " (",
-                            Percentage,
-                            "%)"),
-  ) %>%
-  select(-Count, -Percentage)
-
-kables(list(
-  kbl(leg_datatypetable,
-      col.names = gsub("_", 
-                       " ", 
-                       names(leg_datatypetable)), 
-      align = "l",
-      caption = "<b>Types of data used</b>",
-      valign = 't') %>%
-    kable_classic(latex_options = "hover",
-                  full_width = F, 
-                  html_font = "Verdana",
-                  font_size = 12,
-                  position = "float_left"),
-  kbl(leg_tablepersdata, 
-      col.names = gsub("_", 
-                       " ", 
-                       names(leg_tablepersdata)), 
-      align = "l",
-      caption = "<b>Types of <i>personal</i> data used</b>",
-      valign = 't') %>%
-    kable_classic(latex_options = "hover",
-                  full_width = F,
-                  html_font = "Verdana",
-                  font_size = 12,
-                  position = "left")))
+```{r datatypesleg}
+datatypes(dppsurvey_leg)
 ```
-
+<br>
+  
 When looking at the different departments within the faculty, researchers in 
 the department of Governance seem to process personal data the most often, 
 followed by the department of Law. Of course, it is possible that the other 
 departments process more personal data than the respondents indicated. 
 
-```{r leg-personaldataplot}
-# Graph
-leg_datatypegraphs <- leg_personaldatatypes %>%
-  pivot_longer(cols = grep("^Dept_REBO_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Department") %>%
-  select(-name) %>%
-  group_by(Department, Personal_Datatype) %>%
-  summarise(Count = length(Personal_Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
-  ggplot(aes(x = Personal_Datatype, y = Count)) + 
-  geom_bar(stat = "identity", fill = "#FFCD00") + 
-  facet_wrap(~Department, ncol = 3,
-             labeller = label_wrap_gen(width=14)) +
-  labs(x = "", title = "Personal data types across LEG departments") +
-  coord_flip() +
-  theme_classic() +
-  geom_text(aes(label = Count),
-             #vjust = 0.5, 
-             hjust = "inward", #-0.2, #"inward",
-             color = "black") +
-  theme(axis.title.x = element_text(size = 10),
-        axis.line = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 10),
-        axis.ticks = element_blank(),
-        #panel.background = element_rect(fill = NA, color = "black"),
-        panel.background = element_blank(),
-        panel.border=element_blank(), #rect(fill = NA),
-        panel.spacing.y = unit(1, "lines"),
-        panel.grid.major.y = element_line(),
-        panel.grid.minor=element_blank(),
-        plot.background=element_blank(),
-        strip.background = element_rect(color="white",
-                                        size=1.5),
-        strip.text = element_text(family = "Verdana",
-                                  size = 10,
-                                  face = "bold"))
-
-leg_datatypegraphs
+```{r datatypesdeptsleg}
+datatypesdepartments(dppsurvey_leg, "REBO",
+                     caption = "Personal data types used in each department of the Faculty of Law, Economics and Governance")
 ```
 
 ### Geo
@@ -793,75 +802,11 @@ terms of *personal* data, however, the same top-3 types are present here as in t
 entire university (demographic information, contact information, 
 direct identifiers). 
 
-```{r geo-datatypes, results = "asis"}
-# Table of data types
-geo_datatypetable <- dppsurvey %>% 
-  filter(!is.na(Faculty_1)) %>%
-  pivot_longer(cols = grep("^Datatype_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Datatype") %>%
-  select(-name) %>%
-  group_by(Datatype) %>%
-  summarise(Count = length(Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  mutate(Frequency = paste0(Count, 
-                            " (",
-                            Percentage,
-                            "%)")) %>%
-  select(-Count, -Percentage)
-
-# Table of personal data types
-geo_personaldatatypes <- dppsurvey %>%
-  filter(!is.na(Faculty_1)) %>%
-  pivot_longer(cols = grep("^Personaldata_type_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Personal_Datatype") %>%
-  select(-name) %>%
-  group_by(Personal_Datatype)
-
-geo_tablepersdata <- geo_personaldatatypes %>%
-  summarise(Count = length(Personal_Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype), # Update factor levels
-         Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  mutate(Frequency = paste0(Count, 
-                            " (",
-                            Percentage,
-                            "%)"),
-  ) %>%
-  select(-Count, -Percentage)
-
-kables(list(
-  kbl(geo_datatypetable,
-      col.names = gsub("_", 
-                       " ", 
-                       names(geo_datatypetable)), 
-      align = "l",
-      caption = "<b>Types of data used</b>",
-      valign = 't') %>%
-    kable_classic(latex_options = "hover",
-                  full_width = F, 
-                  html_font = "Verdana",
-                  font_size = 12,
-                  position = "float_left"),
-  kbl(geo_tablepersdata, 
-      col.names = gsub("_", 
-                       " ", 
-                       names(geo_tablepersdata)), 
-      align = "l",
-      caption = "<b>Types of <i>personal</i> data used</b>",
-      valign = 't') %>%
-    kable_classic(latex_options = "hover",
-                  full_width = F,
-                  html_font = "Verdana",
-                  font_size = 12,
-                  position = "left")))
+```{r datatypesgeo}
+datatypes(dppsurvey_geo)
 ```
-
+<br>
+  
 When comparing departments, it becomes immediately clear that most personal
 data seems to be processed in the department of Sustainable Development, and
 some also in the Human Geography and Spatial Planning department. This makes 
@@ -869,50 +814,10 @@ sense, as the research performed at the third department (Earth sciences) usuall
 does not focus on human behaviour and thus does not involve much personal data, 
 if any. 
 
-```{r geo-personaldataplot}
-# Graph
-geo_datatypegraphs <- geo_personaldatatypes %>%
-  pivot_longer(cols = grep("^Dept_Geo_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Department") %>%
-  select(-name) %>%
-  group_by(Department, Personal_Datatype) %>%
-  summarise(Count = length(Personal_Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
-  ggplot(aes(x = Personal_Datatype, y = Count)) + 
-  geom_bar(stat = "identity", fill = "#FFCD00") + 
-  facet_wrap(~Department, ncol = 3,
-             labeller = label_wrap_gen(width=14)) +
-  labs(x = "", title = "Personal data types across the Geosciences faculty") +
-  coord_flip() +
-  theme_classic() +
-  geom_text(aes(label = Count),
-             #vjust = 0.5, 
-             hjust = "inward", #-0.2, #"inward",
-             color = "black") +
-  theme(axis.title.x = element_text(size = 10),
-        axis.line = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 10),
-        axis.ticks = element_blank(),
-        #panel.background = element_rect(fill = NA, color = "black"),
-        panel.background = element_blank(),
-        panel.border=element_blank(), #rect(fill = NA),
-        panel.spacing.y = unit(1, "lines"),
-        panel.grid.major.y = element_line(),
-        panel.grid.minor=element_blank(),
-        plot.background=element_blank(),
-        strip.background = element_rect(color="white",
-                                        size=1.5),
-        strip.text = element_text(family = "Verdana",
-                                  size = 10,
-                                  face = "bold"))
-
-geo_datatypegraphs
+```{r datatypesdeptsgeo}
+datatypesdepartments(dppsurvey_geo, "Geo",
+                     caption = "Personal data types used in each department of the Faculty of Geosciences")
 ```
-
-## {-}
 
 ## Current practices {#current-practices}
 
@@ -920,7 +825,7 @@ The first part of the survey addressed the researchers' current practices in
 handling personal data in their research.
 
 ### Organisational and technical measures {#organisational-technical-measures .tabset}
-#### University-wide results
+#### UU-wide
 With respect to organisational and technical measures used to handle personal 
 data, most respondents indicated that they pseudonymise/anonymise their data. 
 As this question is self-reported, we cannot assess whether the researchers' data 
@@ -1016,7 +921,7 @@ asd
 ### {-}
 
 ### Storage media used {#storage-media-used .tabset}
-#### University-wide results
+#### UU-wide
 When working with personal data, it is important to choose a sufficiently 
 secure storage medium. Luckily, most respondents indicated to rely on storage 
 solutions that are provided or recommended by UU - and in most cases are indeed
@@ -1029,13 +934,28 @@ Institute, Central Bureau of Statistics) and repositories (e.g., DANS EASY, CLAR
 ```{r storageplot}
 ```
 
-#### Faculty-specific results
-Here are some specific results
+#### Science
+Here are results per faculty
+
+#### FBSB
+dasd
+
+#### Humanities
+asasd
+
+#### Veterinary Medicine
+adasds
+
+#### LEG
+asasd
+
+#### Geo
+asd
 
 ### {-}
 
-### Consent forms: usage and content {consent-forms .tabset}
-#### University-wide results
+### Consent forms: usage and content {#consent-forms .tabset}
+#### UU-wide
 Consent is currently the legal basis most often used in researcher performed at 
 UU. Luckily, only a small number of respondents indicated that consent forms 
 are not applicable to their research or they don't know what they are. The consent
@@ -1065,13 +985,28 @@ personal data (<a href = "https://gdpr-info.eu/art-13-gdpr/" target = "_blank">a
 ```{r consentforms}
 ```
 
-#### Faculty-specific results
-Here are some specific results
+#### Science
+Here are results per faculty
+
+#### FBSB
+dasd
+
+#### Humanities
+asasd
+
+#### Veterinary Medicine
+adasds
+
+#### LEG
+asasd
+
+#### Geo
+asd
 
 ### {-}
 
 ### Data Protection Impact Assessment (DPIA) {#dpia .tabset}
-#### University-wide results
+#### UU-wide
 A Data Protection Impact Assessment (DPIA) is a legal instrument to assess the
 risks involved for data subjects, and helps determine the necessary safeguards to
 reduce those risks to an acceptable level. Despite it being an important legal
@@ -1084,13 +1019,28 @@ indeed the case in the majority of cases.
 ```{r dpia}
 ```
 
-#### Faculty-specific results
-Blabla
+#### Science
+Here are results per faculty
+
+#### FBSB
+dasd
+
+#### Humanities
+asasd
+
+#### Veterinary Medicine
+adasds
+
+#### LEG
+asasd
+
+#### Geo
+asd
 
 ### {-}
 
 ### Data sharing practices {#data-sharing .tabset}
-#### University-wide results
+#### UU-wide
 To investigate how often data are being shared and under which circumstances, we
 asked respondents if and with which parties they typically share their research
 data, and which measures they usually take to do so securely. While there were 
@@ -1111,13 +1061,28 @@ Contractual Clauses appears limited.
 ```{r datasharing}
 ```
 
-#### Faculty-specific
-Blabla
+#### Science
+Here are results per faculty
+
+#### FBSB
+dasd
+
+#### Humanities
+asasd
+
+#### Veterinary Medicine
+adasds
+
+#### LEG
+asasd
+
+#### Geo
+asd
 
 ### {-}
 
 ### Data publishing {#data-publishing .tabset}
-#### University-wide
+#### UU-wide
 
 ```{r datapublishing}
 ```
@@ -1139,8 +1104,23 @@ considered.
 ```{r publicationformat}
 ```
 
-#### Faculty
-asdfasdf
+#### Science
+Here are results per faculty
+
+#### FBSB
+dasd
+
+#### Humanities
+asasd
+
+#### Veterinary Medicine
+adasds
+
+#### LEG
+asasd
+
+#### Geo
+asd
 
 ### {-}
 
@@ -1210,7 +1190,7 @@ knowpoplot
 ```
 
 ### Looking for help {#looking-for-help .tabset}
-#### University-wide
+#### UU-wide
 When asked whether respondents have ever looked for support in the form of 
 information, tools, or in-person support, an overwheling majority indicated that 
 they have, as can be seen in the graph below. Most respondents that looked for support
@@ -1221,13 +1201,28 @@ visibility of the current support channels could be improved.
 ```{r existingsupport}
 ```
 
-#### Faculty-specific
-Hello world
+#### Science
+Here are results per faculty
+
+#### FBSB
+dasd
+
+#### Humanities
+asasd
+
+#### Veterinary Medicine
+adasds
+
+#### LEG
+asasd
+
+#### Geo
+asd
 
 ### {-}
 
 ### Channels used to find support {#support-channels .tabset}
-#### University-wide
+#### UU-wide
 The graph below indicates which channels respondents used most 
 when looking for information about handling personal data. Note that this was 
 a multiple choice question, and so the numbers do no add up to the total number
@@ -1245,12 +1240,29 @@ information sources.
 ```{r sourcesused}
 ```
 
-#### Faculty
+#### Science
+Here are results per faculty
+
+#### FBSB
+dasd
+
+#### Humanities
+asasd
+
+#### Veterinary Medicine
+adasds
+
+#### LEG
+asasd
+
+#### Geo
+asd
 
 ### {-}
 
-## Challenges and needs (survey) {#challenges-needs-survey}
+## Challenges and needs (survey) {#challenges-needs-survey .tabset}
 
+### UU-wide
 ```{r obstacle}
 ```
 
@@ -1264,7 +1276,27 @@ followed by UU-wide policy on the topic, and privacy-related walk-in hours.
 ```{r bettersupport}
 ```
 
-## Challenges and needs (open questions, meetings) {#challenges-needs-open}
+### Science
+Here are results per faculty
+
+### FBSB
+dasd
+
+### Humanities
+asasd
+
+### Veterinary Medicine
+adasds
+
+### LEG
+asasd
+
+### Geo
+asd
+
+## {-}
+
+## Challenges and needs (open questions, meetings) {#challenges-needs-open .tabset}
 
 As mentioned in the [Methods section](#analysis), the responses on the following 
 open questions, and the notes taken during the one-on-one meetings with 
@@ -1292,9 +1324,29 @@ been applied twice for the same researcher.
 ```{r count-tools}
 ```
 
+### UU-wide
 ```{r wordcloud}
 ```
 
+### Science
+Here are results per faculty
+
+### FBSB
+dasd
+
+### Humanities
+asasd
+
+### Veterinary Medicine
+adasds
+
+### LEG
+asasd
+
+### Geo
+asd
+
+## {-}
 **Below we go into the most frequently mentioned challenges/needs expressed
 by researchers in the survey (open questions) and one-one-one meetings:**
 
