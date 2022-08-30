@@ -75,6 +75,72 @@ UU_pallette <- c(
 uucol <- "#FFCD00"
 
 
+## ---- plot-departments --------
+
+plotdepartments <- function(data,
+                             string,
+                             title = "Department and Position representation",
+                             caption = "Survey respondents per department and position") {
+  
+  data %>%
+    pivot_longer(cols = grep(paste0("Dept_",string,"_[0-9]$"), 
+                             names(data), 
+                             value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "Department") %>%
+    select(-name) %>%
+    pivot_longer(cols = grep("Position_[0-9]$", 
+                             names(data), 
+                             value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "Position") %>%
+    select(-name) %>%
+    group_by(Department, Position) %>%
+    summarise(Count = length(Department)) %>%
+    ggplot(aes(reorder(Department, 
+                       -Count, 
+                       sum, 
+                       decreasing = T), 
+               Count, 
+               fill = Position)) +
+    coord_flip() +
+    theme_classic() + 
+    geom_col() +
+    scale_fill_manual(values = UU_pallette) +
+    labs(x = "", title = title, caption = caption) +
+    scale_y_discrete(expand = expansion(add = 4)) + # make field larger to see label
+    #scale_x_continuous(expand = expansion(add = 3)) + 
+    geom_label(aes(label = after_stat(y), group = Department), # totals per dept
+               stat = 'summary', 
+               fun = sum, 
+               vjust = 0.5, 
+               hjust = -0.2, #"inward",
+               nudge_y = 2,
+               label.size = NA, #1,
+               label.padding = unit(0.35, "lines"),
+               #label.r = unit(0.25, "lines"),
+               color = "black",
+               fill = "#FFFFFF") + #"#FFCD00") +
+    geom_text(aes(label = Count), # counts per position per department
+              color = "white",
+              fill = "#FFFFFF",
+              position = position_stack(vjust = 0.5)) +
+    theme(legend.text = element_text(size = 8),
+          legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.title.x = element_text(size = 11),
+          axis.line = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_text(size = 11),
+          axis.ticks = element_blank(),
+          panel.background = element_blank(),
+          panel.border=element_blank(),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank()) +
+    guides(fill = guide_legend(nrow = 3, byrow = FALSE))
+}
+
 ## ---- read-opentext --------
 # Read in coded responses from interviews
 interviewfile <- "../data/coded/dppsurvey_interviews_coded.xlsx"
@@ -93,159 +159,254 @@ opentools <- read_excel(opentextfile, sheet = "tools") %>%
   select(-`Times mentioned`)
 
 
-
 ## ---- positionsmeetings --------
-# Split multiple comma-separated positions
-meetings_position <- data.frame(Position = str_trim(unlist(str_split(interviews$Position, 
-                                                                     ",")), 
-                                                    side = "both"))
 
-# Plot positions of researchers in the meetings
-meetings_position %>%
-  group_by(Position) %>%
-  summarise(Count = length(Position)) %>%
-  mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-  arrange(Percentage) %>% # Order by %
-  mutate(Position = factor(Position, levels=Position)) %>% # Update factor levels
-  ggplot(aes(x = Position, y = Percentage)) + 
-  geom_bar(stat = "identity", fill = uucol) + 
-  labs(x = "", 
-       title = "Positions one-on-one meetings",
-       caption = "Positions of researchers in one-on-one meetings") +
-  coord_flip() +
-  theme_classic() +
-  geom_label(aes(label = paste0(Percentage, "%")), position=position_dodge(width=1.2),
-             vjust = 0.5, 
-             hjust = 'inward', #-0.2,
-             label.size = NA, #1,
-             label.padding = unit(0.35, "lines"),
-             color = "black",
-             fill = "#FFFFFF") +
-  theme(axis.title.x = element_text(size = 11),
-        axis.line = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 11),
-        axis.ticks = element_blank(),
-        panel.background = element_blank(),
-        panel.border=element_blank(),
-        panel.grid.major=element_blank(),
-        panel.grid.minor=element_blank(),
-        plot.background=element_blank())
-
-# Trying donut chart -> would need to add labels directly in chart
-#meetings_position %>%
-#group_by(Position) %>%
-#summarise(Count = length(Position)) %>%
-#mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-#arrange(Percentage) %>% # Order by %
-#mutate(Position = factor(Position, levels=Position)) %>% # Update factor levels
-#mutate(ymax = cumsum(Percentage)) %>%
-#mutate(ymin = c(0, head(ymax, n = -1))) %>%
-#mutate(labelPosition = (ymax + ymin)/2) %>%
-#mutate(label = paste0(Percentage, "%")) %>%
-#ggplot(aes(ymax = ymax, ymin = ymin, xmax = 4, xmin = 3, fill = Position)) +
-#geom_rect() +
-#geom_label(x = 3.5,
-#           aes(y = labelPosition, label = label),
-#           size = 3,
-#           fill = "white") + 
-#coord_polar(theta = "y") +
-#xlim(c(1, 4)) + 
-#scale_fill_manual(values = UU_pallette) +
-#theme_void()
-
-
+positionsmeetings <- function(interviewdata,
+                              title = "Positions one-on-one meetings",
+                              caption = "Positions of researchers in one-on-one meetings"){
+  
+  # Split multiple comma-separated positions
+  data.frame(Position = str_trim(unlist(str_split(interviewdata$Position, 
+                                                                       ",")), 
+                                                      side = "both")) %>%
+  # Plot positions of researchers in the meetings
+    group_by(Position) %>%
+    summarise(Count = length(Position)) %>%
+    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    arrange(Percentage) %>% # Order by %
+    mutate(Position = factor(Position, levels=Position)) %>% # Update factor levels
+    ggplot(aes(x = Position, y = Percentage)) + 
+    geom_bar(stat = "identity", fill = uucol) + 
+    labs(x = "", title = title, caption = caption) +
+    coord_flip() +
+    theme_classic() +
+    geom_label(aes(label = paste0(Percentage, "%")), position=position_dodge(width=1.2),
+               vjust = 0.5, 
+               hjust = 'inward', #-0.2,
+               label.size = NA, #1,
+               label.padding = unit(0.35, "lines"),
+               color = "black",
+               fill = "#FFFFFF") +
+    theme(axis.title.x = element_text(size = 11),
+          axis.line = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_text(size = 11),
+          axis.ticks = element_blank(),
+          panel.background = element_blank(),
+          panel.border=element_blank(),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank())
+}
 
 ## ---- datatypes --------
-# Table of data types
-datatypetable <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Datatype_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Datatype") %>%
-  select(-name) %>%
-  group_by(Datatype) %>%
-  summarise(Count = length(Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  mutate(Frequency = paste0(Count, 
-                            " (",
-                            Percentage,
-                            "%)")) %>%
-  select(-Count, -Percentage)
 
-# Table of personal data types
-personaldatatypes <- dppsurvey %>%
-  pivot_longer(cols = grep("^Personaldata_type_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Personal_Datatype") %>%
-  select(-name) %>%
-  group_by(Personal_Datatype)
+datatypes <- function(data){
+  # Table of data types
+  datatypetable <- data %>% 
+    pivot_longer(cols = grep("^Datatype_[0-9]+$", names(data), value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "Datatype") %>%
+    select(-name) %>%
+    group_by(Datatype) %>%
+    summarise(Count = length(Datatype)) %>%
+    arrange(Count) %>% # Order by count
+    mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
+    mutate(Percentage = round(Count/dim(data)[1]*100,1)) %>%
+    map_df(rev) %>% # reverse order
+    mutate(Frequency = paste0(Count, " (", Percentage, "%)")) %>%
+    select(-Count, -Percentage)
+  
+  # Table of personal data types
+  tablepersdata <- data %>%
+    pivot_longer(cols = grep("^Personaldata_type_[0-9]+$", names(data), value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "Personal_Datatype") %>%
+    select(-name) %>%
+    group_by(Personal_Datatype) %>%
+    summarise(Count = length(Personal_Datatype)) %>%
+    arrange(Count) %>% # Order by count
+    mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype), # Update factor levels
+           Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+    map_df(rev) %>% # reverse order
+    mutate(Frequency = paste0(Count, " (", Percentage, "%)")) %>%
+    select(-Count, -Percentage)
+  
+  kables(list(
+    kbl(datatypetable,
+        col.names = gsub("_", " ", names(datatypetable)), 
+        align = "l",
+        caption = "<b>Types of data used</b>",
+        valign = 't') %>%
+      kable_classic(latex_options = "hover",
+                    full_width = F, 
+                    html_font = "Verdana",
+                    font_size = 12,
+                    position = "float_left"),
+    kbl(tablepersdata, 
+        col.names = gsub("_", " ", names(tablepersdata)), 
+        align = "l",
+        caption = "<b>Types of <i>personal</i> data used</b>",
+        valign = 't') %>%
+      kable_classic(latex_options = "hover",
+                    full_width = F,
+                    html_font = "Verdana",
+                    font_size = 12,
+                    position = "left")))
+}
 
-tablepersdata <- personaldatatypes %>%
-  summarise(Count = length(Personal_Datatype)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype), # Update factor levels
-         Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-  map_df(rev) %>% # reverse order
-  mutate(Frequency = paste0(Count, 
-                            " (",
-                            Percentage,
-                            "%)"),
-  ) %>%
-  select(-Count, -Percentage)
 
-kables(list(
-  kbl(datatypetable,
-      col.names = gsub("_", 
-                       " ", 
-                       names(datatypetable)), 
-      align = "l",
-      caption = "<b>Types of data used</b>",
-      valign = 't') %>%
-    kable_classic(latex_options = "hover",
-                  full_width = F, 
-                  html_font = "Verdana",
-                  font_size = 12,
-                  position = "float_left"),
-  kbl(tablepersdata, 
-      col.names = gsub("_", 
-                       " ", 
-                       names(tablepersdata)), 
-      align = "l",
-      caption = "<b>Types of <i>personal</i> data used</b>",
-      valign = 't') %>%
-    kable_classic(latex_options = "hover",
-                  full_width = F,
-                  html_font = "Verdana",
-                  font_size = 12,
-                  position = "left")))
+## ---- datatypesdepartments --------
 
+datatypesdepartments <- function(data, string,
+                                 title = "Personal data types across departments",
+                                 caption = "Personal data types used in each department"){
+  data %>%
+    pivot_longer(cols = grep(paste0("^Dept_",string,"_[0-9]+$"), names(data), value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "Department") %>%
+    select(-name) %>%
+    pivot_longer(cols = grep("^Personaldata_type_[0-9]+$", names(data), value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "Personal_Datatype") %>%
+    select(-name) %>%
+    group_by(Department, Personal_Datatype) %>%
+    summarise(Count = length(Personal_Datatype)) %>%
+    arrange(Count) %>% # Order by count
+    mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
+    ggplot(aes(x = Personal_Datatype, y = Count)) + 
+    geom_bar(stat = "identity", fill = "#FFCD00", width = 0.2) + 
+    facet_wrap(~Department, ncol = 3, labeller = label_wrap_gen(width=14)) +
+    labs(x = "", title = title, caption = caption) +
+    coord_flip() +
+    theme_classic() +
+    geom_text(aes(label = Count),
+              #vjust = 0.5, 
+              hjust = "inward", #-0.2,
+              color = "black") +
+    theme(axis.title.x = element_text(size = 10),
+          axis.line = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_text(size = 10),
+          axis.ticks = element_blank(),
+          #panel.background = element_rect(fill = NA, color = "black"),
+          panel.background = element_blank(),
+          panel.border=element_blank(), #rect(fill = NA),
+          panel.spacing.y = unit(1, "lines"),
+          panel.grid.major.y = element_line(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank(),
+          strip.background = element_rect(color="white",
+                                          size=1.5),
+          strip.text = element_text(family = "Verdana",
+                                    size = 10,
+                                    face = "bold"))
+}
+
+
+
+# COPY
+#
+#data %>%
+#  pivot_longer(cols = grep(paste0("Dept_",string,"_[0-9]$"), 
+#                           names(data), 
+#                           value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "Department") %>%
+#  select(-name) %>%
+#  pivot_longer(cols = grep("Position_[0-9]$", 
+#                           names(data), 
+#                           value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "Position") %>%
+#  select(-name) %>%
+
+# OLD
+#beta_datatypegraphs <- personaldatatypes %>%
+#  pivot_longer(cols = grep("^Dept_Science_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "Department") %>%
+#  select(-name) %>%
+#  group_by(Department, Personal_Datatype) %>%
+#  summarise(Count = length(Personal_Datatype)) %>%
+#  arrange(Count) %>% # Order by count
+#  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
+#  ggplot(aes(x = Personal_Datatype, y = Count)) + 
+#  geom_bar(stat = "identity", fill = "#FFCD00") + 
+#  facet_wrap(~Department, ncol = 4,
+#             labeller = label_wrap_gen(width=14)) +
+#  labs(x = "", title = "Personal data types across Science departments") +
+#  coord_flip() +
+#  theme_classic() +
+#  geom_text(aes(label = Count),
+#            #vjust = 0.5, 
+#            hjust = "inward", #-0.2, #"inward",
+#            color = "black") +
+#  theme(axis.title.x = element_text(size = 10),
+#        axis.line = element_blank(),
+#        axis.text.x = element_blank(),
+#        axis.text.y = element_text(size = 10),
+#        axis.ticks = element_blank(),
+#        #panel.background = element_rect(fill = NA, color = "black"),
+#        panel.background = element_blank(),
+#        panel.border=element_blank(), #rect(fill = NA),
+#        panel.spacing.y = unit(1, "lines"),
+#        panel.grid.major.y = element_line(),
+#        panel.grid.minor=element_blank(),
+#        plot.background=element_blank(),
+#        strip.background = element_rect(color="white",
+#                                        size=1.5),
+#        strip.text = element_text(family = "Verdana",
+#                                  size = 10,
+#                                  face = "bold"))#
+#
+#beta_datatypegraphs
 
 
 ## ---- storageplot --------
-dppsurvey %>% 
-  pivot_longer(cols = grep("^Storage_medium_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Storage") %>%
-  select(-name) %>%
-  group_by(Storage) %>%
-  summarise(Count = length(Storage)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Storage = factor(Storage, levels=Storage)) %>% # Update factor levels
-  ggplot(aes(x = Storage, y = Count)) + 
-  geom_bar(stat = "identity") + 
-  labs(x = "", title = "Storage media used",
-       caption = "Storage Media Used for Storing Personal Data") +
-  coord_flip() +
-  theme_classic() +
-  geom_label(aes(label = Count), position=position_dodge(width=1.2),
-             color = "black",
-             fill = uucol)
+storageplot <- function(data, 
+                        title = "Storage media used", 
+                        caption = "Storage Media Used for Storing Personal Data") {
+  data %>% 
+    pivot_longer(cols = grep("^Storage_medium_[0-9]+$", names(data), value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "Storage") %>%
+    select(-name) %>%
+    group_by(Storage) %>%
+    summarise(Count = length(Storage)) %>%
+    arrange(Count) %>% # Order by count
+    mutate(Storage = factor(Storage, levels=Storage)) %>% # Update factor levels
+    ggplot(aes(x = Storage, y = Count)) + 
+    geom_bar(stat = "identity") + 
+    labs(x = "", 
+         title = title,
+         caption = caption) +
+    coord_flip() +
+    theme_classic() +
+    geom_label(aes(label = Count), position=position_dodge(width=1.2),
+               color = "black",
+               fill = uucol)
+}
 
-
-
+# Old
+#dppsurvey %>% 
+#  pivot_longer(cols = grep("^Storage_medium_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "Storage") %>%
+#  select(-name) %>%
+#  group_by(Storage) %>%
+#  summarise(Count = length(Storage)) %>%
+# arrange(Count) %>% # Order by count
+#  mutate(Storage = factor(Storage, levels=Storage)) %>% # Update factor levels
+#  ggplot(aes(x = Storage, y = Count)) + 
+#  geom_bar(stat = "identity") + 
+#  labs(x = "", title = "Storage media used",
+#       caption = "Storage Media Used for Storing Personal Data") +
+# coord_flip() +
+#  theme_classic() +
+#  geom_label(aes(label = Count), position=position_dodge(width=1.2),
+#             color = "black",
+#             fill = uucol)
 
 ## ---- consentforms --------
 consent_usage_plot <- dppsurvey %>% 
