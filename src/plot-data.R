@@ -79,8 +79,8 @@ uucol <- "#FFCD00"
 
 plotdepartments <- function(data,
                              string,
-                             title = "Department and Position representation",
-                             caption = "Survey respondents per department and position") {
+                             title = "Department representation",
+                             caption = "Survey respondents per department") {
   
   data %>%
     pivot_longer(cols = grep(paste0("Dept_",string,"_[0-9]$"), 
@@ -89,41 +89,20 @@ plotdepartments <- function(data,
                  values_drop_na = TRUE,
                  values_to = "Department") %>%
     select(-name) %>%
-    pivot_longer(cols = grep("Position_[0-9]$", 
-                             names(data), 
-                             value=TRUE), 
-                 values_drop_na = TRUE,
-                 values_to = "Position") %>%
-    select(-name) %>%
-    group_by(Department, Position) %>%
+    group_by(Department) %>%
     summarise(Count = length(Department)) %>%
+    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     ggplot(aes(reorder(Department, 
-                       -Count, 
+                       -Percentage, 
                        sum, 
                        decreasing = T), 
-               Count, 
-               fill = Position)) +
+               Percentage)) +
     coord_flip() +
     theme_classic() + 
-    geom_col() +
-    scale_fill_manual(values = UU_pallette) +
+    geom_col(fill = uucol) +
     labs(x = "", title = title, caption = caption) +
-    scale_y_discrete(expand = expansion(add = 4)) + # make field larger to see label
-    #scale_x_continuous(expand = expansion(add = 3)) + 
-    geom_label(aes(label = after_stat(y), group = Department), # totals per dept
-               stat = 'summary', 
-               fun = sum, 
-               vjust = 0.5, 
-               hjust = -0.2, #"inward",
-               nudge_y = 2,
-               label.size = NA, #1,
-               label.padding = unit(0.35, "lines"),
-               #label.r = unit(0.25, "lines"),
-               color = "black",
-               fill = "#FFFFFF") + #"#FFCD00") +
-    geom_text(aes(label = Count), # counts per position per department
-              color = "white",
-              fill = "#FFFFFF",
+    geom_text(aes(label = paste0(Percentage, "%")), # % per department
+              color = "black",
               position = position_stack(vjust = 0.5)) +
     theme(legend.text = element_text(size = 8),
           legend.position = "bottom",
@@ -137,8 +116,7 @@ plotdepartments <- function(data,
           panel.border=element_blank(),
           panel.grid.major=element_blank(),
           panel.grid.minor=element_blank(),
-          plot.background=element_blank()) +
-    guides(fill = guide_legend(nrow = 3, byrow = FALSE))
+          plot.background=element_blank())
 }
 
 ## ---- read-opentext --------
@@ -180,13 +158,9 @@ positionsmeetings <- function(interviewdata,
     labs(x = "", title = title, caption = caption) +
     coord_flip() +
     theme_classic() +
-    geom_label(aes(label = paste0(Percentage, "%")), position=position_dodge(width=1.2),
-               vjust = 0.5, 
-               hjust = 'inward', #-0.2,
-               label.size = NA, #1,
-               label.padding = unit(0.35, "lines"),
-               color = "black",
-               fill = "#FFFFFF") +
+    geom_text(aes(label = paste0(Percentage, "%")),
+              color = "black",
+              position = position_stack(vjust = 0.5)) +
     theme(axis.title.x = element_text(size = 11),
           axis.line = element_blank(),
           axis.text.x = element_blank(),
@@ -274,16 +248,22 @@ datatypesdepartments <- function(data, string,
     summarise(Count = length(Personal_Datatype)) %>%
     arrange(Count) %>% # Order by count
     mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
-    ggplot(aes(x = Personal_Datatype, y = Count)) + 
-    geom_bar(stat = "identity", fill = "#FFCD00", width = 0.2) + 
+    
+    ggplot(aes(reorder(Personal_Datatype, 
+                       -Count, 
+                       sum, 
+                       decreasing = T), 
+               Count)) +
+    #ggplot(aes(x = Personal_Datatype, y = Count)) + 
+    coord_flip() +
+    theme_classic() + 
+    #geom_bar(stat = "identity", fill = "#FFCD00", width = 0.2) + 
+    geom_col(fill = uucol) +
     facet_wrap(~Department, ncol = 3, labeller = label_wrap_gen(width=14)) +
     labs(x = "", title = title, caption = caption) +
-    coord_flip() +
-    theme_classic() +
     geom_text(aes(label = Count),
-              #vjust = 0.5, 
-              hjust = "inward", #-0.2,
-              color = "black") +
+              color = "black",
+              position = position_stack(vjust = 0.5)) +
     theme(axis.title.x = element_text(size = 10),
           axis.line = element_blank(),
           axis.text.x = element_blank(),
@@ -302,8 +282,6 @@ datatypesdepartments <- function(data, string,
                                     size = 10,
                                     face = "bold"))
 }
-
-
 
 # COPY
 #
@@ -363,10 +341,108 @@ datatypesdepartments <- function(data, string,
 #beta_datatypegraphs
 
 
+## ---- measuresplot --------
+
+measuresplot <- function(data,
+                         title = "Protective and planning measures",
+                         caption = "Organisational and technical measures used in handling personal data"){
+  data %>%
+    pivot_longer(cols = grep("^Orgmeasures_[0-9]+$", names(data), value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "Measures") %>%
+    select(-name) %>%
+    group_by(Measures) %>%
+    summarise(Count = length(Measures)) %>%
+    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    mutate(Measures = factor(rev(Measures), levels=rev(Measures))) %>% # Update factor levels
+    #arrange(Percentage) %>% # Order by %
+    #ggplot(aes(reorder(Measures, -Percentage, sum, decreasing = T), Percentage)) +
+    ggplot(aes(Measures, Percentage)) +
+    geom_bar(stat = "identity", fill = uucol) + 
+    labs(x = "", title = title, caption = caption) +
+    coord_flip() +
+    theme_classic() +
+    geom_col(fill = uucol) +
+    geom_text(aes(label = paste0(Percentage, "%")),
+              color = "black",
+              position = position_stack(vjust = 0.5)) +
+    theme(legend.text = element_text(size = 8),
+          legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.title.x = element_text(size = 11),
+          axis.line = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_text(size = 11),
+          axis.ticks = element_blank(),
+          panel.background = element_blank(),
+          panel.border=element_blank(),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank())
+} 
+
+### OLD
+#measures_plot <- 
+#  dppsurvey %>% 
+#  pivot_longer(cols = grep("Faculty_[0-9]$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "Faculty") %>%
+#  select(-name) %>%
+#  pivot_longer(cols = grep("^Orgmeasures_[0-9]+$", names(dppsurvey), value=TRUE), 
+#               values_drop_na = TRUE,
+#               values_to = "Measures") %>%
+#  select(-name) %>%
+#  group_by(Measures, Faculty) %>%
+#  summarise(Count = length(Measures)) %>%
+#  arrange(Count) %>% # Order by count
+#  #mutate(Measures = factor(Measures, levels=Measures)) %>% # Update factor levels
+#  ggplot(aes(reorder(Measures, 
+#                     -Count, 
+#                     sum, 
+#                     decreasing = T), 
+#             Count, 
+#             fill = Faculty)) +
+#  geom_bar(stat = "identity", fill = "#FFCD00") + 
+#  labs(x = "", title = "Protective and planning measures",
+#       caption = "Organisational and technical measures used in handling personal data") +
+#  coord_flip() +
+#  theme_classic() +
+#  geom_col() +
+#  scale_fill_manual(values = UU_pallette) +
+#  scale_y_discrete(expand = expansion(add = 4)) + # make field larger to see label
+#  geom_label(aes(label = after_stat(y), group = Measures),
+#             stat = 'summary',
+#             fun = sum,
+#             vjust = 0.5, 
+#             hjust = -0.2, #"inward",
+#             label.size = NA, #1,
+#             nudge_y = 2,
+#             label.padding = unit(0.35, "lines"),
+#             color = "black",
+#             fill = "#FFFFFF") + #"#FFCD00") +
+#  geom_text(aes(label = Count), # counts per measure per faculty
+#            color = "white",
+#            fill = "#FFFFFF",
+#            position = position_stack(vjust = 0.5)) +
+#  theme(legend.text = element_text(size = 8),
+#        legend.position = "bottom",
+#        legend.title = element_blank(),
+#        axis.title.x = element_text(size = 11),
+#        axis.line = element_blank(),
+#        axis.text.x = element_blank(),
+#        axis.text.y = element_text(size = 11),
+#        axis.ticks = element_blank(),
+#        panel.background = element_blank(),
+#        panel.border=element_blank(),
+#        panel.grid.major=element_blank(),
+#        panel.grid.minor=element_blank(),
+#        plot.background=element_blank()) +
+#  guides(fill = guide_legend(nrow = 3, byrow = FALSE))
+
 ## ---- storageplot --------
 storageplot <- function(data, 
                         title = "Storage media used", 
-                        caption = "Storage Media Used for Storing Personal Data") {
+                        caption = "Percentage of media used to store personal data") {
   data %>% 
     pivot_longer(cols = grep("^Storage_medium_[0-9]+$", names(data), value=TRUE), 
                  values_drop_na = TRUE,
@@ -374,172 +450,270 @@ storageplot <- function(data,
     select(-name) %>%
     group_by(Storage) %>%
     summarise(Count = length(Storage)) %>%
-    arrange(Count) %>% # Order by count
+    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #arrange(Count) %>% # Order by count
     mutate(Storage = factor(Storage, levels=Storage)) %>% # Update factor levels
-    ggplot(aes(x = Storage, y = Count)) + 
+    ggplot(aes(x = Storage, y = Percentage)) + 
     geom_bar(stat = "identity") + 
-    labs(x = "", 
-         title = title,
-         caption = caption) +
+    labs(x = "", title = title, caption = caption) +
     coord_flip() +
     theme_classic() +
-    geom_label(aes(label = Count), position=position_dodge(width=1.2),
-               color = "black",
-               fill = uucol)
+    geom_col(fill = uucol) +
+    geom_text(aes(label = paste0(Percentage, "%")),
+              color = "black",
+              position = position_stack(vjust = 0.5)) +
+    theme(legend.text = element_text(size = 8),
+          legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.title.x = element_text(size = 11),
+          axis.line = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_text(size = 11),
+          axis.ticks = element_blank(),
+          panel.background = element_blank(),
+          panel.border=element_blank(),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank())
+    #geom_label(aes(label = Count), position=position_dodge(width=1.2),
+    #           color = "black",
+    #           fill = uucol)
 }
 
-# Old
-#dppsurvey %>% 
-#  pivot_longer(cols = grep("^Storage_medium_[0-9]+$", names(dppsurvey), value=TRUE), 
-#               values_drop_na = TRUE,
-#               values_to = "Storage") %>%
-#  select(-name) %>%
-#  group_by(Storage) %>%
-#  summarise(Count = length(Storage)) %>%
-# arrange(Count) %>% # Order by count
-#  mutate(Storage = factor(Storage, levels=Storage)) %>% # Update factor levels
-#  ggplot(aes(x = Storage, y = Count)) + 
-#  geom_bar(stat = "identity") + 
-#  labs(x = "", title = "Storage media used",
-#       caption = "Storage Media Used for Storing Personal Data") +
-# coord_flip() +
-#  theme_classic() +
-#  geom_label(aes(label = Count), position=position_dodge(width=1.2),
-#             color = "black",
-#             fill = uucol)
 
 ## ---- consentforms --------
-consent_usage_plot <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Consentforms_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Consent_Forms") %>%
-  select(-name) %>%
-  group_by(Consent_Forms) %>%
-  summarise(Count = length(Consent_Forms)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Consent_Forms = factor(Consent_Forms, levels=Consent_Forms)) %>% # Update factor levels
-  ggplot(aes(x = Consent_Forms, y = Count)) + 
-  geom_bar(stat = "identity") + 
-  labs(x = "", 
-       title = "Consent Forms",
-       caption = "Usage of consent forms") +
-  coord_flip() +
-  theme_classic() +
-  geom_label(aes(label = Count), position=position_dodge(width=1.2),
-             color = "black",
-             fill = uucol)
-
-consent_content_plot <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Consent_content_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Consent_Content") %>%
-  select(-name) %>%
-  group_by(Consent_Content) %>%
-  summarise(Count = length(Consent_Content)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(Consent_Content = factor(Consent_Content, levels=Consent_Content)) %>% # Update factor levels
-  ggplot(aes(x = Consent_Content, y = Count)) + 
-  geom_bar(stat = "identity") + 
-  labs(x = "", 
-       title = "Content of forms",
-       caption = "Typical content of an informed consent form") +
-  coord_flip() +
-  theme_classic() +
-  geom_label(aes(label = Count), position=position_dodge(width=1.2),
-             color = "black",
-             fill = uucol)
-
-grid.arrange(consent_usage_plot, consent_content_plot, nrow = 1)
-
+consentforms <- function(data, title1 = "Consent Forms", 
+                         title2 = "Content of forms",
+                         caption1 = "Usage of consent forms",
+                         caption2 = "Typical content of an informed consent form"){
+  
+  consent_usage_plot <- 
+    data %>% 
+    pivot_longer(cols = grep("^Consentforms_[0-9]+$", names(data), value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "Consent_Forms") %>%
+    select(-name) %>%
+    group_by(Consent_Forms) %>%
+    summarise(Count = length(Consent_Forms)) %>%
+    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #arrange(Count) %>% # Order by count
+    mutate(Consent_Forms = factor(Consent_Forms, levels=Consent_Forms)) %>% # Update factor levels
+    ggplot(aes(x = Consent_Forms, y = Percentage)) + 
+    geom_bar(stat = "identity") + 
+    labs(x = "", title = title1, caption = caption1) +
+    coord_flip() +
+    theme_classic() +
+    geom_col(fill = uucol) +
+    geom_text(aes(label = paste0(Percentage, "%")),
+              color = "black",
+              position = position_stack(vjust = 0.5)) +
+    theme(legend.text = element_text(size = 8),
+          legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.title.x = element_text(size = 11),
+          axis.line = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_text(size = 11),
+          axis.ticks = element_blank(),
+          panel.background = element_blank(),
+          panel.border=element_blank(),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank())
+    
+  consent_content_plot <- 
+    data %>% 
+    pivot_longer(cols = grep("^Consent_content_[0-9]+$", names(data), value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "Consent_Content") %>%
+    select(-name) %>%
+    group_by(Consent_Content) %>%
+    summarise(Count = length(Consent_Content)) %>%
+    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #arrange(Count) %>% # Order by count
+    mutate(Consent_Content = factor(Consent_Content, levels=Consent_Content)) %>% # Update factor levels
+    ggplot(aes(x = Consent_Content, y = Percentage)) + 
+    geom_bar(stat = "identity") + 
+    labs(x = "", title = title2, caption = caption2) +
+    coord_flip() +
+    theme_classic() +
+    geom_col(fill = uucol) +
+    geom_text(aes(label = paste0(Percentage, "%")),
+              color = "black",
+              position = position_stack(vjust = 0.5)) +
+    theme(legend.text = element_text(size = 8),
+          legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.title.x = element_text(size = 11),
+          axis.line = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_text(size = 11),
+          axis.ticks = element_blank(),
+          panel.background = element_blank(),
+          panel.border=element_blank(),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank())
+  
+  grid.arrange(consent_usage_plot, consent_content_plot, nrow = 1)
+}
 
 
 ## ---- dpia --------
-DPIA_experience_plot <- dppsurvey %>% 
-  pivot_longer(cols = grep("^DPIA_experience_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "DPIA_experience") %>%
-  select(-name) %>%
-  group_by(DPIA_experience) %>%
-  summarise(Count = length(DPIA_experience)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(DPIA_experience = factor(DPIA_experience, levels=DPIA_experience)) %>% # Update factor levels
-  ggplot(aes(x = DPIA_experience, y = Count)) + 
-  geom_bar(stat = "identity") + 
-  labs(x = "", 
-       title = "Experience with DPIAs",
-       caption = "Familiarity and experience with DPIAs") +
-  coord_flip() +
-  theme_classic() +
-  geom_label(aes(label = Count), position=position_dodge(width=1.2),
-             color = "black",
-             fill = uucol)
 
-DPIA_help_plot <- dppsurvey %>% 
-  pivot_longer(cols = grep("^DPIA_Help_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "DPIA_help") %>%
-  select(-name) %>%
-  group_by(DPIA_help) %>%
-  summarise(Count = length(DPIA_help)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(DPIA_help = factor(DPIA_help, levels=DPIA_help)) %>% # Update factor levels
-  ggplot(aes(x = DPIA_help, y = Count)) + 
-  geom_bar(stat = "identity") + 
-  labs(x = "", 
-       title = "Help received with DPIAs",
-       caption = "Help received with DPIAs") +
-  coord_flip() +
-  theme_classic() +
-  geom_label(aes(label = Count), position=position_dodge(width=1.2),
-             color = "black",
-             fill = uucol)
-
-grid.arrange(DPIA_experience_plot, DPIA_help_plot, nrow = 1)
-
+dpiaplot <- function(data, title1 = "Experience with DPIAs", 
+                     caption1 = "Familiarity and experience with DPIAs", 
+                     title2 = "Help received with DPIAs", 
+                     caption2 = "Help received with DPIAs"){
+  DPIA_experience_plot <- 
+    data %>% 
+    pivot_longer(cols = grep("^DPIA_experience_[0-9]+$", names(data), value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "DPIA_experience") %>%
+    select(-name) %>%
+    group_by(DPIA_experience) %>%
+    summarise(Count = length(DPIA_experience)) %>%
+    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #arrange(Count) %>% # Order by count
+    mutate(DPIA_experience = factor(DPIA_experience, levels=DPIA_experience)) %>% # Update factor levels
+    ggplot(aes(x = DPIA_experience, y = Percentage)) + 
+    geom_bar(stat = "identity") + 
+    labs(x = "", title = title1, caption = caption1) +
+    coord_flip() +
+    theme_classic() +
+    geom_col(fill = uucol) +
+    geom_text(aes(label = paste0(Percentage, "%")),
+              color = "black",
+              position = position_stack(vjust = 0.5)) +
+    theme(legend.text = element_text(size = 8),
+          legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.title.x = element_text(size = 11),
+          axis.line = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_text(size = 11),
+          axis.ticks = element_blank(),
+          panel.background = element_blank(),
+          panel.border=element_blank(),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank())
+  
+  DPIA_help_plot <- 
+    data %>% 
+    pivot_longer(cols = grep("^DPIA_Help_[0-9]+$", names(data), value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "DPIA_help") %>%
+    select(-name) %>%
+    group_by(DPIA_help) %>%
+    summarise(Count = length(DPIA_help)) %>%
+    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #arrange(Count) %>% # Order by count
+    mutate(DPIA_help = factor(DPIA_help, levels=DPIA_help)) %>% # Update factor levels
+    ggplot(aes(x = DPIA_help, y = Percentage)) + 
+    geom_bar(stat = "identity") + 
+    labs(x = "", title = title2, caption = caption2) +
+    coord_flip() +
+    theme_classic() +
+    geom_col(fill = uucol) +
+    geom_text(aes(label = paste0(Percentage, "%")),
+              color = "black",
+              position = position_stack(vjust = 0.5)) +
+    theme(legend.text = element_text(size = 8),
+          legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.title.x = element_text(size = 11),
+          axis.line = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_text(size = 11),
+          axis.ticks = element_blank(),
+          panel.background = element_blank(),
+          panel.border=element_blank(),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank())
+  
+  grid.arrange(DPIA_experience_plot, DPIA_help_plot, nrow = 1)
+}
 
 ## ---- datasharing --------
-external_sharing_plot <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Share_outside_UU_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "external_sharing") %>%
-  select(-name) %>%
-  group_by(external_sharing) %>%
-  summarise(Count = length(external_sharing)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(external_sharing = factor(external_sharing, levels=external_sharing)) %>% # Update factor levels
-  ggplot(aes(x = external_sharing, y = Count)) + 
-  geom_bar(stat = "identity") + 
-  labs(x = "", 
-       title = "External sharing",
-       caption = "Data Sharing with External Parties") +
-  coord_flip() +
-  theme_classic() +
-  geom_label(aes(label = Count), position=position_dodge(width=1.2),
-             color = "black",
-             fill = uucol)
 
-sharing_measures_plot <- dppsurvey %>% 
-  pivot_longer(cols = grep("^Share_measures_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "sharing_measures") %>%
-  select(-name) %>%
-  group_by(sharing_measures) %>%
-  summarise(Count = length(sharing_measures)) %>%
-  arrange(Count) %>% # Order by count
-  mutate(sharing_measures = factor(sharing_measures, levels=sharing_measures)) %>% # Update factor levels
-  ggplot(aes(x = sharing_measures, y = Count)) + 
-  geom_bar(stat = "identity") + 
-  labs(x = "", 
-       title = "Sharing measures",
-       caption = "Protection measures taken while sharing data") +
-  coord_flip() +
-  theme_classic() +
-  geom_label(aes(label = Count), position=position_dodge(width=1.2),
-             color = "black",
-             fill = uucol)
-
-grid.arrange(external_sharing_plot, sharing_measures_plot, nrow = 1)
-
+datasharingplot <- function(data, 
+                            title1 = "External sharing",
+                            caption1 = "Data sharing with external parties",
+                            title2 = "Sharing measures",
+                            caption2 = "Protection measures taken when sharing data"){
+  
+  external_sharing_plot <- 
+    data %>% 
+    pivot_longer(cols = grep("^Share_outside_UU_[0-9]+$", names(data), value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "external_sharing") %>%
+    select(-name) %>%
+    group_by(external_sharing) %>%
+    summarise(Count = length(external_sharing)) %>%
+    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #arrange(Count) %>% # Order by count
+    mutate(external_sharing = factor(external_sharing, levels=external_sharing)) %>% # Update factor levels
+    ggplot(aes(x = external_sharing, y = Percentage)) + 
+    geom_bar(stat = "identity") + 
+    labs(x = "", title = title1, caption = caption1) +
+    coord_flip() +
+    theme_classic() +
+    geom_col(fill = uucol) +
+    geom_text(aes(label = paste0(Percentage, "%")),
+              color = "black",
+              position = position_stack(vjust = 0.5)) +
+    theme(legend.text = element_text(size = 8),
+          legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.title.x = element_text(size = 11),
+          axis.line = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_text(size = 11),
+          axis.ticks = element_blank(),
+          panel.background = element_blank(),
+          panel.border=element_blank(),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank())
+  
+  sharing_measures_plot <- 
+    data %>% 
+    pivot_longer(cols = grep("^Share_measures_[0-9]+$", names(data), value=TRUE), 
+                 values_drop_na = TRUE,
+                 values_to = "sharing_measures") %>%
+    select(-name) %>%
+    group_by(sharing_measures) %>%
+    summarise(Count = length(sharing_measures)) %>%
+    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #arrange(Count) %>% # Order by count
+    mutate(sharing_measures = factor(sharing_measures, levels=sharing_measures)) %>% # Update factor levels
+    ggplot(aes(x = sharing_measures, y = Percentage)) + 
+    geom_bar(stat = "identity") + 
+    labs(x = "", title = title2, caption = caption2) +
+    coord_flip() +
+    theme_classic() +
+    geom_col(fill = uucol) +
+    geom_text(aes(label = paste0(Percentage, "%")),
+              color = "black",
+              position = position_stack(vjust = 0.5)) +
+    theme(legend.text = element_text(size = 8),
+          legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.title.x = element_text(size = 11),
+          axis.line = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_text(size = 11),
+          axis.ticks = element_blank(),
+          panel.background = element_blank(),
+          panel.border=element_blank(),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank())
+  
+  grid.arrange(external_sharing_plot, sharing_measures_plot, nrow = 1)
+}
 
 ## ---- datapublishing --------
 dppsurvey %>% 
