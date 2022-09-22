@@ -444,19 +444,16 @@ meetings_faculties %>%
   mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
   arrange(Percentage) %>% # Order by %
   ggplot(aes(x = Faculty, y = Percentage)) + 
-  geom_bar(stat = "identity", fill = "#FFCD00") + 
+  geom_bar(stat = "identity", fill = uucol) + 
   labs(x = "", 
        title = "Faculty representation one-on-one meetings",
        caption = "Faculty representation of researchers spoken to in one-on-one meetings") +
   coord_flip() +
   theme_classic() +
-  geom_label(aes(label = paste0(Percentage, "%")), position=position_dodge(width=1.2),
-             vjust = 0.5, 
-             hjust = 'inward', #-0.2,
-             label.size = NA, #1,
-             label.padding = unit(0.35, "lines"),
-             color = "black",
-             fill = "#FFFFFF") + #"#FFCD00") +
+  geom_col(fill = uucol) +
+  geom_text(aes(label = paste0(Percentage, "%")),
+            color = "black",
+            position = position_stack(vjust = 0.5)) +
   theme(axis.title.x = element_text(size = 11),
         axis.line = element_blank(),
         axis.text.x = element_blank(),
@@ -629,7 +626,7 @@ datatypegraphs <- dppsurvey %>%
   select(-name) %>%
   group_by(Faculty, Personal_Datatype) %>%
   summarise(Count = length(Personal_Datatype)) %>%
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
+  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,0)) %>%
   arrange(Percentage) %>% # Order by percentage
   mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
   ggplot(aes(x = Personal_Datatype, y = Percentage)) + 
@@ -641,10 +638,10 @@ datatypegraphs <- dppsurvey %>%
        caption = "Percentage of the total sample size of personal data used in every UU faculty") +
   coord_flip() +
   theme_classic() +
-  geom_text(aes(label = paste0(Percentage, "%")),
-             #vjust = 0.5, 
-             hjust = "inward", #-0.2, #"inward",
-             color = "black") +
+  geom_col(fill = uucol) +
+  geom_text(aes(label = Percentage),
+            color = "black",
+            position = position_stack(vjust = 0.5)) +
   theme(axis.title.x = element_text(size = 10),
         axis.line = element_blank(),
         axis.text.x = element_blank(),
@@ -824,7 +821,7 @@ datatypesdepartments(dppsurvey_geo, "Geo",
 The first part of the survey addressed the researchers' current practices in 
 handling personal data in their research.
 
-### Organisational and technical measures {#organisational-technical-measures .tabset}
+### Protective measures {#organisational-technical-measures .tabset}
 #### UU-wide
 With respect to organisational and technical measures used to handle personal 
 data, most respondents indicated that they pseudonymise/anonymise their data. 
@@ -838,89 +835,55 @@ On the other hand, GDPR-specific assessments such as Data Protection Impact
 Assessments (DPIAs) or privacy reviews were least used - as it stands, these 
 assessments are still only carried out on a case-by-case basis.
  
-```{r measuresused}
-measures_plot <- 
-  dppsurvey %>% 
-  pivot_longer(cols = grep("Faculty_[0-9]$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Faculty") %>%
-  select(-name) %>%
-  pivot_longer(cols = grep("^Orgmeasures_[0-9]+$", names(dppsurvey), value=TRUE), 
-               values_drop_na = TRUE,
-               values_to = "Measures") %>%
-  select(-name) %>%
-  group_by(Measures, Faculty) %>%
-  summarise(Count = length(Measures)) %>%
-  arrange(Count) %>% # Order by count
-  #mutate(Measures = factor(Measures, levels=Measures)) %>% # Update factor levels
-  ggplot(aes(reorder(Measures, 
-                     -Count, 
-                     sum, 
-                     decreasing = T), 
-             Count, 
-             fill = Faculty)) +
-  geom_bar(stat = "identity", fill = "#FFCD00") + 
-  labs(x = "", title = "Protective and planning measures",
-       caption = "Organisational and technical measures used in handling personal data") +
-  coord_flip() +
-  theme_classic() +
-  geom_col() +
-  scale_fill_manual(values = UU_pallette) +
-  scale_y_discrete(expand = expansion(add = 4)) + # make field larger to see label
-  geom_label(aes(label = after_stat(y), group = Measures),
-             stat = 'summary',
-             fun = sum,
-             vjust = 0.5, 
-             hjust = -0.2, #"inward",
-             label.size = NA, #1,
-             nudge_y = 2,
-             label.padding = unit(0.35, "lines"),
-             color = "black",
-             fill = "#FFFFFF") + #"#FFCD00") +
-  geom_text(aes(label = Count), # counts per measure per faculty
-            color = "white",
-            fill = "#FFFFFF",
-            position = position_stack(vjust = 0.5)) +
-  theme(legend.text = element_text(size = 8),
-        legend.position = "bottom",
-        legend.title = element_blank(),
-        axis.title.x = element_text(size = 11),
-        axis.line = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 11),
-        axis.ticks = element_blank(),
-        panel.background = element_blank(),
-        panel.border=element_blank(),
-        panel.grid.major=element_blank(),
-        panel.grid.minor=element_blank(),
-        plot.background=element_blank()) +
-  guides(fill = guide_legend(nrow = 3, byrow = FALSE))
-
-measures_plot
+```{r measuresplot-uuwide}
+measuresplot(dppsurvey)
 ```
 
-
 #### Science
-Here are results per faculty
+Protective measures for Science faculty
+
+```{r measuresplot-science}
+measuresplot(dppsurvey_science)
+```
 
 #### FBSB
-dasd
+Protective measures for the Faculty of Social and Behavioural Sciences (FSBS)
+
+```{r measuresplot-fsw}
+measuresplot(dppsurvey_fsw)
+```
 
 #### Humanities
-asasd
+Protective measures for the Faculty of Humanities.
+
+```{r measuresplot-hum}
+measuresplot(dppsurvey_hum)
+```
 
 #### Veterinary Medicine
-adasds
+Protective measures for the Faculty of Veterinary Medicine.
+
+```{r measuresplot-dgk}
+measuresplot(dppsurvey_vet)
+```
 
 #### LEG
-asasd
+Protective measures for the Faculty of Law, Economics and Governance.
+
+```{r measuresplot-leg}
+measuresplot(dppsurvey_leg)
+```
 
 #### Geo
-asd
+Protective measures for the Faculty of Geosciences.
+
+```{r measuresplot-geo}
+measuresplot(dppsurvey_geo)
+```
 
 ### {-}
 
-### Storage media used {#storage-media-used .tabset}
+### Storage media {#storage-media-used .tabset}
 #### UU-wide
 When working with personal data, it is important to choose a sufficiently 
 secure storage medium. Luckily, most respondents indicated to rely on storage 
@@ -931,30 +894,55 @@ Several respondents also indicated that they use other storage solutions, such
 as those of external institutions (e.g., University Medical Center, Trimbos 
 Institute, Central Bureau of Statistics) and repositories (e.g., DANS EASY, CLARIAH).
 
-```{r storageplot}
+```{r storageplot-uuwide}
+storageplot(dppsurvey)
 ```
 
 #### Science
-Here are results per faculty
+Storage media used in the Science faculty.
+
+```{r storageplot-science}
+storageplot(dppsurvey_science)
+```
 
 #### FBSB
-dasd
+Storage media used in the Faculty of Social and Behavioural Sciences.
+
+```{r storageplot-fsw}
+storageplot(dppsurvey_fsw)
+```
 
 #### Humanities
-asasd
+Storage media used in the Faculty of Humanities.
+
+```{r storageplot-hum}
+storageplot(dppsurvey_hum)
+```
 
 #### Veterinary Medicine
-adasds
+Storage media used in the Faculty of Veterinary Medicine.
+
+```{r storageplot-dgk}
+storageplot(dppsurvey_vet)
+```
 
 #### LEG
-asasd
+Storage media used in the Faculty of Law, Economics and Governance.
+
+```{r storageplot-leg}
+storageplot(dppsurvey_leg)
+```
 
 #### Geo
-asd
+Storage media used in the Faculty of Geosciences.
+
+```{r storageplot-geo}
+storageplot(dppsurvey_geo)
+```
 
 ### {-}
 
-### Consent forms: usage and content {#consent-forms .tabset}
+### Consent forms {#consent-forms .tabset}
 #### UU-wide
 Consent is currently the legal basis most often used in researcher performed at 
 UU. Luckily, only a small number of respondents indicated that consent forms 
@@ -982,26 +970,57 @@ Finally, contact details of the Data Protection Officer (DPO) are not always
 included either, whereas these always have to be provided when working with
 personal data (<a href = "https://gdpr-info.eu/art-13-gdpr/" target = "_blank">art. 13</a>)
 
-```{r consentforms}
+```{r consentforms-uuwide}
+consentforms(dppsurvey)
 ```
 
 #### Science
-Here are results per faculty
+Below the usage and content of informed consent forms at the Science faculty is
+displayed.
+
+```{r consentforms-science}
+consentforms(dppsurvey_science)
+```
 
 #### FBSB
-dasd
+Below the usage and content of informed consent forms at the Faculty of Social 
+and Behavioural Sciences (FSBS) is displayed.
+
+```{r consentforms-fsw}
+consentforms(dppsurvey_fsw)
+```
 
 #### Humanities
-asasd
+Below the usage and content of informed consent forms at the Faculty of 
+Humanities is displayed.
+
+```{r consentforms-hum}
+consentforms(dppsurvey_hum)
+```
 
 #### Veterinary Medicine
-adasds
+Below the usage and content of informed consent forms at the Faculty of 
+Veterinary Medicine is displayed.
+
+```{r consentforms-dgk}
+consentforms(dppsurvey_vet)
+```
 
 #### LEG
-asasd
+Below the usage and content of informed consent forms at the Faculty of Law, 
+Economics and Governance is displayed.
+
+```{r consentforms-leg}
+consentforms(dppsurvey_leg)
+```
 
 #### Geo
-asd
+Below the usage and content of informed consent forms at the Faculty of 
+Geosciences is displayed.
+
+```{r consentforms-geo}
+consentforms(dppsurvey_geo)
+```
 
 ### {-}
 
@@ -1016,26 +1035,57 @@ Currrently, the desired scenario is that researchers get help from a privacy
 officer when performing a DPIA, and the results seem to indicate that this is
 indeed the case in the majority of cases.
 
-```{r dpia}
+```{r dpia-uuwide}
+dpiaplot(dppsurvey)
 ```
 
 #### Science
-Here are results per faculty
+Below the experience and help received with DPIAs is displayed for the Faculty 
+of Science.
+
+```{r dpia-science}
+dpiaplot(dppsurvey_science)
+```
 
 #### FBSB
-dasd
+Below the experience and help received with DPIAs is displayed for the Faculty 
+of Social and Behavioural Sciences (FSBS).
+
+```{r dpia-fsw}
+dpiaplot(dppsurvey_fsw)
+```
 
 #### Humanities
-asasd
+Below the experience and help received with DPIAs is displayed for the Faculty 
+of Humanities.
+
+```{r dpia-hum}
+dpiaplot(dppsurvey_hum)
+```
 
 #### Veterinary Medicine
-adasds
+Below the experience and help received with DPIAs is displayed for the Faculty 
+of Veterinary Medicine.
+
+```{r dpia-dgk}
+dpiaplot(dppsurvey_vet)
+```
 
 #### LEG
-asasd
+Below the experience and help received with DPIAs is displayed for the Faculty 
+of Law, Economics and Governance.
+
+```{r dpia-leg}
+dpiaplot(dppsurvey_leg)
+```
 
 #### Geo
-asd
+Below the experience and help received with DPIAs is displayed for the Faculty 
+of Geosciences. 
+
+```{r dpia-geo}
+dpiaplot(dppsurvey_geo)
+```
 
 ### {-}
 
@@ -1058,26 +1108,54 @@ and providing access without data transfer. Only a few respondents indicated tha
 they involved a data expert while transferring data, and the use of Standard 
 Contractual Clauses appears limited.
 
-```{r datasharing}
+```{r datasharing-uuwide}
+datasharingplot(dppsurvey)
 ```
 
 #### Science
-Here are results per faculty
+Below the data sharing practices across the Faculty of Science are visualised.
+
+```{r datasharing-science}
+datasharingplot(dppsurvey_science)
+```
 
 #### FBSB
-dasd
+Below the data sharing practices across the Faculty of Social and Behavioural 
+Sciences (FSBS) are visualised.
+
+```{r datasharing-fsw}
+datasharingplot(dppsurvey_fsw)
+```
 
 #### Humanities
-asasd
+Below the data sharing practices across the Faculty of Humanities are visualised.
+
+```{r datasharing-hum}
+datasharingplot(dppsurvey_hum)
+```
 
 #### Veterinary Medicine
-adasds
+Below the data sharing practices across the Faculty of Veterinary Sciences are 
+visualised.
+
+```{r datasharing-dgk}
+datasharingplot(dppsurvey_vet)
+```
 
 #### LEG
-asasd
+Below the data sharing practices across the Faculty of Law, Economics and 
+Governance are visualised.
+
+```{r datasharing-leg}
+datasharingplot(dppsurvey_leg)
+```
 
 #### Geo
-asd
+Below the data sharing practices across the Faculty of Geosciences are visualised.
+
+```{r datasharing-geo}
+datasharingplot(dppsurvey_geo)
+```
 
 ### {-}
 
