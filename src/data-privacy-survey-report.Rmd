@@ -227,7 +227,6 @@ position_per_faculty <- dppsurvey %>%
        title = "Faculty and Position representation",
        caption = "Survey respondents per faculty and position") +
   scale_y_discrete(expand = expansion(add = 4)) + # make field larger to see label
-  #scale_x_continuous(expand = expansion(add = 3)) + 
   geom_label(aes(label = after_stat(y), group = Faculty), # totals per faculty
              stat = 'summary', 
              fun = sum, 
@@ -236,7 +235,6 @@ position_per_faculty <- dppsurvey %>%
              nudge_y = 2,
              label.size = NA, #1,
              label.padding = unit(0.35, "lines"),
-             #label.r = unit(0.25, "lines"),
              color = "black",
              fill = "#FFFFFF") + 
   geom_text(aes(label = Count), # counts per position per faculty
@@ -272,17 +270,9 @@ the representation of each department within the Science faculty is visualised.
 
 ```{r sciencedepartments}
 plotdepartments(dppsurvey_science, "Science", 
-                 title = "Departments and Positions Science", 
-                 caption = "Survey respondents per department and position in the Science faculty")
+                 title = "Departmental representation Science faculty", 
+                 caption = "Survey respondents per department in the Science faculty in percentage")
 ```
-
-Most respondents in the online survey seemed to come from the Information and
-Computing Sciences (ICS) and Pharmaceutical Sciences departments, and were 
-relatively early career researchers (PhD/junior/postdoc researcher, 
-assistant/associate professor). This makes sense, as more personal data is 
-likely processed in the fields of ICS and pharmaceuticals, compared to, for 
-example, mathematics.
-
 ### FSBS
 There were `r dim(dppsurvey_fsw)[1]` respondents from the Faculty of Social and
 Behavioural Sciences (FSBS) in the online survey. It took them a median of 
@@ -293,15 +283,9 @@ the representation of each department within FSBS is visualised.
 
 ```{r fswdepartments}
 plotdepartments(dppsurvey_fsw, "FSW", 
-                 title = "Departments and Positions FSBS", 
-                 caption = "Survey respondents per department and position at FSBS")
+                 title = "Departmental representation FSBS", 
+                 caption = "Survey respondents per department at FSBS in percentage")
 ```
-
-Most respondents in the online survey seemed to come from the Education department, 
-although closely followed by Methodology and Statistics and Interdisciplinary 
-Social Sciences. Additionally, respondents from the Faculty of Social and 
-Behavioural Sciences were mostly either PhD/junior/post-doc researcher or 
-Assistant/Associate professors. 
 
 ### Humanities
 There were `r dim(dppsurvey_hum)[1]` respondents from the Faculty of Humanities
@@ -313,15 +297,9 @@ the representation of each department within the Faculty of Humanities is visual
 
 ```{r humdepartments}
 plotdepartments(dppsurvey_hum, "Humanities", 
-                 title = "Departments and Positions Humanities", 
-                 caption = "Survey respondents per department and position at the Faculty of Humanities")
+                 title = "Departmental representation Faculty of Humanities", 
+                 caption = "Survey respondents per department at the Faculty of Humanities in percentage")
 ```
-
-The majority of Humanities researchers responding to the survey were employed 
-at the department of Languages, Literature and Communicaiton. This makes sense, 
-as likely a lot of personal data is processed there. Position-wise, there was 
-quite some variability, although most respondents indicated to be either 
-PhD/junior/postdoc researcher or Assistant/Associate Professor. 
 
 ### Veterinary Medicine
 There were `r dim(dppsurvey_vet)[1]` respondents from the Faculty of Veterinary
@@ -334,16 +312,9 @@ is visualised.
 
 ```{r vetdepartments}
 plotdepartments(dppsurvey_vet, "DGK", 
-                 title = "Departments and Positions Veterinary Medicine", 
-                 caption = "Survey respondents per department and position at the Faculty of Veterinary Medicine")
+                 title = "Departmental representation Veterinary Medicine", 
+                 caption = "Survey respondents per department at the Faculty of Veterinary Medicine in percentage")
 ```
-
-Most respondents from the Veterinary Medicine faculty were employed at the 
-department of Population Health Sciences. This makes sense as this is likely 
-the department in which the largest amount of personal data is processed in 
-research. Interestingly, the respondents consisted only of Assistant/Associate 
-professors and PhD/junior/postdoc researchers, but also support staff and teachers.
-
 ### LEG
 There were `r dim(dppsurvey_leg)[1]` respondents from the Faculty of Law, 
 Economics, and Governance (LEG) in the online survey. It took them a median of 
@@ -355,13 +326,9 @@ Governance (LEG) is visualised.
 
 ```{r legdepartments}
 plotdepartments(dppsurvey_leg, "REBO", 
-                 title = "Departments and Positions LEG", 
-                 caption = "Survey respondents per department and position at the Faculty of Law, Economics, and Governance")
+                 title = "Departmental representation LEG", 
+                 caption = "Survey respondents per department at the Faculty of Law, Economics, and Governance in percentage")
 ```
-
-Most LEG respondents came from the Governance department, closely followed by 
-the department of Law. Respondents were mostly Assistant/Associate professors, 
-with some PhD/junior/postdoc researchers and a few professors.
 
 ### Geo
 There were `r dim(dppsurvey_hum)[1]` respondents from the Faculty of Geosciences
@@ -373,16 +340,9 @@ the representation of each department within the Faculty of Geosciences is visua
 
 ```{r geodepartments}
 plotdepartments(dppsurvey_geo, "Geo", 
-                 title = "Departments and Positions Geosciences", 
-                 caption = "Survey respondents per department and position at the Faculty of Geosciences")
+                 title = "Departmental representation Geosciences", 
+                 caption = "Survey respondents per department at the Faculty of Geosciences in percentage")
 ```
-
-From the Geosciences faculty, most respondents were employed at the department 
-of Sustainable Development, followed by Human Geography and Spatial Planning. 
-Respondents were mostly PhD/junior/postdoc researchers and Assistant/Associate 
-professors. Earth Sciences did not have many respondents, which makes sense as 
-it is less likely that personal data are being processed there in the research 
-context. 
 
 ### {-}
 
@@ -429,7 +389,8 @@ opentext_hum <- opentext %>% filter(grepl("Humanities", Faculty, perl = TRUE))
 From the survey respondents, `r sum(dppsurvey$Email == "Yes", na.rm=TRUE)`
 researchers left their email address to be contacted. Of those, 28 researchers 
 indicated that they were willing to meet with us. Below, the division over 
-faculties can be seen for all interviewees.
+faculties can be seen for all interviewees. Notably, the distribution seemed to
+mirror the faculty distribution in the entire survey relatively well.
 
 ```{r emailaddressplot}
 meetings_faculties <- data.frame(Faculty = str_trim(unlist(str_split(interviews$Faculty, 
@@ -448,23 +409,7 @@ meetings_faculties %>%
   labs(x = "", 
        title = "Faculty representation one-on-one meetings",
        caption = "Faculty representation of researchers spoken to in one-on-one meetings") +
-  coord_flip() +
-  theme_classic() +
-  geom_col(fill = uucol) +
-  geom_text(aes(label = paste0(Percentage, "%")),
-            color = "black",
-            position = position_stack(vjust = 0.5)) +
-  theme(axis.title.x = element_text(size = 11),
-        axis.line = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 11),
-        axis.ticks = element_blank(),
-        panel.background = element_blank(),
-        panel.border=element_blank(),
-        panel.grid.major=element_blank(),
-        panel.grid.minor=element_blank(),
-        plot.background=element_blank())
-
+  percentagestyle
 ```
 
 ### Science
@@ -626,26 +571,26 @@ datatypegraphs <- dppsurvey %>%
   select(-name) %>%
   group_by(Faculty, Personal_Datatype) %>%
   summarise(Count = length(Personal_Datatype)) %>%
-  mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,0)) %>%
-  arrange(Percentage) %>% # Order by percentage
+  #mutate(Percentage = round(Count/dim(dppsurvey)[1]*100,0)) %>%
+  #arrange(Percentage) %>% # Order by percentage
   mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
-  ggplot(aes(x = Personal_Datatype, y = Percentage)) + 
+  ggplot(aes(x = Personal_Datatype, y = Count)) + 
   geom_bar(stat = "identity", fill = "#FFCD00") + 
   facet_wrap(~Faculty, ncol = 4,
              labeller = label_wrap_gen(width=14)) +
   labs(x = "", 
-       title = "Personal data types across Faculties (%)",
-       caption = "Percentage of the total sample size of personal data used in every UU faculty") +
+       title = "Personal data types across Faculties",
+       caption = "Types of personal data used in every UU faculty") +
   coord_flip() +
   theme_classic() +
   geom_col(fill = uucol) +
-  geom_text(aes(label = Percentage),
+  geom_text(aes(label = Count),
             color = "black",
             position = position_stack(vjust = 0.5)) +
   theme(axis.title.x = element_text(size = 10),
         axis.line = element_blank(),
         axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 10),
+        axis.text.y = element_text(size = 9),
         axis.ticks = element_blank(),
         #panel.background = element_rect(fill = NA, color = "black"),
         panel.background = element_blank(),
@@ -1162,7 +1107,8 @@ datasharingplot(dppsurvey_geo)
 ### Data publishing {#data-publishing .tabset}
 #### UU-wide
 
-```{r datapublishing}
+```{r datapublishing-uuwide}
+datapublishingplot(dppsurvey)
 ```
 
 Open science and privacy are often seen as conflicting, as sharing personal data 
@@ -1179,26 +1125,87 @@ they cannot anonymise the data. Other reasons given by the respondents included
 that publishing data is too much effort, publication is undesirable, or just not 
 considered.
 
-```{r publicationformat}
+```{r publicationformat-uuwide}
+publicationformatplot(dppsurvey)
 ```
 
 #### Science
-Here are results per faculty
+```{r datapublishing-science}
+datapublishingplot(dppsurvey_science)
+```
+
+For the Faculty of Science, no respondents indicated to publish datasets,
+only metadata if applicable. Therefore, there were no respondents who filled out
+the question about the data format in which the data were published.
+
+```{r publicationformat-science}
+#publicationformatplot(dppsurvey_science)
+```
 
 #### FBSB
-dasd
+```{r datapublishing-fsw}
+datapublishingplot(dppsurvey_fsw)
+```
+
+Below you can see for the Faculty of Social and Behavioural Sciences (FSBS) in 
+which format they publish their data, if they do (left), or which reasons 
+researchers indicated to have to not publish data.
+
+```{r publicationformat-fsw}
+publicationformatplot(dppsurvey_fsw)
+```
 
 #### Humanities
-asasd
+```{r datapublishing-hum}
+datapublishingplot(dppsurvey_hum)
+```
+
+Below you can see for the Faculty of Humanities in which format they publish their 
+data, if they do (left), or which reasons researchers indicated to have to not 
+publish data.
+
+```{r publicationformat-hum}
+publicationformatplot(dppsurvey_hum)
+```
 
 #### Veterinary Medicine
-adasds
+```{r datapublishing-dgk}
+datapublishingplot(dppsurvey_vet)
+```
+
+For the Faculty of Veterinary Medicine, no respondents indicated to publish datasets,
+only metadata if applicable. Therefore, there were no respondents who filled out
+the question about the data format in which the data were published.
+
+```{r publicationformat-dgk}
+#publicationformatplot(dppsurvey_vet)
+```
 
 #### LEG
-asasd
+```{r datapublishing-leg}
+datapublishingplot(dppsurvey_leg)
+```
+
+Below you can see for the Faculty of Law, Economics and Governance in which 
+format they publish their data, if they do (left), or which reasons researchers 
+indicated to have to not publish data.
+
+```{r publicationformat-leg}
+publicationformatplot(dppsurvey_leg)
+```
 
 #### Geo
-asd
+```{r datapublishing-geo}
+datapublishingplot(dppsurvey_geo)
+```
+
+For the Faculty of Geosciences, no respondents indicated to publish datasets,
+only metadata if applicable. Therefore, there were no respondents who filled out
+the question about the data format in which the data were published.
+
+```{r publicationformat-geo}
+#publicationformatplot(dppsurvey_geo)
+```
 
 ### {-}
 
@@ -1210,18 +1217,18 @@ support channels.
 When asked whether respondents know who their faculty
 privacy officer is, a little over half of the respondents indicated that they do 
 not (Yes: `r sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)` 
-(`r round(sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)/sum(!is.na(dppsurvey$Know_PO))*100,0)`%), No: 
-`r sum(dppsurvey$Know_PO=="No", na.rm=TRUE)` 
+(`r round(sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)/sum(!is.na(dppsurvey$Know_PO))*100,0)`%), 
+No: `r sum(dppsurvey$Know_PO=="No", na.rm=TRUE)` 
 (`r round(sum(dppsurvey$Know_PO=="No", na.rm=TRUE)/sum(!is.na(dppsurvey$Know_PO))*100,0)`%)).
 
 When comparing faculties (see below), it is striking that the faculties where the
-most personal data seems to be processed, the majority of respondents is not 
+most personal data seems to be processed, a small majority of respondents is not 
 aware of their faculty privacy officer. This suggests either that researchers 
 have simply never required help from their privacy officer, or that the faculty 
 privacy officers could increase their visibility within their faculties.
 
 ```{r knowpoplot}
-knowpoplot <- dppsurvey %>% 
+dppsurvey %>% 
   pivot_longer(cols = grep("^Faculty_[0-9]+$", names(dppsurvey), value=TRUE), 
                values_drop_na = TRUE,
                values_to = "Faculty") %>%
@@ -1231,30 +1238,28 @@ knowpoplot <- dppsurvey %>%
   arrange(Count) %>% # Order by count
   filter(!is.na(Know_PO)) %>%
   mutate(Know_PO = factor(Know_PO, levels=Know_PO)) %>% # Update factor levels
-  ggplot(aes(x = Know_PO, y = Count)) + 
-  geom_bar(stat = "identity", fill = "#FFCD00") + 
+  ggplot(aes(x = reorder(Know_PO, -Count, sum, decreasing = T), y = Count)) + 
+  geom_bar(stat = "identity", fill = uucol) + 
   facet_wrap(~Faculty, ncol = 4,
              labeller = label_wrap_gen(width=14)) +
   labs(x = "", 
-       title = "Awareness of the privacy officer",
-       caption = "Awareness of the privacy officer across UU faculties") +
-  coord_flip() +
+       title = "Do you know who your faculty privacy officer is?",
+       caption = "Number of researchers indicating they were aware who their faculty privacy officer is across UU faculties") +
+  #coord_flip() +
   theme_classic() +
-  geom_label(aes(label = Count),
-             #vjust = 0.5, 
-             hjust = "inward", #-0.2,
-             label.size = NA, #1,
-             color = "black") +
+  geom_text(aes(label = Count),
+            color = "black",
+            position = position_stack(vjust = 0.5)) +
   theme(axis.title.x = element_text(size = 10),
         axis.line = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 10),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size = 10, colour = "black"),
         axis.ticks = element_blank(),
         #panel.background = element_rect(fill = NA, color = "black"),
         panel.background = element_blank(),
         panel.border=element_blank(), #rect(fill = NA),
-        panel.spacing.y = unit(1, "lines"),
-        panel.grid.major.y = element_line(),
+        panel.spacing.x = unit(1, "lines"),
+        #panel.grid.major.x = element_line(),
         panel.grid.minor=element_blank(),
         plot.background=element_blank(),
         strip.background = element_rect(color="white",
@@ -1262,49 +1267,83 @@ knowpoplot <- dppsurvey %>%
         strip.text = element_text(family = "Verdana",
                                   size = 10,
                                   face = "bold"))
-
-knowpoplot
-
 ```
 
 ### Looking for help {#looking-for-help .tabset}
 #### UU-wide
 When asked whether respondents have ever looked for support in the form of 
-information, tools, or in-person support, an overwheling majority indicated that 
+information, tools, or in-person support, an overwhelming majority indicated that 
 they have, as can be seen in the graph below. Most respondents that looked for support
 indicated, however, that they haven't always found the support they were looking for.
 Together with the results from the previous question, this suggests that the 
-visibility of the current support channels could be improved.
+visibility of the current support channels could be improved. Note however that
+there are some differences between faculties (see the different tabs).
 
-```{r existingsupport}
+```{r existingsupport-uuwide}
+existingsupportplot(dppsurvey)
 ```
 
 #### Science
-Here are results per faculty
+Below are the results for the Faculty of Science when asked whether researchers
+had looked for information, support or tools in handling personal data, and 
+whether they had found what they were looking for:
+
+```{r existingsupport-science}
+existingsupportplot(dppsurvey_science)
+```
 
 #### FBSB
-dasd
+Below are the results for the Faculty of Social and Behavioural Sciences (FSBS) 
+when asked whether researchers had looked for information, support or tools in 
+handling personal data, and whether they had found what they were looking for:
+
+```{r existingsupport-fsw}
+existingsupportplot(dppsurvey_fsw)
+```
 
 #### Humanities
-asasd
+Below are the results for the Faculty of Humanities when asked whether 
+researchers had looked for information, support or tools in handling personal 
+data, and whether they had found what they were looking for:
+
+```{r existingsupport-hum}
+existingsupportplot(dppsurvey_hum)
+```
 
 #### Veterinary Medicine
-adasds
+Below are the results for the Faculty of Veterinary Medicine 
+when asked whether researchers had looked for information, support or tools in 
+handling personal data, and whether they had found what they were looking for:
+
+```{r existingsupport-dgk}
+existingsupportplot(dppsurvey_vet)
+```
 
 #### LEG
-asasd
+Below are the results for the Faculty of Law, Economics and Governance (LEG) 
+when asked whether researchers had looked for information, support or tools in 
+handling personal data, and whether they had found what they were looking for:
+
+```{r existingsupport-leg}
+existingsupportplot(dppsurvey_leg)
+```
 
 #### Geo
-asd
+Below are the results for the Faculty of Geosciences
+when asked whether researchers had looked for information, support or tools in 
+handling personal data, and whether they had found what they were looking for:
+
+```{r existingsupport-geo}
+existingsupportplot(dppsurvey_geo)
+```
 
 ### {-}
 
 ### Channels used to find support {#support-channels .tabset}
 #### UU-wide
 The graph below indicates which channels respondents used most 
-when looking for information about handling personal data. Note that this was 
-a multiple choice question, and so the numbers do no add up to the total number
-of survey respondents. As shown below, all sources mentioned were to some extent
+when looking for information about handling personal data. 
+As shown below, all sources mentioned were to some extent
 consulted by the respondents. However, there is large differentiation between 
 these sources. The university website and intranet are the most visited online 
 resources for information about handling personal data. Notably, colleagues 
@@ -1315,33 +1354,71 @@ Moreover, this also suggests that in-person support may be a more effective way
 of increasing awareness of privacy-related practices than more "distant" 
 information sources. 
 
-```{r sourcesused}
+```{r sourcesused-uuwide}
+sourcesusedplot(dppsurvey)
 ```
 
 #### Science
-Here are results per faculty
+Below you can find the channels used by researchers from the Faculty of Science
+to find information about handling personal data:
+
+```{r sourcesused-science}
+sourcesusedplot(dppsurvey_science, 
+                title = "Channels used at Science to find information")
+```
 
 #### FBSB
-dasd
+Below you can find the channels used by researchers from the Faculty of Social 
+and Behavioural Sciences (FSBS) to find information about handling personal data:
+
+```{r sourcesused-fsw}
+sourcesusedplot(dppsurvey_fsw,
+                title = "Channels used at FSBS to find information")
+```
 
 #### Humanities
-asasd
+Below you can find the channels used by researchers from the Faculty of Humanities
+to find information about handling personal data:
+
+```{r sourcesused-hum}
+sourcesusedplot(dppsurvey_hum,
+                title = "Channels used at Humanities to find information")
+```
 
 #### Veterinary Medicine
-adasds
+Below you can find the channels used by researchers from the Faculty of 
+Veterinary Medicine to find information about handling personal data:
+
+```{r sourcesused-dgk}
+sourcesusedplot(dppsurvey_vet,
+                title = "Channels used at Veterinary Medicine to find information")
+```
 
 #### LEG
-asasd
+Below you can find the channels used by researchers from the Faculty of Law,
+Economics and Governance (LEG) to find information about handling personal data:
+
+```{r sourcesused-leg}
+sourcesusedplot(dppsurvey_leg,
+                title = "Channels used at LEG to find information")
+```
 
 #### Geo
-asd
+Below you can find the channels used by researchers from the Faculty of Geosciences
+to find information about handling personal data:
+
+```{r sourcesused-geo}
+sourcesusedplot(dppsurvey_geo,
+                title = "Channels used at Geosciences to find information")
+```
 
 ### {-}
 
 ## Challenges and needs (survey) {#challenges-needs-survey .tabset}
 
 ### UU-wide
-```{r obstacle}
+```{r obstacle-uuwide}
+obstacleplot(dppsurvey)
 ```
 
 As can be seen above, most researchers experience privacy to be an obstacle for 
@@ -1351,26 +1428,81 @@ differs a bit. As can be seen below, accessible information and visible support
 channels seem to be the most wanted improvements in the current support, closely
 followed by UU-wide policy on the topic, and privacy-related walk-in hours. 
 
-```{r bettersupport}
+```{r bettersupport-uuwide}
+bettersupportplot(dppsurvey)
 ```
 
 ### Science
-Here are results per faculty
+```{r obstacle-science}
+obstacleplot(dppsurvey_science)
+```
 
-### FBSB
-dasd
+Below you can find the preferred ways of improving privacy-related support as
+indicated by researchers from the Faculty of Science:
+
+```{r bettersupport-science}
+bettersupportplot(dppsurvey_science)
+```
+
+### FSBS
+```{r obstacle-fsw}
+obstacleplot(dppsurvey_fsw)
+```
+
+Below you can find the preferred ways of improving privacy-related support as
+indicated by researchers from the Faculty of Social and Behavioural Sciences (FSBS):
+
+```{r bettersupport-fsw}
+bettersupportplot(dppsurvey_fsw)
+```
 
 ### Humanities
-asasd
+```{r obstacle-hum}
+obstacleplot(dppsurvey_hum)
+```
+
+Below you can find the preferred ways of improving privacy-related support as
+indicated by researchers from the Faculty of Humanities:
+
+```{r bettersupport-hum}
+bettersupportplot(dppsurvey_hum)
+```
 
 ### Veterinary Medicine
-adasds
+```{r obstacle-vet}
+obstacleplot(dppsurvey_vet)
+```
+
+Below you can find the preferred ways of improving privacy-related support as
+indicated by researchers from the Faculty of Veterinary Medicine:
+
+```{r bettersupport-vet}
+bettersupportplot(dppsurvey_vet)
+```
 
 ### LEG
-asasd
+```{r obstacle-leg}
+obstacleplot(dppsurvey_leg)
+```
+
+Below you can find the preferred ways of improving privacy-related support as
+indicated by researchers from the Faculty of Law, Economics and Governance (LEG):
+
+```{r bettersupport-leg}
+bettersupportplot(dppsurvey_leg)
+```
 
 ### Geo
-asd
+```{r obstacle-geo}
+obstacleplot(dppsurvey_geo)
+```
+
+Below you can find the preferred ways of improving privacy-related support as
+indicated by researchers from the Faculty of Geosciences:
+
+```{r bettersupport-geo}
+bettersupportplot(dppsurvey_geo)
+```
 
 ## {-}
 
