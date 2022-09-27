@@ -1,5 +1,5 @@
 #### Pseudonymise data privacy survey data ####
-# This script pseudonimises the data from the Data Privacy Survey
+# This script pseudonymises the data from the Data Privacy Survey
 # to diminish the amount of personal data in the dataset.
 # Most important steps in this script:
 # - Select only relevant data: with consent, and from participants from UU 
@@ -12,7 +12,7 @@
 #   of the check, save the cleaned up dataset either in the pseud or in the
 #   processed folder.
 #
-# Last edited: 2022-07-20 by Dorien Huijser
+# Last edited: 2022-09-27 by Dorien Huijser
 
 #### DEPENDENCIES ####
 # install.packages("data.table")
@@ -195,3 +195,4 @@ if(dim(check_vars)[1] != 0 | dim(check_combos)[1] != 0){
                              most_recent_date, 
                              "_dppsurvey.csv")))
 }
+
