@@ -26,9 +26,13 @@ library(kableExtra)
 library(readxl)
 
 
-
 ## ---- readdata --------
 ### Find the most recent data file in data/pseud or data/processed and read it in
+# N.B. When cloning this project, this will load the fake dataset in /data/processed
+# as it has the most recent date. 
+# NB2: Perhaps R will whine that there is no pseud folder as it is not tracked by 
+# git (files in the pseud folder contain pseudonymised data = personal data).
+
 # List all the files in pseud and processed folder
 data_files_pseud <- list.files(path = "../data/pseud")
 data_files_processed <- list.files(path = "../data/processed")
@@ -57,7 +61,31 @@ datafile <- paste0("../data/",
 dppsurvey <- fread(datafile)
 
 
-## ---- uucolors --------
+## ---- labelsfsw --------
+# The labels of the FSW Departments are too long to display properly in a graph.
+# Therefore they are shortened in this block
+dppsurvey <- dppsurvey %>%
+  mutate(Dept_FSW_3 = recode(Dept_FSW_3, 
+                             "Development & Education of Youth in Diverse Societies" = "Pedagogy in Diverse Societies"),
+         Dept_FSW_4 = recode(Dept_FSW_4,
+                             "Clinical Child & Family Studies" = "Clinical Child & Family"),
+         Dept_FSW_5 = recode(Dept_FSW_5,
+                             "Interdisciplinary Social Science" = "Interdisc. Social Sci"),
+         Dept_FSW_12 = recode(Dept_FSW_12, 
+                              "Social Health & Organisational Psychology" = "Social, Health & Org."))
+
+
+## ---- facultydatasets --------
+# Read in faculty datasets
+dppsurvey_science <- dppsurvey %>% filter(!is.na(Faculty_5))
+dppsurvey_fsw <- dppsurvey %>% filter(!is.na(Faculty_6))
+dppsurvey_geo <- dppsurvey %>% filter(!is.na(Faculty_1))
+dppsurvey_vet <- dppsurvey %>% filter(!is.na(Faculty_7))
+dppsurvey_leg <- dppsurvey %>% filter(!is.na(Faculty_3))
+dppsurvey_hum <- dppsurvey %>% filter(!is.na(Faculty_2))
+
+
+## ---- uustyle --------
 # R color brewers palettes: http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
 # UU colors: https://www.uu.nl/en/organisation/corporate-identity/brand-policy/colour
 UU_pallette <- c(
@@ -74,11 +102,11 @@ UU_pallette <- c(
 
 uucol <- "#FFCD00"
 
-percentagestyle <- list(
+countstyle <- list(
   coord_flip(),
   theme_classic(),
   geom_col(fill = uucol),
-  geom_text(aes(label = paste0(Percentage, "%")), # % per department
+  geom_text(aes(label = Count),
             color = "black",
             position = position_stack(vjust = 0.5)),
   theme(legend.text = element_text(size = 8),
@@ -96,12 +124,90 @@ percentagestyle <- list(
         plot.background=element_blank())
 )
 
-## ---- plot-departments --------
+countstyle_noflip <- list(
+  theme_classic(),
+  geom_col(fill = uucol),
+  geom_text(aes(label = Count),
+            color = "black",
+            position = position_stack(vjust = 0.5)),
+  theme(legend.text = element_text(size = 8),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        axis.title.x = element_text(size = 11),
+        axis.line = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size = 11),
+        axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        plot.background=element_blank())
+)
 
+
+## ---- facultyplot --------
+# Plot of positions per faculty
+dppsurvey %>%
+  pivot_longer(cols = grep("Faculty_[0-9]$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Faculty") %>%
+  select(-name) %>%
+  pivot_longer(cols = grep("Position_[0-9]$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Position") %>%
+  select(-name) %>%
+  group_by(Faculty, Position) %>%
+  summarise(Count = length(Faculty)) %>%
+  ggplot(aes(reorder(Faculty, 
+                     -Count, 
+                     sum, 
+                     decreasing = T), 
+             Count, 
+             fill = Position)) +
+  coord_flip() +
+  theme_classic() + 
+  geom_col() +
+  scale_fill_manual(values = UU_pallette) +
+  labs(x = "", 
+       title = "Faculty and Position representation",
+       caption = "Faculty and Position of online survey respondents") +
+  scale_y_discrete(expand = expansion(add = 4)) + # make field larger to see label
+  geom_label(aes(label = after_stat(y), group = Faculty), # totals per faculty
+             stat = 'summary', 
+             fun = sum, 
+             vjust = 0.5, 
+             hjust = -0.2, #"inward",
+             nudge_y = 2,
+             label.size = NA, #1,
+             label.padding = unit(0.35, "lines"),
+             color = "black",
+             fill = "#FFFFFF") + 
+  geom_text(aes(label = Count), # counts per position per faculty
+            color = "white",
+            fill = "#FFFFFF",
+            position = position_stack(vjust = 0.5)) +
+  theme(legend.text = element_text(size = 8),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        axis.title.x = element_text(size = 11),
+        axis.line = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 11),
+        axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        plot.background=element_blank()) +
+  guides(fill = guide_legend(nrow = 3, byrow = FALSE))
+
+
+## ---- plot-departments --------
 plotdepartments <- function(data,
                              string,
                              title = "Department representation",
-                             caption = "Survey respondents per department") {
+                             caption = "Departments of online survey respondents") {
   
   data %>%
     pivot_longer(cols = grep(paste0("Dept_",string,"_[0-9]$"), 
@@ -112,15 +218,16 @@ plotdepartments <- function(data,
     select(-name) %>%
     group_by(Department) %>%
     summarise(Count = length(Department)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     ggplot(aes(reorder(Department, 
-                       -Percentage, 
+                       -Count, 
                        sum, 
                        decreasing = T), 
-               Percentage)) +
+               Count)) +
     labs(x = "", title = title, caption = caption) +
-    percentagestyle
+    countstyle
 }
+
 
 ## ---- read-opentext --------
 # Read in coded responses from interviews
@@ -140,11 +247,45 @@ opentools <- read_excel(opentextfile, sheet = "tools") %>%
   select(-`Times mentioned`)
 
 
-## ---- positionsmeetings --------
+## ---- opentext-faculties --------
+# Filter interview and open text responses codes on faculty
+interviews_science <- interviews %>% filter(grepl("Science(?!s)", Faculty, perl = TRUE))
+interviews_fsw <- interviews %>% filter(grepl("Social and Beh*", Faculty, perl = TRUE))
+interviews_leg <- interviews %>% filter(grepl("Law Economics", Faculty, perl = TRUE))
+interviews_geo <- interviews %>% filter(grepl("Geosciences", Faculty, perl = TRUE))
+interviews_vet <- interviews %>% filter(grepl("Veterinary", Faculty, perl = TRUE))
+interviews_hum <- interviews %>% filter(grepl("Humanities", Faculty, perl = TRUE))
 
+opentext_science <- opentext %>% filter(grepl("Science(?!s)", Faculty, perl = TRUE))
+opentext_fsw <- opentext %>% filter(grepl("Social and Beh*", Faculty, perl = TRUE))
+opentext_leg <- opentext %>% filter(grepl("Law Economics", Faculty, perl = TRUE))
+opentext_geo <- opentext %>% filter(grepl("Geosciences", Faculty, perl = TRUE))
+opentext_vet <- opentext %>% filter(grepl("Veterinary", Faculty, perl = TRUE))
+opentext_hum <- opentext %>% filter(grepl("Humanities", Faculty, perl = TRUE))
+
+
+## ---- emailaddressplot --------
+meetings_faculties <- data.frame(Faculty = str_trim(unlist(str_split(interviews$Faculty, 
+                                                                     ",")), 
+                                                    side = "both"))
+
+meetings_faculties %>%
+  group_by(Faculty) %>%
+  summarise(Count = length(Faculty)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Faculty = factor(Faculty, levels=Faculty)) %>% # Update factor levels
+  ggplot(aes(x = Faculty, y = Count)) + 
+  geom_bar(stat = "identity", fill = uucol) + 
+  labs(x = "", 
+       title = "Faculty representation one-on-one meetings",
+       caption = "Faculty representation of researchers spoken to in one-on-one meetings") +
+  countstyle
+
+
+## ---- positionsmeetings --------
 positionsmeetings <- function(interviewdata,
                               title = "Positions one-on-one meetings",
-                              caption = "Positions of researchers in one-on-one meetings"){
+                              caption = "Positions in one-on-one meetings"){
   
   # Split multiple comma-separated positions
   data.frame(Position = str_trim(unlist(str_split(interviewdata$Position, 
@@ -153,17 +294,17 @@ positionsmeetings <- function(interviewdata,
   # Plot positions of researchers in the meetings
     group_by(Position) %>%
     summarise(Count = length(Position)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    arrange(Percentage) %>% # Order by %
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #arrange(Percentage) %>% # Order by %
     mutate(Position = factor(Position, levels=Position)) %>% # Update factor levels
-    ggplot(aes(x = Position, y = Percentage)) + 
+    ggplot(aes(x = Position, y = Count)) + 
     geom_bar(stat = "identity", fill = uucol) + 
     labs(x = "", title = title, caption = caption) +
-    percentagestyle
+    countstyle
 }
 
-## ---- datatypes --------
 
+## ---- datatypes --------
 datatypes <- function(data){
   # Table of data types
   datatypetable <- data %>% 
@@ -173,7 +314,7 @@ datatypes <- function(data){
     select(-name) %>%
     group_by(Datatype) %>%
     summarise(Count = length(Datatype)) %>%
-    arrange(Count) %>% # Order by count
+    #arrange(Count) %>% # Order by count
     mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
     mutate(Percentage = round(Count/dim(data)[1]*100,1)) %>%
     map_df(rev) %>% # reverse order
@@ -188,7 +329,7 @@ datatypes <- function(data){
     select(-name) %>%
     group_by(Personal_Datatype) %>%
     summarise(Count = length(Personal_Datatype)) %>%
-    arrange(Count) %>% # Order by count
+    #arrange(Count) %>% # Order by count
     mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype), # Update factor levels
            Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
     map_df(rev) %>% # reverse order
@@ -199,7 +340,7 @@ datatypes <- function(data){
     kbl(datatypetable,
         col.names = gsub("_", " ", names(datatypetable)), 
         align = "l",
-        caption = "<b>Types of data used</b>",
+        caption = "<b>Types of research data</b>",
         valign = 't') %>%
       kable_classic(latex_options = "hover",
                     full_width = F, 
@@ -209,7 +350,7 @@ datatypes <- function(data){
     kbl(tablepersdata, 
         col.names = gsub("_", " ", names(tablepersdata)), 
         align = "l",
-        caption = "<b>Types of <i>personal</i> data used</b>",
+        caption = "<b>Types of <i>personal</i> data</b>",
         valign = 't') %>%
       kable_classic(latex_options = "hover",
                     full_width = F,
@@ -217,6 +358,51 @@ datatypes <- function(data){
                     font_size = 12,
                     position = "left")))
 }
+
+
+## ---- personaldataplot --------
+dppsurvey %>% 
+  pivot_longer(cols = grep("^Personaldata_type_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Personal_Datatype") %>%
+  select(-name) %>%
+  pivot_longer(cols = grep("^Faculty_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Faculty") %>%
+  select(-name) %>%
+  group_by(Faculty, Personal_Datatype) %>%
+  summarise(Count = length(Personal_Datatype)) %>%
+  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
+  ggplot(aes(x = Personal_Datatype, y = Count)) + 
+  geom_bar(stat = "identity", fill = "#FFCD00") + 
+  facet_wrap(~Faculty, ncol = 4,
+             labeller = label_wrap_gen(width=14)) +
+  labs(x = "", 
+       title = "Personal data types across Faculties",
+       caption = "Types of personal data used per UU faculty") +
+  coord_flip() +
+  theme_classic() +
+  geom_col(fill = uucol) +
+  geom_text(aes(label = Count),
+            color = "black",
+            position = position_stack(vjust = 0.5)) +
+  theme(axis.title.x = element_text(size = 10),
+        axis.line = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 9),
+        axis.ticks = element_blank(),
+        #panel.background = element_rect(fill = NA, color = "black"),
+        panel.background = element_blank(),
+        panel.border=element_blank(), #rect(fill = NA),
+        panel.spacing.y = unit(1, "lines"),
+        panel.grid.major.y = element_line(),
+        panel.grid.minor=element_blank(),
+        plot.background=element_blank(),
+        strip.background = element_rect(color="white",
+                                        size=1.5),
+        strip.text = element_text(family = "Verdana",
+                                  size = 10,
+                                  face = "bold"))
 
 
 ## ---- datatypesdepartments --------
@@ -263,10 +449,11 @@ datatypesdepartments <- function(data, string,
                                     face = "bold"))
 }
 
+
 ## ---- measuresplot --------
 measuresplot <- function(data,
                          title = "Protective and planning measures",
-                         caption = "Organisational and technical measures used in handling personal data"){
+                         caption = "Which privacy-related measures do you (generally) implement in your research?"){
   data %>%
     pivot_longer(cols = grep("^Orgmeasures_[0-9]+$", names(data), value=TRUE), 
                  values_drop_na = TRUE,
@@ -274,18 +461,18 @@ measuresplot <- function(data,
     select(-name) %>%
     group_by(Measures) %>%
     summarise(Count = length(Measures)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(Measures = factor(rev(Measures), levels=rev(Measures))) %>% # Update factor levels
-    ggplot(aes(Measures, Percentage)) +
+    ggplot(aes(Measures, Count)) +
     geom_bar(stat = "identity", fill = uucol) + 
     labs(x = "", title = title, caption = caption) +
-    percentagestyle
+    countstyle
 } 
 
 ## ---- storageplot --------
 storageplot <- function(data, 
                         title = "Storage media used", 
-                        caption = "Percentage of media used to store personal data") {
+                        caption = "Where do you store your research data?") {
   data %>% 
     pivot_longer(cols = grep("^Storage_medium_[0-9]+$", names(data), value=TRUE), 
                  values_drop_na = TRUE,
@@ -293,21 +480,21 @@ storageplot <- function(data,
     select(-name) %>%
     group_by(Storage) %>%
     summarise(Count = length(Storage)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     #arrange(Count) %>% # Order by count
     mutate(Storage = factor(Storage, levels=Storage)) %>% # Update factor levels
-    ggplot(aes(x = Storage, y = Percentage)) + 
+    ggplot(aes(x = Storage, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title, caption = caption) +
-    percentagestyle
+    countstyle
 }
 
 
 ## ---- consentforms --------
 consentforms <- function(data, title1 = "Consent Forms", 
                          title2 = "Content of forms",
-                         caption1 = "Usage of consent forms",
-                         caption2 = "Typical content of an informed consent form"){
+                         caption1 = "Do you use consent forms in your research?",
+                         caption2 = "What privacy-related content is in your average information letter and/or consent form?"){
   
   consent_usage_plot <- 
     data %>% 
@@ -317,12 +504,12 @@ consentforms <- function(data, title1 = "Consent Forms",
     select(-name) %>%
     group_by(Consent_Forms) %>%
     summarise(Count = length(Consent_Forms)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(Consent_Forms = factor(Consent_Forms, levels=Consent_Forms)) %>% # Update factor levels
-    ggplot(aes(x = Consent_Forms, y = Percentage)) + 
+    ggplot(aes(x = Consent_Forms, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title1, caption = caption1) +
-    percentagestyle
+    countstyle
     
   consent_content_plot <- 
     data %>% 
@@ -332,12 +519,12 @@ consentforms <- function(data, title1 = "Consent Forms",
     select(-name) %>%
     group_by(Consent_Content) %>%
     summarise(Count = length(Consent_Content)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(Consent_Content = factor(Consent_Content, levels=Consent_Content)) %>% # Update factor levels
-    ggplot(aes(x = Consent_Content, y = Percentage)) + 
+    ggplot(aes(x = Consent_Content, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title2, caption = caption2) +
-    percentagestyle
+    countstyle
   
   grid.arrange(consent_usage_plot, consent_content_plot, nrow = 1)
 }
@@ -345,9 +532,9 @@ consentforms <- function(data, title1 = "Consent Forms",
 
 ## ---- dpia --------
 dpiaplot <- function(data, title1 = "Experience with DPIAs", 
-                     caption1 = "Familiarity and experience with DPIAs", 
-                     title2 = "Help received with DPIAs", 
-                     caption2 = "Help received with DPIAs"){
+                     caption1 = "Have you ever conducted, or will you conduct, a Data Protection Impact Assessment (DPIA)?", 
+                     title2 = "Received support DPIAs", 
+                     caption2 = "Did/Will you ask for help in conducting the DPIA?"){
   DPIA_experience_plot <- 
     data %>% 
     pivot_longer(cols = grep("^DPIA_experience_[0-9]+$", names(data), value=TRUE), 
@@ -356,12 +543,12 @@ dpiaplot <- function(data, title1 = "Experience with DPIAs",
     select(-name) %>%
     group_by(DPIA_experience) %>%
     summarise(Count = length(DPIA_experience)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(DPIA_experience = factor(DPIA_experience, levels=DPIA_experience)) %>% # Update factor levels
-    ggplot(aes(x = DPIA_experience, y = Percentage)) + 
+    ggplot(aes(x = DPIA_experience, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title1, caption = caption1) +
-    percentagestyle
+    countstyle
   
   DPIA_help_plot <- 
     data %>% 
@@ -371,22 +558,23 @@ dpiaplot <- function(data, title1 = "Experience with DPIAs",
     select(-name) %>%
     group_by(DPIA_help) %>%
     summarise(Count = length(DPIA_help)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(DPIA_help = factor(DPIA_help, levels=DPIA_help)) %>% # Update factor levels
-    ggplot(aes(x = DPIA_help, y = Percentage)) + 
+    ggplot(aes(x = DPIA_help, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title2, caption = caption2) +
-    percentagestyle
+    countstyle
   
   grid.arrange(DPIA_experience_plot, DPIA_help_plot, nrow = 1)
 }
 
+
 ## ---- datasharing --------
 datasharingplot <- function(data, 
                             title1 = "External sharing",
-                            caption1 = "Data sharing with external parties",
+                            caption1 = "Do you / Will you share research data containing personal data outside of the UU?",
                             title2 = "Sharing measures",
-                            caption2 = "Protection measures taken when sharing data"){
+                            caption2 = "What actions do you take to transfer personal data securely outside of the UU?"){
   
   external_sharing_plot <- 
     data %>% 
@@ -396,12 +584,12 @@ datasharingplot <- function(data,
     select(-name) %>%
     group_by(external_sharing) %>%
     summarise(Count = length(external_sharing)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(external_sharing = factor(external_sharing, levels=external_sharing)) %>% # Update factor levels
-    ggplot(aes(x = external_sharing, y = Percentage)) + 
+    ggplot(aes(x = external_sharing, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title1, caption = caption1) +
-    percentagestyle
+    countstyle
   
   sharing_measures_plot <- 
     data %>% 
@@ -411,20 +599,21 @@ datasharingplot <- function(data,
     select(-name) %>%
     group_by(sharing_measures) %>%
     summarise(Count = length(sharing_measures)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     #arrange(Count) %>% # Order by count
     mutate(sharing_measures = factor(sharing_measures, levels=sharing_measures)) %>% # Update factor levels
-    ggplot(aes(x = sharing_measures, y = Percentage)) + 
+    ggplot(aes(x = sharing_measures, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title2, caption = caption2) +
-    percentagestyle
+    countstyle
   
   grid.arrange(external_sharing_plot, sharing_measures_plot, nrow = 1)
 }
 
+
 ## ---- datapublishing --------
-datapublishingplot <- function(data, title = "Data publishing",
-                               caption = "Data publishing: frequency and content"){
+datapublishingplot <- function(data, title = "Has published data",
+                               caption = "Have you ever published a dataset containing personal data (e.g., in a repository)?"){
   data %>% 
     pivot_longer(cols = grep("^Data_publication_[0-9]+$", names(data), value=TRUE), 
                  values_drop_na = TRUE,
@@ -432,22 +621,21 @@ datapublishingplot <- function(data, title = "Data publishing",
     select(-name) %>%
     group_by(data_publishing) %>%
     summarise(Count = length(data_publishing)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(data_publishing = factor(data_publishing, levels=data_publishing)) %>% # Update factor levels
-    ggplot(aes(x = data_publishing, y = Percentage)) + 
+    ggplot(aes(x = data_publishing, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title, caption = caption) +
-    percentagestyle
+    countstyle_noflip
 }
 
 
 ## ---- publicationformat --------
 publicationformatplot <- function(data, title1 = "Published data format",
-                                  caption1 = "Format of published data",
-                                  title2 = "Why not published?",
-                                  caption2 = "Reasons for not publishing data"){
+                                  caption1 = "In what format was the data published?",
+                                  title2 = "Reasons for not publishing",
+                                  caption2 = "Why didn't you publish your data?"){
   
-  publication_format_plot <- 
+  publication_format <- 
     data %>% 
     pivot_longer(cols = grep("^Publication_format_[0-9]+$", names(data), value=TRUE), 
                  values_drop_na = TRUE,
@@ -455,13 +643,20 @@ publicationformatplot <- function(data, title1 = "Published data format",
     select(-name) %>%
     group_by(publication_format) %>%
     summarise(Count = length(publication_format)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(publication_format = factor(publication_format, 
-                                       levels=publication_format)) %>% # Update factor levels
-    ggplot(aes(x = publication_format, y = Percentage)) + 
-    geom_bar(stat = "identity") + 
-    labs(x = "", title = title1, caption = caption1) +
-    percentagestyle
+                                       levels=publication_format)) # Update factor levels
+  
+  if(dim(publication_format)[1] != 0){
+    publication_format_plot <-
+      publication_format %>%
+      ggplot(aes(x = publication_format, y = Count)) + 
+      geom_bar(stat = "identity") + 
+      labs(x = "", title = title1, caption = caption1) +
+      countstyle
+  } else{
+    publication_format_plot <- ggplot() + theme_void()
+  }
   
   reasons_nopub_plot <- data %>% 
     pivot_longer(cols = grep("^Reason_NoPub_[0-9]+$", names(data), value=TRUE), 
@@ -470,22 +665,63 @@ publicationformatplot <- function(data, title1 = "Published data format",
     select(-name) %>%
     group_by(reasons_nopub) %>%
     summarise(Count = length(reasons_nopub)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(reasons_nopub = factor(reasons_nopub, levels=reasons_nopub)) %>% # Update factor levels
-    ggplot(aes(x = reasons_nopub, y = Percentage)) + 
+    ggplot(aes(x = reasons_nopub, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title2, caption = caption2) +
-    percentagestyle
+    countstyle
   
   grid.arrange(publication_format_plot, reasons_nopub_plot, nrow = 1)
 }
 
 
+## ---- knowpoplot --------
+dppsurvey %>% 
+  pivot_longer(cols = grep("^Faculty_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Faculty") %>%
+  select(-name) %>%
+  group_by(Faculty, Know_PO) %>%
+  summarise(Count = length(Know_PO)) %>%
+  arrange(Count) %>% # Order by count
+  filter(!is.na(Know_PO)) %>%
+  mutate(Know_PO = factor(Know_PO, levels=Know_PO)) %>% # Update factor levels
+  ggplot(aes(x = reorder(Know_PO, -Count, sum, decreasing = T), y = Count)) + 
+  geom_bar(stat = "identity", fill = uucol) + 
+  facet_wrap(~Faculty, ncol = 4,
+             labeller = label_wrap_gen(width=14)) +
+  labs(x = "", 
+       title = "Do you know who your faculty privacy officer is?",
+       caption = "Number of researchers indicating they were aware who their faculty privacy officer is across UU faculties") +
+  theme_classic() +
+  geom_text(aes(label = Count),
+            color = "black",
+            position = position_stack(vjust = 0.5)) +
+  theme(axis.title.x = element_text(size = 10),
+        axis.line = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size = 10, colour = "black"),
+        axis.ticks = element_blank(),
+        #panel.background = element_rect(fill = NA, color = "black"),
+        panel.background = element_blank(),
+        panel.border=element_blank(), #rect(fill = NA),
+        panel.spacing.x = unit(1, "lines"),
+        #panel.grid.major.x = element_line(),
+        panel.grid.minor=element_blank(),
+        plot.background=element_blank(),
+        strip.background = element_rect(color="white",
+                                        size=1.5),
+        strip.text = element_text(family = "Verdana",
+                                  size = 10,
+                                  face = "bold"))
+
+
 ## ---- existingsupport --------
 existingsupportplot <- function(data, 
-                                title1 = "Has looked for help (%)", 
+                                title1 = "Has looked for help", 
                                 caption1 = "Have you ever looked for UU-specific information, \n in-person support or tools on handling personal data?",
-                                title2 = "Has found help (%)",
+                                title2 = "Has found help",
                                 caption2 = "Did you find what you were looking for \n(e.g., information, support, tools)?"){
   
   lookedforhelp <- data  %>% 
@@ -496,11 +732,11 @@ existingsupportplot <- function(data,
     group_by(searchhelp) %>%
     summarise(Count = length(searchhelp)) %>%
     mutate(searchhelp = factor(searchhelp, levels = searchhelp)) %>% # Update factor levels
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    ggplot(aes(x = searchhelp, y = Percentage)) + 
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    ggplot(aes(x = searchhelp, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title1, caption = caption1) +
-    percentagestyle
+    countstyle
   
   foundhelp <- data %>%
     pivot_longer(cols = Foundhelp, 
@@ -513,11 +749,11 @@ existingsupportplot <- function(data,
                                                     "Often",
                                                     "Sometimes",
                                                     "(Almost) never"))) %>% # Update factor levels
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    ggplot(aes(x = foundhelp, y = Percentage)) + 
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    ggplot(aes(x = foundhelp, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title2, caption = caption2) +
-    percentagestyle
+    countstyle
   
   grid.arrange(lookedforhelp, foundhelp, nrow = 1)
 }
@@ -536,18 +772,19 @@ sourcesusedplot <- function(data,
     group_by(sourcesused) %>%
     summarise(Count = length(sourcesused)) %>%
     mutate(sourcesused = factor(sourcesused, levels = sourcesused)) %>% # Update factor levels
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    ggplot(aes(x = sourcesused, y = Percentage)) + 
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    ggplot(aes(x = sourcesused, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title, caption = caption) +
-    percentagestyle
+    countstyle
 }
 
 
 ## ---- obstacle --------
 obstacleplot <- function(data,
                          title = "Is privacy an obstacle?",
-                         caption = "Percentage of respondents indicating privacy is an obstacle in open science and research data management"){
+                         caption = "Do you see dealing with personal data as an \n
+                         obstacle in open science and research data management?"){
   data %>% 
     pivot_longer(cols = Obstacle, 
                  values_drop_na = TRUE,
@@ -559,19 +796,18 @@ obstacleplot <- function(data,
                                                   "Sometimes",
                                                   "(Almost) never",
                                                   "Not sure"))) %>% # Update factor levels
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    ggplot(aes(x = obstacle, y = Percentage)) + 
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    ggplot(aes(x = obstacle, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title, caption = caption) +
-    coord_flip() +
-    percentagestyle
+    countstyle_noflip
 }
 
 
 ## ---- bettersupport --------
 bettersupportplot <- function(data, 
                                title = "Better privacy-related support",
-                               caption = "How can we improve personal data-related services?"){
+                               caption = "What can we do better to support you in handling personal data in research?"){
 data %>% 
     pivot_longer(cols = grep("^Better_support_[0-9]+$", names(data), value=TRUE), 
                  values_drop_na = TRUE,
@@ -581,92 +817,99 @@ data %>%
     summarise(Count = length(bettersupport)) %>%
     mutate(bettersupport = factor(bettersupport, levels=bettersupport)) %>% # Update factor levels
     #mutate(Percentage = round(Count/dim(data)[1]*100,1)) %>%
-    mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    ggplot(aes(x = bettersupport, y = Percentage)) + 
+    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
+    ggplot(aes(x = bettersupport, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title, caption = caption) +
-    percentagestyle
+    countstyle
 }
 
 
 ## ---- count-codes --------
-opentext_freq <- data.frame(table(unlist(str_split(opentext$codes, ", ")))) %>%
-  rename(Code = Var1,
-         Count = Freq)
-
-interviews_freq <- data.frame(table(unlist(str_split(interviews$codes, ", ")))) %>%
-  rename(Code = Var1,
-         Count = Freq)
-
-# Merge open text responses and meeting notes codes (used the same codes)
-totalcodes <- merge(opentext_freq,
-                    interviews_freq,
-                    by = "Code",
-                    suffixes = c("_survey", "_interview"),
-                    all = TRUE)
-
-# Count total times mentioned across survey and interviews
-totalcodes <- totalcodes %>%
-  rowwise() %>%
-  mutate(Times_mentioned_total = sum(Count_survey, Count_interview, na.rm=T))
-
-# Add code meanings
-totalcodes <- merge(totalcodes,
-                    opencodes,
-                    by = "Code")
-totalcodes <- arrange(totalcodes, desc(Times_mentioned_total))
-
+countcodes <- function(surveydataset = opentext,
+                       interviewdataset = interviews){
+  opentext_freq <- data.frame(table(unlist(str_split(surveydataset$codes, ", ")))) %>%
+    rename(Code = Var1,
+           Count = Freq)
+  
+  interviews_freq <- data.frame(table(unlist(str_split(interviewdataset$codes, ", ")))) %>%
+    rename(Code = Var1,
+           Count = Freq)
+  
+  # Merge open text responses and meeting notes codes (used the same codes)
+  totalcodes <- merge(opentext_freq,
+                      interviews_freq,
+                      by = "Code",
+                      suffixes = c("_survey", "_interview"),
+                      all = TRUE)
+  
+  # Count total times mentioned across survey and interviews
+  totalcodes <- totalcodes %>%
+    rowwise() %>%
+    mutate(Times_mentioned_total = sum(Count_survey, Count_interview, na.rm=T))
+  
+  # Add code meanings
+  totalcodes <- merge(totalcodes,
+                      opencodes,
+                      by = "Code")
+  totalcodes <- arrange(totalcodes, desc(Times_mentioned_total))
+  
+  return(totalcodes)
+}
 
 
 ## ---- count-tools --------
-opentools_freq <- data.frame(table(unlist(str_split(opentext$tools, ", ")))) %>%
-  rename(Tool = Var1,
-         Count = Freq)
-
-interviewstools_freq <- data.frame(table(unlist(str_split(interviews$tools, ", ")))) %>%
-  rename(Tool = Var1,
-         Count = Freq)
-
-# For in-text reference, count total times certain tools are mentioned
-totaltools <- merge(opentools_freq, 
-                    interviewstools_freq, 
-                    by = "Tool",
-                    suffixes = c("_survey","_interview"),
-                    all = TRUE)
-
-# Count total times mentioned across survey and interviews
-totaltools <- totaltools %>%
-  rowwise() %>%
-  mutate(Times_mentioned_total = sum(Count_survey, Count_interview, na.rm=T))
-
-# Add tool code meanings
-totaltools <- merge(totaltools,
-                    opentools,
-                    by.x = "Tool",
-                    by.y = "Name tool")
-totaltools <- arrange(totaltools, desc(Times_mentioned_total))
-
+counttools <- function(surveydataset = opentext,
+                       interviewdataset = interviews){
+  if(!all(is.na(surveydataset$tools))){
+    opentools_freq <- data.frame(table(unlist(str_split(surveydataset$tools, ", ")))) %>%
+      rename(Tool = Var1,
+             Count = Freq)
+  }
+  
+  if(!all(is.na(interviewdataset$tools))){
+    interviewstools_freq <- data.frame(table(unlist(str_split(interviewdataset$tools, ", ")))) %>%
+      rename(Tool = Var1,
+             Count = Freq)
+  }
+  
+  # For in-text reference, count total times certain tools are mentioned
+  totaltools <- merge(opentools_freq, 
+                      interviewstools_freq, 
+                      by = "Tool",
+                      suffixes = c("_survey","_interview"),
+                      all = TRUE)
+  
+  # Count total times mentioned across survey and interviews
+  totaltools <- totaltools %>%
+    rowwise() %>%
+    mutate(Times_mentioned_total = sum(Count_survey, Count_interview, na.rm=T))
+  
+  # Add tool code meanings
+  totaltools <- merge(totaltools,
+                      opentools,
+                      by.x = "Tool",
+                      by.y = "Name tool")
+  totaltools <- arrange(totaltools, desc(Times_mentioned_total))
+  
+  return(totaltools)
+}
 
 
 ## ---- wordcloud --------
-# Prepare wordcloud
-totalcodes_wc <- totalcodes %>%
-  select(Code, Times_mentioned_total) %>%
-  mutate(word = Code,
-         freq = Times_mentioned_total,
-         .keep = "none")
-
-library(wordcloud2)
-wordcloudcodes <- wordcloud2(data = totalcodes_wc, 
-                             color=rep_len(UU_pallette, nrow(totalcodes_wc)),
-                             fontFamily = "Open Sans",
-                             minRotation = 0, 
-                             maxRotation = 0,
-                             rotateRatio = 1)
-wordcloudcodes
-
-# Save coded dataset to processed folder
-#write.csv(totalcodes, "../data/processed/codes-freq_survey_meetings.csv")
-
-## ---- sessioninfo --------
-sessionInfo()
+createwordcloud <- function(codesdata){
+  totalcodes_wc <- codesdata %>%
+    select(Code, Times_mentioned_total) %>%
+    mutate(word = Code,
+           freq = Times_mentioned_total,
+           .keep = "none")
+  
+  library(wordcloud2)
+  wordcloudcodes <- wordcloud2(data = totalcodes_wc, 
+                               color=rep_len(UU_pallette, nrow(totalcodes_wc)),
+                               fontFamily = "Open Sans",
+                               minRotation = 0, 
+                               maxRotation = 0,
+                               rotateRatio = 1)
+  return(wordcloudcodes)
+}
