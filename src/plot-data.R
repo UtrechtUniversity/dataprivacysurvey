@@ -690,7 +690,8 @@ dppsurvey %>%
   ggplot(aes(x = reorder(Know_PO, -Count, sum, decreasing = T), y = Count)) + 
   geom_bar(stat = "identity", fill = uucol) + 
   facet_wrap(~Faculty, ncol = 4,
-             labeller = label_wrap_gen(width=14)) +
+             labeller = label_wrap_gen(width=14),
+             scales = 'free_x') +
   labs(x = "", 
        title = "Do you know who your faculty privacy officer is?",
        caption = "Number of researchers indicating they were aware who their faculty privacy officer is across UU faculties") +
@@ -698,11 +699,13 @@ dppsurvey %>%
   geom_text(aes(label = Count),
             color = "black",
             position = position_stack(vjust = 0.5)) +
+  # TODO: repeat axis labels x in the top panel, lines between panels
   theme(axis.title.x = element_text(size = 10),
-        axis.line = element_blank(),
+        axis.line.y = element_blank(),
+        axis.line.x = element_line(),
         axis.text.y = element_blank(),
         axis.text.x = element_text(size = 10, colour = "black"),
-        axis.ticks = element_blank(),
+        axis.ticks.y = element_blank(),
         #panel.background = element_rect(fill = NA, color = "black"),
         panel.background = element_blank(),
         panel.border=element_blank(), #rect(fill = NA),
@@ -712,7 +715,7 @@ dppsurvey %>%
         plot.background=element_blank(),
         strip.background = element_rect(color="white",
                                         size=1.5),
-        strip.text = element_text(family = "Verdana",
+        strip.text = element_text(#family = "Verdana",
                                   size = 10,
                                   face = "bold"))
 
