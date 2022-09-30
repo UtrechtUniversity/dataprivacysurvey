@@ -169,3 +169,19 @@ a:hover {
     font-weight: bold;
     margin-top:1em;
   }
+
+      /*---------------- Author and title styling -------------*/
+      /* Source: https://stackoverflow.com/questions/48958406/change-font-for-author-rmarkdown */
+      h1.title {
+        font-size: 20px;
+        /*color: DarkRed;*/
+      }
+      h4.author {
+        font-size: 16px;
+        /*color: DarkBlue;*/
+      }
+
+      h4.date {
+        font-size: 15px;
+        /*color: DarkBlue;*/
+      }
