@@ -32,7 +32,7 @@ target = "_blank">full survey</a>.
 - The survey's <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-data-management-plan.pdf"
 target = "_blank">Data Management Plan</a>.
 - The <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/codes-open-text-responses-meetings.csv" target="_blank">codes used </a> to score open text responses and meeting notes.
-- A codebook is currently in the making.
+- A <a href = "https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/survey-codebook.csv" target = "_blank">codebook</a> of the online survey in .csv format.
 
 **Code** can be found in the <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/src" target = "_blank">
 src folder</a> of this repository:
@@ -42,7 +42,7 @@ pseudonymised version. It writes the pseudonymised data into the `data/pseud` fo
 (not publicly available). If the cleaned dataset passes the (limited) k-anonymity 
 checks, it is written to the `data/processed` folder instead.
 - `plot-data.R` contains all code needed to create the Results report.
-- `create-codebook.R` contains code to create a machine-readable codebook (WIP)
+- `create-codebook.R` contains code to create the codebook.
 - `data-privacy-survey-report.Rmd` is the file underlying the published Results 
 report. It loads the `plot-data.R` script to create all visualisations.
 - `data-privacy-survey-recommendations.Rmd` is the file underlying the 
