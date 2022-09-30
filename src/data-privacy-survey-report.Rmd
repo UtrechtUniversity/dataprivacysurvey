@@ -1,9 +1,7 @@
 ---
 title: "Data Privacy Survey"
 subtitle: "Challenges and needs of privacy-related services for research at Utrecht University"
-author:
-- "Dorien Huijser^[Research Data Management Support, Utrecht University]"
-- "Neha Moopen^[Research Data Management Support, Utrecht University]"
+author: "Dorien Huijser & Neha Moopen^[Research Data Management Support, Utrecht University]"
 date: "Version: `r format(Sys.time(), '%Y-%m-%d')`<br>"
 abstract: |
   In the second quarter of 2022, Utrecht University (UU) Research Data Management 
