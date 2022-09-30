@@ -7,10 +7,15 @@
 library(codebook)
 
 # also needed for compact_codebook: package future
-library(future)
+#library(future)
 
 # Load data to make codebook for
-codebook_data <- read.csv("data/pseud/2022-07-19_dppsurvey.csv")
+codebook_data <- read.csv("data/processed/Data_Privacy_Survey_fakedataset_20220929.csv")
+
+# Prepare metadata (WIP)
+attributes(codebook_data)$label <- codebook_data[1,]
+# Does not work > load as vector not df!
+
 
 # This creates an html file with a table with basic information
 #htmlcodebook <- codebook_items(codebook_data)
@@ -18,9 +23,11 @@ codebook_data <- read.csv("data/pseud/2022-07-19_dppsurvey.csv")
 
 # This is what we basically want, can be written to csv
 # Only thing missing are labels and other attributes not present in the dataset
-codebook3 <- codebook_table(codebook_data)
+codebookobject <- codebook_table(codebook_data)
 
 
+
+# OLD ####
 # Now try with libr package
 install.packages("libr")
 library(libr)
