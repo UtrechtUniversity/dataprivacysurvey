@@ -1,55 +1,62 @@
-# Try out file to make a codebook
-# Resources: https://github.com/nehamoopen/digital-garden/issues/12
-# More resources: https://github.com/nehamoopen/digital-garden/issues/45
+# Code to create a codebook from the raw Qualtrics data of the Data Privacy Survey
 
-#Install packages
+### DEPENDENCIES ####
 #install.packages("codebook")
-library(codebook)
+library(data.table) # fread
+library(tidyverse)  # %>%
+library(codebook)   # codebook
+library(labelled)   # var_label
 
-# also needed for compact_codebook: package future
+
+### READ FILE ####
+# Find the latest raw data file
+raw_data_files <- list.files(path = "data/raw", 
+                             pattern ="Data_Privacy_Survey_[0-9]*.csv")
+
+filenamedates <- as.Date(str_extract(pattern = "[0-9]+", 
+                                     string = raw_data_files),
+                         format = "%Y%m%d")
+most_recent_date <- filenamedates[order(filenamedates, 
+                                        decreasing = TRUE)][1]
+
+datafile <- paste0("data/raw/Data_Privacy_Survey_", 
+                   gsub("-", "", as.character(most_recent_date)), 
+                   ".csv")
+
+dppsurvey <- fread(datafile, na.strings = "")
+
+
+### LABEL VARIABLES ####
+# Create label attributes and assign to the individual variables
+# The labels are stored in the first row of the raw dataset
+# Source: https://cran.r-project.org/web/packages/codebook/vignettes/codebook_tutorial.html
+
+dict <- data.frame(variable = names(dppsurvey),
+                   label = as.character(as.vector(dppsurvey[1,])))
+
+var_label(dppsurvey) <- dict %>% dict_to_list()
+
+
+### CREATE CODEBOOK ####
+dppsurvey <- dppsurvey[-c(1:2),] # remove first two rows
+codebookobject <- codebook_table(dppsurvey) %>%
+  select(-empty, -whitespace, -min, -max)
+
+# Write to csv
+write.csv(codebookobject, "documentation/survey-codebook.csv")
+
+
+### OTHER CODEBOOK OPTIONS (not used) ####
+# 1. Compact_codebook (also codebook package): output = html file
 #library(future)
+#codebook <- compact_codebook(codebook_data)
 
-# Load data to make codebook for
-codebook_data <- read.csv("data/processed/Data_Privacy_Survey_fakedataset_20220929.csv")
-
-# Prepare metadata (WIP)
-attributes(codebook_data)$label <- codebook_data[1,]
-# Does not work > load as vector not df!
-
-
-# This creates an html file with a table with basic information
-#htmlcodebook <- codebook_items(codebook_data)
-#codebook2 <- compact_codebook(codebook_data) # also results in index.html file
-
-# This is what we basically want, can be written to csv
-# Only thing missing are labels and other attributes not present in the dataset
-codebookobject <- codebook_table(codebook_data)
-
-
-
-# OLD ####
-# Now try with libr package
-install.packages("libr")
-library(libr)
-
-codebook4 <- dictionary(codebook_data) # a lot faster than codebook package 
+# 2. libr package
 # column explanation: https://libr.r-sassy.org/reference/dictionary.html
+#library(libr)
+#codebook <- dictionary(codebook_data)
 
-# Now try with worcs
-install.packages("worcs")
-library(worcs)
-
-codebook5 <- make_codebook(codebook_data)
-codebook6 <- read.csv("codebook.csv")
-
-# Look at colnames for each package
-codebookpackage_cols <- data.frame(codebook = colnames(codebook3))
-libr_cols <- data.frame(libr = tolower(colnames(codebook4)))
-worcs_cols <- data.frame(worcs = colnames(codebook6))
-
-columns <- data.frame(codebook=character(), 
-                      libr=character(), 
-                      worcs = character(),
-                      stringsAsFactors = FALSE)
-
-columns$codebook <- codebookpackage_cols
+# 3. WORCS package
+#library(worcs)
+# codebook <- make_codebook(codebook_data)
+# codebook_read <- read.csv("codebook.csv")
