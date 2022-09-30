@@ -1,19 +1,67 @@
 # Data Privacy Survey
 
-In the second quarter of 2022, Utrecht University (UU) Research Data Management Support (RDM Support) sent out a survey among all scientific personnel at Utrecht University: the Data Privacy Survey. The aim of this survey was to investigate 1) How UU researchers currently deal with personal data in research, 2) What challenges they run into when handling personal data in research, and 3) How RDM Support and collaborators can improve their services and support concerning personal data in research.
+## About
+In the second quarter of 2022, Utrecht University (UU) Research Data Management 
+Support (RDM Support) sent out a survey among all scientific personnel at Utrecht 
+University, and organised one-on-one meetings with a selection of them. The aim 
+of these efforts was to investigate 1) How UU researchers currently deal with 
+personal data in their research, 2) What challenges they run into when handling 
+personal data in research, and 3) How support at UU can improve their services 
+concerning personal data in research.
 
-The survey is part of the <a href="https://utrechtuniversity.github.io/dataprivacyproject" target="_blank">Data Privacy Project</a>, an RDM Support  project to improve information, tools and services surrounding personal data in research. More information about this survey can be found in the following files:
+The survey and one-on-one meetings were part of the 
+<a href="https://utrechtuniversity.github.io/dataprivacyproject" target="_blank">Data Privacy Project</a>, 
+an RDM Support  project to improve information, tools and services surrounding 
+personal data in research. 
 
-- The <a href="assets/survey-privacy-statement.pdf" target="_blank">survey's privacy statement</a>
-- The <a href="assets/survey-questions-qualtrics.pdf" target="_blank">full survey</a>.
+<a href = "docs/data-privacy-survey-report"><button>Results report</button></a>
+<a href = "docs/data-privacy-survey-recommendations"><button>Recommendations report</button></a>
 
 ## This repository
 
-This repository contains the code for analysing the data from the Data Privacy Survey. The code can be found in the current GitHub repository (`src` folder) as an R markdown file. As the raw dataset contains personal data in the form of demographic information, free text, and email addresses, it is not shared in this repository. The code for pseudonymising the dataset is shared however (see `src` folder), for full transparency on how the survey data were processed.
+This repository contains the documentation, code, fake survey data and the two
+reports written about the survey.
 
-- Here you can find <a href="docs/survey-first-glance.html" target="_blank">a first glance of the survey results</a>.
-- Here, you can find <a href = "docs/data-privacy-survey-report-v0.1.html" target = "_blank">a first (semi-)full report of the findings</a>.
-- A complete first version of the report, including reports per UU faculty, is currently being written.
+**Documentation** can be found in the `documentation` folder of this repository. 
+It contains:
+
+- The 
+<a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-questions-qualtrics.pdf"
+target = "_blank">full survey</a>.
+- The survey's <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-privacy-statement.pdf" target = "_blank">privacy statement</a>.
+- The survey's <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-data-management-plan.pdf"
+target = "_blank">Data Management Plan</a>.
+- The <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/codes-open-text-responses-meetings.csv" target="_blank">codes used </a> to score open text responses and meeting notes.
+- A codebook is currently in the making.
+
+**Code** can be found in the <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/src" target = "_blank">
+src folder</a> of this repository:
+
+- `pseudonymise-data.R` reads in the raw data and cleans it up to create a 
+pseudonymised version. It writes the pseudonymised data into the `data/pseud` folder 
+(not publicly available). If the cleaned dataset passes the (limited) k-anonymity 
+checks, it is written to the `data/processed` folder instead.
+- `plot-data.R` contains all code needed to create the Results report.
+- `create-codebook.R` contains code to create a machine-readable codebook (WIP)
+- `data-privacy-survey-report.Rmd` is the file underlying the published Results 
+report. It loads the `plot-data.R` script to create all visualisations.
+- `data-privacy-survey-recommendations.Rmd` is the file underlying the 
+Recommendations report. 
+
+As the **dataset** contains personal information (demographic information, open text 
+responses, email addresses, etc.), and no consent was obtained to share those 
+details, we are unable to share the dataset in this repository. Instead, we 
+created a <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/data/processed/Data_Privacy_Survey_fakedataset_20220929.csv" target = "_blank">synthetic (fake) dataset</a>, which can be used to 
+reproduce most of the Results report. 
+
+The two **reports** written about the survey are the following:
+
+- The <a href = "docs/data-privacy-survey-report">Results report</a> describes 
+the methodology and full results, both for the entire Utrecht University as well 
+as the separate faculties.
+- The <a href = "docs/data-privacy-survey-recommendations">Recommendations report</a> 
+summarises the results and provides Recommendations to improve privacy-related 
+support for Utrecht University researchers.
 
 ## Contact and contribution
 
@@ -23,4 +71,4 @@ For questions about this repository, please contact Utrecht University's <a href
 
 This repository is licensed under a GPL 3.0 license. You can view the <a href= "https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/LICENSE" target = "_blank">license text here</a>.
 
-Citation will be made possible once the report is published in Zenodo or a similar archive.
+Citation will be made possible soon.
