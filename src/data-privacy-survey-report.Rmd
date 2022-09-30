@@ -2,7 +2,7 @@
 title: "Data Privacy Survey"
 subtitle: "Challenges and needs of privacy-related services for research at Utrecht University"
 author: "Dorien Huijser & Neha Moopen^[Research Data Management Support, Utrecht University]"
-date: "Version: `r format(Sys.time(), '%Y-%m-%d')`<br>"
+date: "`r format(Sys.time(), '%Y-%m-%d')`<br>"
 abstract: |
   In the second quarter of 2022, Utrecht University (UU) Research Data Management 
   Support (RDM Support) sent out a survey among all scientific personnel at UU,
@@ -423,6 +423,7 @@ target = "_blank">full survey</a>.
 - The survey's <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-data-management-plan.pdf"
 target = "_blank">Data Management Plan</a>.
 - The <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/codes-open-text-responses-meetings.csv" target="_blank">codes used </a> to score open text responses and meeting notes.
+- <a href = "https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/survey-codebook.csv" target = "_blank">Codebook</a> of the survey in .csv format.
 
 ### Code {#code-availability}
 The repository contains all <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/src" target = "_blank">
