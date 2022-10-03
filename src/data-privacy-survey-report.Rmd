@@ -10,13 +10,13 @@ abstract: |
   efforts was to investigate 1) How UU researchers currently deal with personal 
   data in their research, 2) What challenges they run into when handling 
   personal data in research, and 3) How support at UU can improve their 
-  services concerning personal data in research. The results show that most 
+  services concerning personal data in research. The results showed that most 
   researchers knew to take privacy into account in their projects. However, 
   there were vast differences in knowledge on this topic, as well as in how privacy-
   related practices were applied. Many researchers expressed concerns on the current
   quantity, findability and quality of privacy-related support at UU. These 
   concerns were translated to recommendations in the 
-  [Recommendations report](data-privacy-survey-recommendations). The current 
+  [Recommendations report](data-privacy-survey-recommendations.html). The current 
   report describes the methodology and full results of the survey and the 
   one-on-one meetings with researchers, both for the entire UU, as well as for 
   each UU faculty separately.
@@ -75,7 +75,7 @@ To answer these questions, we set up an online survey and planned one-on-one
 meetings with a selection of UU researchers. This report describes our methods 
 and full results of both the online survey and the one-on-one meetings. For a
 full summary of the results and recommendations on how to move forward, please
-refer to the [Recommendations report](data-privacy-survey-recommendations).
+refer to the [Recommendations report](data-privacy-survey-recommendations.html).
 
 This survey was part of a larger project at UU, the 
 <a href = "https://utrechtuniversity.github.io/dataprivacyproject/" target = "_blank">Data 
@@ -113,7 +113,7 @@ into 5 sections:
 1. **About you and your research**: 5 questions about the faculty, department, 
 position, and type of (personal) data the researcher works with.
 2. **Measures and documents**: 4-6 questions about researchers' familiarity and
-use of privacy-related measures (e.g., processing register, Data Privacy Impact
+use of privacy-related measures (e.g., processing register, Data Protection Impact
 Assessment, encryption, pseudonymisation, etc.), data storage, and informed 
 consent forms.
 3. **Data sharing, archiving and publication**: 3-4 questions about researchers' 
@@ -154,7 +154,7 @@ consent, worked at Utrecht University and indicated to work with some type of
 research data.
 
 ## Online survey respondents {#online-survey-respondents .tabset}
-### UU-wide
+### UU-wide {.active}
 The survey was filled out by `r dim(dppsurvey)[1]` UU researchers. As can be 
 seen in the figure below, we received responses from each UU faculty, but the 
 distribution was not equal: the faculties of Science and Social and Behavioural 
@@ -253,7 +253,7 @@ plotdepartments(dppsurvey_leg, "REBO",
 ```
 
 ### Geo
-There were `r dim(dppsurvey_hum)[1]` respondents from the Faculty of Geosciences
+There were `r dim(dppsurvey_geo)[1]` respondents from the Faculty of Geosciences
 in the online survey. It took them a median of 
 `r round(median(dppsurvey_geo$Duration/60), 1)` minutes to complete it (ranging 
 from `r round(min(dppsurvey_geo$Duration)/60, 1)` minutes to 
@@ -293,7 +293,7 @@ the meeting, the researcher's consent to do so was always obtained first.
 ```{r opentext-faculties}
 ```
 
-### UU-wide
+### UU-wide {.active}
 From the survey respondents, `r sum(dppsurvey$Email == "Yes", na.rm=TRUE)`
 researchers left their email address to be contacted. Of those, 28 researchers 
 indicated that they were willing to meet with us. Below, the division over 
@@ -306,7 +306,7 @@ mirror the faculty distribution in the entire survey relatively well.
 ### Science
 
 From the survey respondents, `r sum(dppsurvey_science$Email == "Yes", na.rm=TRUE)` 
-researchers from the Science faculty left their email address to be contacted. 
+researchers from the Faculty of Science left their email address to be contacted. 
 Of those, `r dim(interviews_science)[1]` online meetings have been conducted, 
 each with the project coordinators. Below, the division over 
 positions can be seen for all interviewees from the Faculty of Science.
@@ -320,7 +320,7 @@ positionsmeetings(interviews_science,
 ### FSBS
 
 From the survey respondents, `r sum(dppsurvey_fsw$Email == "Yes", na.rm=TRUE)` 
-researchers from the faculty of Social and Behavioural Sciences (FSBS) left their 
+researchers from the Faculty of Social and Behavioural Sciences (FSBS) left their 
 email address to be contacted. Of those, `r dim(interviews_fsw)[1]` online 
 meetings have been conducted, most of them with the faculty privacy officer present. 
 Below, the division over positions can be seen for all interviewees from the 
@@ -381,10 +381,8 @@ positionsmeetings(interviews_leg,
 ### Geo
 
 From the survey respondents, `r sum(dppsurvey_geo$Email == "Yes", na.rm=TRUE)` 
-researchers from the Faculty of Geosciences left their email address to be contacted. 
-Of those, `r dim(interviews_geo)[1]` online meetings have been conducted. Below, 
-the division over positions can be seen for the interviewees from the Geosciences 
-faculty.
+researcher from the Faculty of Geosciences left their email address to be contacted 
+and agreed to indeed meet online. Below, this person's position can be seen.
 
 ```{r positionsmeetings-geo}
 positionsmeetings(interviews_geo,
@@ -451,7 +449,7 @@ data available for the open text responses and one-on-one meeting notes.
 
 # Results {#results}
 ## Types of research data {#types-of-research-data .tabset}
-### UU-wide
+### UU-wide {.active}
 
 To investigate the types of research that were represented in the sample, we 
 asked with which types of data, and specifically which types of *personal* data, 
@@ -462,8 +460,15 @@ and direct identifiers were most common. This can be either because these are
 the types of personal data that are indeed most common, but possibly also because 
 researchers mostly recognised these types of data as being personal data.
 
-```{r datatypesuu}
-datatypes(dppsurvey)
+```{r datatypesuu, results = "asis"}
+# Source: https://stackoverflow.com/questions/17717323/align-two-data-frames-next-to-each-other-with-knitr
+tables <- datatypes(dppsurvey)
+cat(c('<table><tr valign="top"><td>', 
+      tables[[1]], 
+      '</td><td>', 
+      tables[[2]], 
+      '</td><tr></table>'),
+    sep = '')
 ```
 <br>
     
@@ -484,8 +489,10 @@ models in their research. The same goes for the types of *personal* data: the
 same top-3 types were used here as in the entire university (demographic 
 information, contact information, direct identifiers). 
 
-```{r datatypesscience}
-datatypes(dppsurvey_science)
+```{r datatypesscience, results = "asis"}
+tables_science <- datatypes(dppsurvey_science)
+cat(c('<table><tr valign="top"><td>', tables_science[[1]], '</td><td>', tables_science[[2]], '</td><tr></table>'),
+      sep = '')
 ```
 <br>
   
@@ -512,8 +519,14 @@ the types of *personal* data: demographic and contact information were used most
 often. Interestingly, sensitive demographic information was used much more often
 relative to the UU-wide responses.
 
-```{r datatypesfsw}
-datatypes(dppsurvey_fsw)
+```{r datatypesfsw, results = "asis"}
+tables_fsw <- datatypes(dppsurvey_fsw)
+cat(c('<table><tr valign="top"><td>', 
+      tables_fsw[[1]], 
+      '</td><td>', 
+      tables_fsw[[2]], 
+      '</td><tr></table>'),
+    sep = '')
 ```
 <br>
   
@@ -536,8 +549,14 @@ audio data in their research. The same goes for the types of *personal* data: th
 same top-3 types were present here as in the entire university (demographic 
 information, contact information, direct identifiers). 
 
-```{r datatypeshum}
-datatypes(dppsurvey_hum)
+```{r datatypeshum, results = "asis"}
+tables_hum <- datatypes(dppsurvey_hum)
+cat(c('<table><tr valign="top"><td>', 
+      tables_hum[[1]], 
+      '</td><td>', 
+      tables_hum[[2]], 
+      '</td><tr></table>'),
+    sep = '')
 ```
 <br>
   
@@ -564,8 +583,14 @@ demographic information, direct identifiers and contact information were also
 the most common types of personal data researchers at this faculty seemed to 
 deal with.
 
-```{r datatypesvet}
-datatypes(dppsurvey_vet)
+```{r datatypesvet, results = "asis"}
+tables_vet <- datatypes(dppsurvey_vet)
+cat(c('<table><tr valign="top"><td>', 
+      tables_vet[[1]], 
+      '</td><td>', 
+      tables_vet[[2]], 
+      '</td><tr></table>'),
+    sep = '')
 ```
 <br>
   
@@ -587,8 +612,14 @@ the types of *personal* data: the same top-3 types were present here as in the
 entire university (demographic information, contact information, 
 direct identifiers). 
 
-```{r datatypesleg}
-datatypes(dppsurvey_leg)
+```{r datatypesleg, results = "asis"}
+tables_leg <- datatypes(dppsurvey_leg)
+cat(c('<table><tr valign="top"><td>', 
+      tables_leg[[1]], 
+      '</td><td>', 
+      tables_leg[[2]], 
+      '</td><tr></table>'),
+    sep = '')
 ```
 <br>
   
@@ -608,12 +639,18 @@ As with the university-wide data, researchers from the faculty of Geosciences
 indicated that they also most frequently used textual and tabular data. However,
 in contrast to the university-wide data, they were followed by geographical data
 and code/theoretical models. This is to be expected considering the types of 
-researcher performed in the faculty. In terms of *personal* data, the same 
+research performed in the faculty. In terms of *personal* data, the same 
 top-3 types were present here as in the entire university (demographic 
 information, contact information, direct identifiers). 
 
-```{r datatypesgeo}
-datatypes(dppsurvey_geo)
+```{r datatypesgeo, results = "asis"}
+tables_geo <- datatypes(dppsurvey_geo)
+cat(c('<table><tr valign="top"><td>', 
+      tables_geo[[1]], 
+      '</td><td>', 
+      tables_geo[[2]], 
+      '</td><tr></table>'),
+    sep = '')
 ```
 <br>
   
@@ -635,7 +672,7 @@ The first part of the survey addressed the researchers' current practices in
 handling personal data in their research.
 
 ### Protective measures {#organisational-technical-measures .tabset}
-#### UU-wide
+#### UU-wide {.active}
 With respect to organisational and technical measures used to protect personal 
 data, most researchers indicated that they pseudonymise/anonymise their data. 
 As this question is self-reported, we cannot assess whether the researchers' data 
@@ -703,7 +740,7 @@ measuresplot(dppsurvey_geo, title = "Protective and planning measures - Geoscien
 ### {-}
 
 ### Storage media {#storage-media-used .tabset}
-#### UU-wide
+#### UU-wide {.active}
 When working with personal data, it is important to choose a sufficiently 
 secure storage medium. Luckily, most researchers indicated to rely on storage 
 solutions that are provided or recommended by UU - and in most cases are indeed
@@ -768,7 +805,7 @@ storageplot(dppsurvey_geo, title = "Storage media used - Geosciences")
 ### {-}
 
 ### Consent forms {#consent-forms .tabset}
-#### UU-wide
+#### UU-wide {.active}
 At the time of writing, consent was the legal basis most often used in 
 research performed at UU. Luckily, only a small number of researchers indicated 
 that consent forms were not applicable to their research or they did not know 
@@ -850,7 +887,7 @@ consentforms(dppsurvey_geo)
 ### {-}
 
 ### Data Protection Impact Assessment (DPIA) {#dpia .tabset}
-#### UU-wide
+#### UU-wide {.active}
 A Data Protection Impact Assessment (DPIA) is a legal instrument to assess the
 risks involved for data subjects, and helps determine the necessary safeguards to
 reduce those risks to an acceptable level. Despite it being an important legal
@@ -915,7 +952,7 @@ dpiaplot(dppsurvey_geo)
 ### {-}
 
 ### Data sharing practices {#data-sharing .tabset}
-#### UU-wide
+#### UU-wide {.active}
 To investigate how often data were being shared and under which circumstances, we
 asked researchers if and with which parties they typically share their research
 data, and which measures they usually take to do so securely. While there were 
@@ -985,7 +1022,7 @@ datasharingplot(dppsurvey_geo)
 ### {-}
 
 ### Data publishing {#data-publishing .tabset}
-#### UU-wide
+#### UU-wide {.active}
 
 ```{r datapublishing-uuwide}
 datapublishingplot(dppsurvey)
@@ -1111,7 +1148,7 @@ privacy officers could increase their visibility within these faculties.
 ```
 
 ### Looking for help {#looking-for-help .tabset}
-#### UU-wide
+#### UU-wide {.active}
 When asked whether researchers had ever looked for support in the form of 
 information, tools, or in-person support, an overwhelming majority indicated that 
 they had, as can be seen in the graph below. Most researchers that looked for support
@@ -1181,7 +1218,7 @@ existingsupportplot(dppsurvey_geo)
 ### {-}
 
 ### Channels used to find support {#support-channels .tabset}
-#### UU-wide
+#### UU-wide {.active}
 The graph below indicates which channels researchers used most 
 when looking for information about handling personal data. 
 As shown below, all options mentioned were to some extent
@@ -1257,7 +1294,7 @@ sourcesusedplot(dppsurvey_geo,
 
 ## Challenges and needs (survey) {#challenges-needs-survey .tabset}
 
-### UU-wide
+### UU-wide {.active}
 ```{r obstacle-uuwide}
 obstacleplot(dppsurvey)
 ```
@@ -1641,7 +1678,7 @@ times). For example:
 
 # Summary {#summary}
 A full summary of the results and recommendations can be found in the 
-[Recommendations report](data-privacy-survey-recommendations).
+[Recommendations report](data-privacy-survey-recommendations.html).
 
 # Discussion {#discussion}
 In order to interpret the results described in this report correctly, there 
@@ -1661,8 +1698,10 @@ without bias, it is possible that we have introduced some, especially
 where the open questions and one-on-one meetings are concerned.
 
 # Technical information {#technical-information}
-This report was last generated on: `r as.character(Sys.Date())`. It was 
-created in the following environment:
+This report was created in 
+<a href = "https://bookdown.org/yihui/rmarkdown/" target = "_blank">R markdown</a>, 
+and was last generated on `r as.character(Sys.Date())`. It was created in the 
+following local environment:
 
 ```{r sessioninfo}
 sessionInfo()
