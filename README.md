@@ -14,8 +14,8 @@ The survey and one-on-one meetings were part of the
 an RDM Support  project to improve information, tools and services surrounding 
 personal data in research. 
 
-<a href = "docs/data-privacy-survey-report"><button>Results report</button></a>
-<a href = "docs/data-privacy-survey-recommendations"><button>Recommendations report</button></a>
+<a href = "docs/data-privacy-survey-report.html"><button>Results report</button></a>
+<a href = "docs/data-privacy-survey-recommendations.html"><button>Recommendations report</button></a>
 
 ## This repository
 
