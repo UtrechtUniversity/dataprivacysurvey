@@ -1,0 +1,109 @@
+---
+title: "Data Privacy Survey"
+subtitle: "Recommendations for improving privacy-related services for research at Utrecht University"
+author: "Dorien Huijser^[Research Data Management Support, Utrecht University] & Rik Janssen^[Information Technology Services, Utrecht University]"
+date: "`r format(Sys.time(), '%Y-%m-%d')`"
+abstract: |
+  In the second quarter of 2022, Utrecht University (UU) Research Data Management 
+  Support (RDM Support) sent out a survey among all scientific personnel at UU,
+  and organised one-on-one meetings with a selection of them. The aim of these
+  efforts was to investigate 1) How UU researchers currently deal with personal 
+  data in their research, 2) What challenges they run into when handling 
+  personal data in research, and 3) How support at UU can improve their 
+  services concerning personal data in research. The results showed that most 
+  researchers knew to take privacy into account in their projects. However, 
+  there were vast differences in knowledge on this topic, as well as in how privacy-
+  related practices were applied. Many researchers expressed concerns on the current
+  quantity, findability and quality of privacy-related support at UU. These 
+  concerns were translated to recommendations in the current report. In short,
+  our recommendations concern organising privacy-related research support
+  in a way that makes handling personal data less of a burden for researchers. 
+  Moreover, it is important to increase the visibility and findability of existing
+  and new privacy-related support, and create materials and expertise that are 
+  more tailored to academic practice. Taking up these recommendations within the
+  organisation will likely both increase overall GDPR compliance and help 
+  researchers focus more on performing high-quality research.
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../docs") })
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: false
+    toc_float: true
+    theme: united
+    highlight: tango
+    code_folding: hide
+    df_print: paged
+    css: "../assets/style.css"
+    includes:
+      in_header: "../includes/header.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.align = "center")
+```
+
+# Introduction {#introduction}
+Scientific research often includes some form of personal data. The amount of 
+personal data that is processed in research is likely underestimated, as 
+researchers may be unaware of what personal data are or whether they are being 
+collected. With the implementation of the General Data Protection Regulation
+(GDPR) in 2018, stricter legal requirements apply to handling personal data and 
+its sharing and publication. In our own experience, the number and complexity of 
+questions on handling personal data in scientific research at Utrecht University
+(UU) is increasing. 
+
+Our premise at <a href = "https://uu.nl/rdm" target = "_blank">Research Data 
+Management Support</a> (RDM Support) is to assist researchers with any issues 
+surrounding the management of their research data, including research data that 
+contains personal data. To understand how we can best help researchers with 
+their privacy-related questions and needs, we wanted to investigate:
+
+1. To what extent are UU researchers aware of privacy legislation and practices?
+2. What data privacy issues do UU researchers typically run into?
+3. What support do UU researchers need to handle personal data?
+
+To answer these questions, we set up an online survey and planned one-on-one 
+meetings with a selection of UU researchers. This report summarises our findings,
+and describes recommendations to improve privacy-related services for research
+at Utrecht University. For a full description of the methods and results, please 
+refer to the
+<a href = "data-privacy-survey-report.html" target = "_blank">Data Privacy Survey Report</a>.
+
+This survey was part of a larger project at UU, the <a href = "https://utrechtuniversity.github.io/dataprivacyproject/" 
+target = "_blank">Data Privacy Project</a>^[The Data Privacy Project is funded 
+by Utrecht University’s Research IT program and a Digital Competence Center 
+grant from the Dutch Organization for Scientific Research (NWO). It is led by Utrecht 
+University's <a href="https://uu.nl/rdm/" target = "_blank">Research Data 
+Management Support</a>, in collaboration with the University Library, 
+Information Technology Services, first- and second-line privacy officers, 
+information security, and others.]. This project is a data support effort within 
+UU that aims to provide actionable and FAIR (Findable, Accessible, Interoperable, 
+Reusable) information and tools for researchers to handle personal data in their 
+research. 
+
+# Methods summary {#methods}
+
+The Data Privacy Survey consisted of two main parts:
+
+- An online survey that was sent to all of UU's scientific personnel via email, 
+asking about researchers' common data types, current practices
+in handling personal data in their research, awareness of data support channels, 
+and challenges and needs in this area.
+- One-on-one meetings with individual researchers to talk about their experiences,
+challenges and needs in this area.
+
+All relevant materials (including this report) can be found in the 
+<a href = "https://github.com/utrechtuniversity/dataprivacysurvey" target = "_blank">GitHub repository</a>.
+
+# Results summary {#results-summary}
+
+The results summary is currently being formulated. Coming soon!
+
+# Recommendations {#recommendations}
+
+The recommendations are currently being formulated. Coming soon!

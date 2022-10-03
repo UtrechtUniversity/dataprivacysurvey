@@ -1,0 +1,593 @@
+---
+title: "Data Privacy Survey"
+subtitle: "Results for the Science faculty"
+author:
+- "Dorien Huijser"
+date: "Version: `r format(Sys.time(), '%Y-%m-%d')`"
+abstract: |
+  In the second quarter of 2022, Utrecht University (UU) Research Data Management 
+  Support (RDM Support) sent out a survey among all scientific personnel at UU: 
+  the Data Privacy Survey. The aim of this survey was to investigate 1) How UU 
+  researchers currently deal with personal data in research, 2) What challenges 
+  they run into when handling personal data in research, and 3) How support at
+  UU can improve their services concerning personal data in research. The current
+  report summarises the results from respondents from the Science faculty. 
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../docs") })
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: false
+    toc_float: true
+    theme: united
+    highlight: tango
+    code_folding: hide
+    df_print: paged
+    css: style.css
+    includes:
+      in_header: "../includes/header.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.align = "center")
+```
+
+```{r sourcescript, include=FALSE, cache=FALSE}
+knitr::read_chunk('plot-data.R')
+```
+
+# Introduction {#introduction}
+The Data Privacy Survey was conducted in 2022 at Utrecht University (UU) Research
+Data Management Support (RDM Support), as part of a larger project, the
+<a href="https://utrechtuniversity.github.io/dataprivacyproject" target = "_blank">Data Privacy Project</a>. 
+It aimed to find out:
+
+1. To what extent are UU researchers aware of privacy legislation and practices?
+2. What data privacy issues do UU researchers typically run into?
+3. What support do UU researchers need to handle personal data in their research?
+
+These questions were investigated through an online survey and subsequent
+one-on-one meetings with researchers, who indicated to be willing to speak with us
+about the topic of handling personal data in research. The full report of this
+survey can be read in the 
+<a href = "data-privacy-survey-report-v0.2.Rmd">university-wide report</a>.
+
+As every UU faculty is organised somewhat differently, privacy-related 
+experiences of UU researchers may also depend heavily on the faculty where they 
+perform their research. Therefore, here we created an additional report for
+the Science faculty, the largest faculty at the university. 
+
+# Methods {#methods}
+The full methods are described in the UU-wide report. Below is a summary of the
+details specific to the Science faculty.
+
+```{r, dependencies}
+```
+
+```{r readdata}
+```
+
+```{r selectscience}
+# Select only Science respondents
+dppsurvey <- dppsurvey %>% 
+  filter(!is.na(Faculty_5))
+```
+
+## Online survey respondents {#online-survey-respondents}
+There were `r dim(dppsurvey)[1]` respondents from the Science faculty in the 
+online survey. It took them a median of `r round(median(dppsurvey$Duration/60), 1)` minutes 
+to complete it (ranging from `r round(min(dppsurvey$Duration)/60, 1)` minutes to 
+`r round(max(dppsurvey$Duration)/3600/24,1)` days). In the graph below,
+the representation of each department within the Science faculty is visualised. 
+
+```{r uucolors}
+```
+
+```{r departmentscience}
+# Plot of positions per faculty
+dppsurvey %>%
+  pivot_longer(cols = grep("Dept_Science_[0-9]$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Department") %>%
+  select(-name) %>%
+  pivot_longer(cols = grep("Position_[0-9]$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Position") %>%
+  select(-name) %>%
+  group_by(Department, Position) %>%
+  summarise(Count = length(Department)) %>%
+  ggplot(aes(reorder(Department, 
+                     -Count, 
+                     sum, 
+                     decreasing = T), 
+             Count, 
+             fill = Position)) +
+  coord_flip() +
+  theme_classic() + 
+  geom_col() +
+  scale_fill_manual(values = UU_pallette) +
+  labs(x = "", 
+       title = "Department and Position representation",
+       caption = "Survey respondents per department and position in the Science faculty") +
+  scale_y_discrete(expand = expansion(add = 4)) + # make field larger to see label
+  #scale_x_continuous(expand = expansion(add = 3)) + 
+  geom_label(aes(label = after_stat(y), group = Department), # totals per dept
+             stat = 'summary', 
+             fun = sum, 
+             vjust = 0.5, 
+             hjust = -0.2, #"inward",
+             nudge_y = 2,
+             label.size = NA, #1,
+             label.padding = unit(0.35, "lines"),
+             #label.r = unit(0.25, "lines"),
+             color = "black",
+             fill = "#FFFFFF") + #"#FFCD00") +
+  geom_text(aes(label = Count), # counts per position per department
+            color = "white",
+            fill = "#FFFFFF",
+            position = position_stack(vjust = 0.5)) +
+  theme(legend.text = element_text(size = 8),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        axis.title.x = element_text(size = 11),
+        axis.line = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 11),
+        axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        plot.background=element_blank()) +
+  guides(fill = guide_legend(nrow = 3, byrow = FALSE))
+```
+
+Most respondents in the online survey seemed to come from the Information and
+Computing Sciences (ICS) and Pharmaceutical Sciences departments, and were 
+relatively early career researchers (PhD/junior/postdoc researcher, 
+assistant/associate professor). This makes sense, as more personal data is 
+likely processed in the fields of ICS and pharmaceuticals, compared to, for 
+example, mathematics.
+
+## One-on-one meetings {#one-on-one-meetings}
+```{r read-opentext}
+```
+
+```{r coded-science}
+# Filter interview and open text responses codes on Science faculty
+interviews <- interviews %>%
+    filter(grepl("Science(?!s)", Faculty, perl = TRUE))
+
+opentext <- opentext %>%
+      filter(grepl("Science(?!s)", Faculty, perl = TRUE))
+```
+
+From the survey respondents, `r sum(dppsurvey$Email == "Yes", na.rm=TRUE)` 
+researchers from the Science faculty left their email address to be contacted,
+although not all researchers indicated to be willing to meet with us when 
+contacted. So far, `r dim(interviews)[1]` online meetings have been 
+conducted, each taking about 30 minutes, and each with the project coordinators. 
+
+Below, the division over positions can be seen for all interviewees from the 
+Science faculty.
+
+```{r positionsmeetings}
+```
+
+# Results {#results}
+## Types of research data {#types-of-research-data}
+As with the university-wide data, researchers from the Science faculty indicated
+that they also most often used tabular data, textual data and code/theoretical 
+models in their research. The same goes for the types of *personal* data: the
+same top-3 types are used here as in the entire university (demographic 
+information, contact information, direct identifiers). 
+
+```{r datatypes}
+```
+
+As a large part of the researchers from the Science faculty indicated not to use
+*any* personal data whatsoever in their research, it may be useful to 
+investigate in which departments these researchers work. In the figure below,
+the division of personal data types per Science department is plotted. As can be
+expected, the departments of Biology, Physics and Mathematics do not seem to 
+process much personal data, whereas in the Information and Computing Sciences
+and Pharmaceutical Sciences departments, the most personal data is processed. This
+makes sense considering the types of research performed in these departments.
+
+```{r beta-personaldataplot}
+beta_datatypegraphs <- personaldatatypes %>%
+  pivot_longer(cols = grep("^Dept_Science_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Department") %>%
+  select(-name) %>%
+  group_by(Department, Personal_Datatype) %>%
+  summarise(Count = length(Personal_Datatype)) %>%
+  arrange(Count) %>% # Order by count
+  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
+  ggplot(aes(x = Personal_Datatype, y = Count)) + 
+  geom_bar(stat = "identity", fill = "#FFCD00") + 
+  facet_wrap(~Department, ncol = 4,
+             labeller = label_wrap_gen(width=14)) +
+  labs(x = "", title = "Personal data types across Science departments") +
+  coord_flip() +
+  theme_classic() +
+  geom_text(aes(label = Count),
+             #vjust = 0.5, 
+             hjust = "inward", #-0.2, #"inward",
+             color = "black") +
+  theme(axis.title.x = element_text(size = 10),
+        axis.line = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 10),
+        axis.ticks = element_blank(),
+        #panel.background = element_rect(fill = NA, color = "black"),
+        panel.background = element_blank(),
+        panel.border=element_blank(), #rect(fill = NA),
+        panel.spacing.y = unit(1, "lines"),
+        panel.grid.major.y = element_line(),
+        panel.grid.minor=element_blank(),
+        plot.background=element_blank(),
+        strip.background = element_rect(color="white",
+                                        size=1.5),
+        strip.text = element_text(family = "Verdana",
+                                  size = 10,
+                                  face = "bold"))
+
+beta_datatypegraphs
+```
+
+## Current practices {#current-practices}
+
+The first part of the survey addressed the researchers' current practices in 
+handling personal data in their research.
+
+### Organisational and technical measures {#organisational-technical-measures}
+With respect to organisational and technical measures used to handle personal 
+data, most respondents in the Science faculty indicated that they 
+pseudonymise/anonymise their data, use access control, and fill out a Data 
+Management Plan (DMP). These results are comparable to the university-wide results. 
+
+Notably, most responses to this and upcoming questions seem to be filled out
+primarily by researchers from the ICS and Pharmaceutical Sciences departments.
+It is possible that researchers from the other departments did not answer these
+questions, as they do not process a lot of personal data in their research, and
+may have simply skipped these questions.
+ 
+```{r measuresused}
+dppsurvey %>% 
+  pivot_longer(cols = grep("Dept_Science_[0-9]$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Department") %>%
+  select(-name) %>%
+  pivot_longer(cols = grep("^Orgmeasures_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Measures") %>%
+  select(-name) %>%
+  group_by(Measures, Department) %>%
+  summarise(Count = length(Measures)) %>%
+  arrange(Count) %>% # Order by count
+  #mutate(Measures = factor(Measures, levels=Measures)) %>% # Update factor levels
+  ggplot(aes(reorder(Measures, 
+                     -Count, 
+                     sum, 
+                     decreasing = T), 
+             Count, 
+             fill = Department)) +
+  geom_bar(stat = "identity", fill = "#FFCD00") + 
+  labs(x = "", title = "Protective and planning measures",
+       caption = "Organisational and technical measures used in handling personal data") +
+  coord_flip() +
+  theme_classic() +
+  geom_col() +
+  scale_fill_manual(values = UU_pallette) +
+  scale_y_discrete(expand = expansion(add = 4)) + # make field larger to see label
+  geom_label(aes(label = after_stat(y), group = Measures),
+             stat = 'summary',
+             fun = sum,
+             vjust = 0.5, 
+             hjust = -0.2, #"inward",
+             label.size = NA, #1,
+             nudge_y = 2,
+             label.padding = unit(0.15, "lines"),
+             color = "black",
+             fill = "#FFFFFF") + #"#FFCD00") +
+  geom_text(aes(label = Count), # counts per measure per dept
+            color = "white",
+            fill = "#FFFFFF",
+            position = position_stack(vjust = 0.5)) +
+  theme(legend.text = element_text(size = 8),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        axis.title.x = element_text(size = 11),
+        axis.line = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 11),
+        axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        plot.background=element_blank()) +
+  guides(fill = guide_legend(nrow = 3, byrow = FALSE))
+```
+
+### Storage media used {#storage-media-used}
+The majority of respondents from the Science faculty indicated to use a UU-provided or
+-approved storage medium (both cloud and network solutions) for storing
+personal data. This is good news as these are the facilities that are safe to 
+use. As with the university-wide results, other facilities were also sometimes 
+used, including those not recommended by UU. Respondents who filled out those
+non-recommended responses got a warning to take a critical look at their
+choice of storage media before moving on to the next survey question. In one
+of the one-on-one interviews with a Science researcher, we learned that this
+researcher had taken this advice from the warning to heart and had switched to a 
+UU-recommended storage facility instead. 
+
+```{r storageplot}
+```
+
+### Consent forms: usage and content {#consent-forms}
+
+In the below graph the responses to the questions about consent forms are 
+displayed. They make clear that most researchers at the Science faculty use a 
+consent form that is approved by a privacy expert or ethical committee, but also
+that part of the respondents did not use a consent form at all, or wrote it 
+themselves. This is a bit worrying, as consent is at the moment of writing the
+legal basis most often used for research performed at UU, and writing one may 
+take expertise that researchers do not always have (nor do they need to have it).
+
+When a consent form is used, the information provided to data subjects does 
+seem to be relatively complete, as indicated by the division of responses to this 
+question: many components of this (multiple responses) question seem to be present.
+Only contact details of the Data Protection Officer (DPO) and information and
+consent for further processing and sharing the data for reuse is not regularly
+included. 
+
+```{r consentforms}
+```
+
+### Data Protection Impact Assessment (DPIA) {#dpia}
+
+There does not seem to be much experience with performing DPIAs at the Science
+department: most researchers indicated not to have performed any, nor to have
+heard from it. Those that did perform a DPIA did not always get help from a 
+privacy officer. This could be interpreted as problematic, however, it is also
+possible that there was no privacy officer available yet when these researchers
+performed their DPIA, or that they got help from someone with similar expertise,
+but without the title of "privacy officer". 
+
+```{r dpia}
+```
+
+### Data sharing practices {#data-sharing}
+
+It appears that data are not much shared externally by researchers within the 
+Science faculty. Those that did indicate to share data, used mostly 
+pseudonymisation, approved tools, and agreements to protect the personal data. 
+
+```{r datasharing}
+```
+
+### Data publishing {#data-publishing}
+
+```{r datapublishing}
+```
+Datasets containing personal data also do not seem to be published at all, or
+only the metadata (i.e., contextual information about the project, which usually
+only contains personal information from the researchers themselves). The main
+reasons for this seems to be that researchers simply felt they did not need to
+do so, or (thought that they) had no legal basis to do so. 
+
+```{r publicationformat}
+```
+
+## Existing support channels {#existing-support-channels}
+### Faculty privacy officer {#faculty-privacy-officer}
+When asked whether respondents know who their faculty
+privacy officer is, more than half of the respondents indicated that they do 
+not (Yes: `r sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)` 
+(`r round(sum(dppsurvey$Know_PO=="Yes", na.rm=TRUE)/sum(!is.na(dppsurvey$Know_PO))*100,0)`%), No: 
+`r sum(dppsurvey$Know_PO=="No", na.rm=TRUE)` 
+(`r round(sum(dppsurvey$Know_PO=="No", na.rm=TRUE)/sum(!is.na(dppsurvey$Know_PO))*100,0)`%)).
+
+When comparing departments (see below), it is striking that even in the 
+departments where most personal data are processed in research, a large part of
+the respondents do not seem to know the faculty privacy officer. This suggests 
+either that researchers have simply never required help from their privacy 
+officer, or that the faculty privacy officer could increase their visibility 
+within the faculty.
+
+```{r knowpoplot}
+knowpoplot <- dppsurvey %>% 
+  pivot_longer(cols = grep("^Dept_Science_[0-9]+$", names(dppsurvey), value=TRUE), 
+               values_drop_na = TRUE,
+               values_to = "Department") %>%
+  select(-name) %>%
+  group_by(Department, Know_PO) %>%
+  summarise(Count = length(Know_PO)) %>%
+  arrange(Count) %>% # Order by count
+  filter(!is.na(Know_PO)) %>%
+  mutate(Know_PO = factor(Know_PO, levels=Know_PO)) %>% # Update factor levels
+  ggplot(aes(x = Know_PO, y = Count)) + 
+  geom_bar(stat = "identity", fill = "#FFCD00") + 
+  facet_wrap(~Department, ncol = 4,
+             labeller = label_wrap_gen(width=14)) +
+  labs(x = "", 
+       title = "Awareness of the privacy officer",
+       caption = "Awareness of the privacy officer across Science departments") +
+  coord_flip() +
+  theme_classic() +
+  geom_label(aes(label = Count),
+             #vjust = 0.5, 
+             hjust = "inward", #-0.2,
+             label.size = NA, #1,
+             color = "black") +
+  theme(axis.title.x = element_text(size = 10),
+        axis.line = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 10),
+        axis.ticks = element_blank(),
+        #panel.background = element_rect(fill = NA, color = "black"),
+        panel.background = element_blank(),
+        panel.border=element_blank(), #rect(fill = NA),
+        panel.spacing.y = unit(1, "lines"),
+        panel.grid.major.y = element_line(),
+        panel.grid.minor=element_blank(),
+        plot.background=element_blank(),
+        strip.background = element_rect(color="white",
+                                        size=1.5),
+        strip.text = element_text(family = "Verdana",
+                                  size = 10,
+                                  face = "bold"))
+
+knowpoplot
+```
+
+### Looking for help {#looking-for-help}
+When asked whether respondents have ever looked for support in the form of 
+information, tools, or in-person support, most researchers in the Science faculty
+indicated that they have, as can be seen in the graph below. Luckily, most 
+respondents that looked for support indicated to also have found what they were
+looking for. This suggests that the visibility of the current information,
+support and tools at the Science faculty is already relatively good when 
+compared to the university-wide results.
+
+```{r existingsupport}
+```
+
+### Channels used to find support {#support-channels}
+The graph below indicates which channels respondents used most 
+when looking for information about handling personal data. Strikingly, 
+researchers at the Science faculty seemed to rely most on direct colleagues,
+rather than available trainings and specific websites. This is in contrast with
+the university-wide results, where the UU website and intranet scored the 
+highest. This suggests that in-person support may be a more effective way 
+of increasing awareness of privacy-related practices than more "distant" 
+information sources. 
+
+```{r sourcesused}
+```
+
+## Challenges and needs (survey) {#challenges-needs-survey}
+
+```{r obstacle}
+```
+
+As can be seen above, most Science researchers experience privacy to be an 
+obstacle for open science and research data management in some way. It is 
+therefore important to aim for support in this area. According to the respondents
+in the Science faculty, this support would be best improved by increasing the
+visibility of available support, improving or increasing the information about
+handling personal data in research, and drawing up a UU-wide policy on handling
+personal data in research. 
+
+```{r bettersupport}
+```
+
+## Challenges and needs (open questions, meetings) {#challenges-needs-open}
+
+The codes that were assigned in both the survey and the meeting notes can be 
+seen in the word cloud below: the larger the font, the more often the code 
+was assigned. Please note that there is overlap in respondents between the open 
+questions in the survey and the meeting notes, and therefore some codes may have 
+been applied twice for the same researcher. 
+
+```{r count-codes}
+```
+
+```{r count-tools}
+```
+
+```{r wordcloud}
+```
+
+**Below we go into the most frequently mentioned challenges/needs expressed
+by researchers at the Science faculty in the survey (open questions) and 
+one-one-one meetings:**
+
+### Specific tools {#specific-tools}
+The need for specific tools was mentioned by 
+`r totalcodes$Times_mentioned_total[totalcodes$Code == "tools"]` Science 
+researchers. There was however wide variation in the type of tools requested.
+Most tools related to pseudonymising data in some way, for example qualitative 
+data or video data. Here's the top 3:
+
+- `r str_to_sentence(totaltools$Explanation[1])` (mentioned 
+`r totaltools$Times_mentioned_total[1]` times)
+- `r str_to_sentence(totaltools$Explanation[2])` (mentioned 
+`r totaltools$Times_mentioned_total[2]` times)
+- `r str_to_sentence(totaltools$Explanation[3])` (mentioned 
+`r totaltools$Times_mentioned_total[3]` times)
+
+Besides these tools, a selection of researchers also indicated that they would
+like to be able to use templates for frequent privacy-related documentation
+(`r totalcodes$Times_mentioned_total[totalcodes$Code == "templates"]` times).
+One example would be a template DPIA, pre-filled for specific types of research, which
+requires only minimal effort to adjust to a specific research project.
+
+### Hands-on support {#hands-on-support}
+Similar to the university-wide results, a selection of Science researchers 
+(`r totalcodes$Times_mentioned_total[totalcodes$Code == "hands-on"]`)
+also indicated to have a need for more hands-on support, that is support that helps
+researchers more concretely and clings less to the letter of the law (mentioned `r totalcodes$Times_mentioned_total[totalcodes$Code == "strict"]` 
+times)in favor of providing practical solutions.
+
+### Visibility and availability {#visibility-availability}
+Visibility of the available support was also mentioned regularly by Science 
+researchers (visibility mentioned 
+`r totalcodes$Times_mentioned_total[totalcodes$Code == "visibility"]` times, 
+availability `r totalcodes$Times_mentioned_total[totalcodes$Code == "availability"]`
+times). Combined with the fact that Science researchers seemed to ask their direct 
+colleagues a lot when looking for support, increasing the awareness of available
+data management and privacy-related expertise may need to be prioritised.
+
+### Less bureaucracy {#less-bureaucracy}
+Some researchers at the Science faculty have apparently also faced some 
+bureaucracy and slow processes in handling personal data in their research. These
+researchers mentioned that some processes should be made easier and more efficient
+(mentioned by `r totalcodes$Times_mentioned_total[totalcodes$Code == "quicker"]` 
+researchers), especially that of performing a DPIA  (mentioned explicitly 
+`r totalcodes$Times_mentioned_total[totalcodes$Code == "dpia-process"]` times). 
+
+### ... or simply no issues {#no-issues}
+Notably, there were also a few researchers who indicated **not** to have run 
+into issues (yet), or to have received sufficient and useful help 
+(`r totalcodes$Times_mentioned_total[totalcodes$Code == "no-issues"]`).
+
+# Conclusion {#conclusion}
+In this report, we summarised the findings of the Data Privacy Survey, looking
+specifically at respondents from the faculty of Science. In short, we found that:
+
+- Most personal data are processed in the departments of Information Computing 
+Sciences and Pharmaceutical Sciences. The types of data are similar to that of 
+the entire university, namely tabular and textual data and code/theoretical 
+models. In terms of personal data, demographic information, direct identifiers 
+and contact information were most common.
+- The current practices of researchers at the Science faculty resemble those 
+explicated in the university-wide results: most researchers are familiar with the
+basic concepts and most common practices (e.g., DMPs, informed consent forms, 
+anonymisation), but other, also important, practices were less often performed, 
+such as the DPIA, data publication, and measures such as storage encryption or 
+the processing register.
+- As there hasn't been a privacy officer for that long of a time at the Science 
+faculty, it is not that surprising that not all researchers are yet familiar 
+with them. It follows that most researchers turn to each other or the internet
+to look for information and support. Increasing the awareness of available support,
+especially in the ICS and Pharmaceutical sciences departments, may be fruitful
+in improving the compliance of researcher performed at this faculty. 
+
+Some recommendations are already described in the section above on 
+[challenges and needs](##challenges-needs-open). For further recommendations, 
+please refer to the 
+<a href="data-privacy-survey-report-v0.2.Rmd" target = "_blank">university-wide report</a>.
+
+# Technical information {#technical-information}
+This document was last created on: `r as.character(Sys.Date())`. It was 
+created in the following environment:
+
+```{r sessioninfo}
+```

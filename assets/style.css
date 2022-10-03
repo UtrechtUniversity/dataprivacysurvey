@@ -1,0 +1,187 @@
+/* Much of the css in this file has been copied with HUGE THANKS from 
+https://rstudio4edu.github.io/rstudio4edu-book/book-fancy.html#book-fancy */
+
+@import url('https://fonts.googleapis.com/css2?family=Merriweather&family=Open+Sans&display=swap');
+
+/*____Code Chunks____*/
+.sourceCode pre {
+    margin: 0 !important; /* makes space above and below symmetrical*/
+  }
+  .sourceCode {
+    margin-bottom: 0.85em; /* adds same amount of margin as a <p> would */
+  }
+  
+/* Copy code button */
+.copy {
+    width: inherit;
+    background-color: #e2e2e2 ;
+    border: none;
+    border-radius: 2px;
+    float: right;
+    font-size: 60%;
+    padding: 4px 4px 4px 4px;
+  }
+  
+
+  /* Fonts */
+   body{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11pt;
+   }
+   h1, h2, h3, h4 {
+    font-family: 'Merriweather', serif;
+    /*color: #2f5275;*/
+  }
+  .title {
+    font-family: 'Merriweather', serif;
+    font-size: 3em !important;
+    margin-top: 2em !important;
+    margin-bottom: 0.75em;
+    /*color: #5699cc;*/
+   }
+  .subtitle {
+    font-family: 'Merriweather', serif;
+    /*color: #2c6793;*/
+  }
+  
+  /*----------------ADDING WHITE SPACE-------------*/
+.section h1,
+.section h2, 
+.section h3, 
+.section h4, 
+.section h5 { 
+  padding-top: 1em !important; /*adding so much padding because theme adds a margin-top: -65px by default */
+  margin-bottom: 0.75em;
+}
+
+  /* Space Between TOC and Righthand side content on large screens */
+  @media (min-width: 992px) {
+    .col-md-9 {
+      width: 75%;
+      padding-left: 5em !important;
+    }
+ }
+
+/* Body Links */
+a {
+  color: #C00A35;
+}
+
+a:hover {
+  color: #890726; /* darker color when hovering */
+/* text-decoration: none; */ /* Removes underline when hovering*/
+}
+
+/*----------LOGO above TOC---------*/
+
+#TOC::before {
+  content: "";
+  display: block;
+  height: 200px;
+  margin: 2em 20px 40px 20px;
+  background-image: url("../assets/dpp-logo.png");
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+
+.tocify {
+  /*position: -webkit-sticky;
+  position: sticky; */
+  /*top: 120px; */ /*Controls where TOC stops when sticky */ 
+  /*width: 100% !important;*/
+  border: none;
+  border-radius: 0px;
+  font-size: 16px;
+  font-family: "Merriweather", "Serif";
+}
+
+   /* TOC links */
+.list-group-item {
+    color: #890726;
+    font-size: 16px;
+}
+
+.list-group-item.active {
+  color: #C00A35;
+  background-color: white;
+  border: none;
+}
+
+.list-group-item:hover, 
+.list-group-item.active:hover {
+    color: #FFC001;
+    background-color: white;
+}
+
+  /*---------------- Two-column layout -------------*/
+  * {
+    box-sizing: border-box;
+  }
+  
+  .row {
+    display: flex;
+  }
+  
+  /* Create two equal columns that sits next to each other */
+  .column {
+    flex: 50%;
+    padding: 10px;
+  }
+  
+
+    /*---------------- Blockquotes -------------*/
+    /* Adjusted from https://codepen.io/jimmycow/pen/LmjVaz */
+
+  .blockquote{
+    font-size: 1em;
+    width:90%;
+    margin:50px auto;
+    /*font-family: Open Sans;*/
+    /*font-style:italic;*/
+    color: #555555;
+    padding:1.2em 30px 1.2em 75px;
+    border-left:8px solid #FFCD00 ;
+    line-height:1.6;
+    position: relative;
+    background: white;
+  }
+  
+  .blockquote::before{
+    /*font-family:Arial;*/
+    content: "\201C";
+    color:#FFCD00;
+    font-size:4em;
+    position: absolute;
+    left: 10px;
+    top:-10px;
+  }
+  
+  .blockquote::after{
+    content: '';
+  }
+  
+  .blockquote span{
+    display:block;
+    color:#333333;
+    font-style: normal;
+    font-weight: bold;
+    margin-top:1em;
+  }
+
+      /*---------------- Author and title styling -------------*/
+      /* Source: https://stackoverflow.com/questions/48958406/change-font-for-author-rmarkdown */
+      h1.title {
+        font-size: 20px;
+        /*color: DarkRed;*/
+      }
+      h4.author {
+        font-size: 16px;
+        /*color: DarkBlue;*/
+      }
+
+      h4.date {
+        font-size: 15px;
+        /*color: DarkBlue;*/
+      }

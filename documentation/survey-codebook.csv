@@ -1,0 +1,253 @@
+"","name","label","data_type","n_missing","complete_rate","n_unique"
+"1","StartDate","Start Date","character",0,1,195
+"2","EndDate","End Date","character",0,1,195
+"3","Status","Response Type","character",0,1,3
+"4","IPAddress","IP Address","character",0,1,1
+"5","Progress","Progress","character",0,1,21
+"6","Duration (in seconds)","Duration (in seconds)","character",0,1,188
+"7","Finished","Finished","character",0,1,2
+"8","RecordedDate","Recorded Date","character",0,1,195
+"9","ResponseId","Response ID","character",0,1,195
+"10","RecipientLastName","Recipient Last Name","character",0,1,1
+"11","RecipientFirstName","Recipient First Name","character",0,1,1
+"12","RecipientEmail","Recipient Email","character",0,1,1
+"13","ExternalReference","External Data Reference","character",0,1,1
+"14","LocationLatitude","Location Latitude","character",0,1,1
+"15","LocationLongitude","Location Longitude","character",0,1,1
+"16","DistributionChannel","Distribution Channel","character",0,1,2
+"17","UserLanguage","User Language","character",0,1,2
+"18","Q_RecaptchaScore","Q_RecaptchaScore","character",12,0.938461538461538,8
+"19","Consent","Consent    I have read the information above and agree to participate under the conditions described. I know that my participation is voluntary and that I can exit the survey at any time (incomplete responses will be saved; if you want us to remove your data entirely, please contact us).","character",7,0.964102564102564,2
+"20","Faculty_1","In which UU faculty/faculties do you currently work? Multiple responses possible - Geosciences","character",179,0.0820512820512821,1
+"21","Faculty_2","In which UU faculty/faculties do you currently work? Multiple responses possible - Humanities","character",168,0.138461538461538,1
+"22","Faculty_3","In which UU faculty/faculties do you currently work? Multiple responses possible - Law Economics and Governance","character",173,0.112820512820513,1
+"23","Faculty_4","In which UU faculty/faculties do you currently work? Multiple responses possible - Medicine (UMC Utrecht)","character",191,0.0205128205128206,1
+"24","Faculty_5","In which UU faculty/faculties do you currently work? Multiple responses possible - Science","character",151,0.225641025641026,1
+"25","Faculty_6","In which UU faculty/faculties do you currently work? Multiple responses possible - Social and Behavioural Sciences","character",153,0.215384615384615,1
+"26","Faculty_7","In which UU faculty/faculties do you currently work? Multiple responses possible - Veterinary Medicine","character",171,0.123076923076923,1
+"27","Faculty_8","In which UU faculty/faculties do you currently work? Multiple responses possible - Other","character",185,0.0512820512820513,1
+"28","Faculty_99","In which UU faculty/faculties do you currently work? Multiple responses possible - None","character",193,0.0102564102564102,1
+"29","Not_at_UU","You indicated not to work at Utrecht University. As this questionnaire is aimed at UU researchers wo","character",195,0,0
+"30","Dept_Geo_1","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Earth Sciences","character",191,0.0205128205128206,1
+"31","Dept_Geo_2","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Physical Geography","character",195,0,0
+"32","Dept_Geo_3","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Sustainable Development","character",187,0.041025641025641,1
+"33","Dept_Geo_4","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Human Geography and Spatial Planning","character",191,0.0205128205128206,1
+"34","Dept_Geo_5","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Other","character",195,0,0
+"35","Dept_Geo_5_TEXT","In which department(s) do you currently work? Multiple responses possible - Other, namely: - Text","character",195,0,0
+"36","Dept_Humanities_1","In which department(s) do you currently work? Multiple responses possible - Selected Choice - History and Art History","character",189,0.0307692307692308,1
+"37","Dept_Humanities_2","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Languages Literature and Communication","character",179,0.0820512820512821,1
+"38","Dept_Humanities_3","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Media and Culture Studies","character",191,0.0205128205128206,1
+"39","Dept_Humanities_4","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Philosophy and Religious Studies","character",195,0,0
+"40","Dept_Humanities_5","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Other","character",193,0.0102564102564102,1
+"41","Dept_Humanities_5_TEXT","In which department(s) do you currently work? Multiple responses possible - Other, namely: - Text","character",193,0.0102564102564102,2
+"42","Dept_REBO_1","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Law","character",188,0.0358974358974359,1
+"43","Dept_REBO_2","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Economics","character",191,0.0205128205128206,1
+"44","Dept_REBO_3","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Governance","character",185,0.0512820512820513,1
+"45","Dept_REBO_4","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Other","character",194,0.00512820512820511,1
+"46","Dept_REBO_4_TEXT","In which department(s) do you currently work? Multiple responses possible - Other, namely: - Text","character",194,0.00512820512820511,1
+"47","Dept_Science_1","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Biology","character",189,0.0307692307692308,1
+"48","Dept_Science_2","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Physics","character",189,0.0307692307692308,1
+"49","Dept_Science_3","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Mathematics","character",191,0.0205128205128206,1
+"50","Dept_Science_4","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Chemistry","character",191,0.0205128205128206,1
+"51","Dept_Science_5","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Information and Computing Sciences","character",182,0.0666666666666667,1
+"52","Dept_Science_6","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Pharmaceutical Sciences","character",184,0.0564102564102564,1
+"53","Dept_Science_7","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Other","character",193,0.0102564102564102,1
+"54","Dept_Science_7_TEXT","In which department(s) do you currently work? Multiple responses possible - Other, namely: - Text","character",193,0.0102564102564102,2
+"55","Dept_FSW_1","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Education","character",189,0.0307692307692308,1
+"56","Dept_FSW_2","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Youth & Family","character",192,0.0153846153846153,1
+"57","Dept_FSW_3","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Development & Education of Youth in Diverse Societies","character",194,0.00512820512820511,1
+"58","Dept_FSW_4","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Clinical Child & Family Studies","character",193,0.0102564102564102,1
+"59","Dept_FSW_5","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Interdisciplinary Social Science","character",190,0.0256410256410257,1
+"60","Dept_FSW_6","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Cultural Anthropology","character",193,0.0102564102564102,1
+"61","Dept_FSW_7","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Methodology & Statistics","character",191,0.0205128205128206,1
+"62","Dept_FSW_8","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Sociology","character",194,0.00512820512820511,1
+"63","Dept_FSW_9","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Clinical Psychology","character",193,0.0102564102564102,1
+"64","Dept_FSW_10","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Developmental Psychology","character",193,0.0102564102564102,1
+"65","Dept_FSW_11","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Experimental Psychology","character",189,0.0307692307692308,1
+"66","Dept_FSW_12","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Social Health & Organisational Psychology","character",189,0.0307692307692308,1
+"67","Dept_FSW_13","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Other","character",195,0,0
+"68","Dept_FSW_13_TEXT","In which department(s) do you currently work? Multiple responses possible - Other, namely: - Text","character",195,0,0
+"69","Dept_DGK_1","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Biomolecular Health Sciences","character",193,0.0102564102564102,1
+"70","Dept_DGK_2","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Clinical Sciences","character",190,0.0256410256410257,1
+"71","Dept_DGK_3","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Population Health Sciences","character",178,0.0871794871794872,1
+"72","Dept_DGK_4","In which department(s) do you currently work? Multiple responses possible - Selected Choice - Other","character",195,0,0
+"73","Dept_DGK_4_TEXT","In which department(s) do you currently work? Multiple responses possible - Other, namely: - Text","character",195,0,0
+"74","Dept_Nonacademic_1","In which other part of the organisation do you currently work? Multiple responses possible - Selected Choice - Centre for Academic Teaching","character",195,0,0
+"75","Dept_Nonacademic_2","In which other part of the organisation do you currently work? Multiple responses possible - Selected Choice - University College Roosevelt","character",195,0,0
+"76","Dept_Nonacademic_3","In which other part of the organisation do you currently work? Multiple responses possible - Selected Choice - University College Utrecht","character",192,0.0153846153846153,1
+"77","Dept_Nonacademic_4","In which other part of the organisation do you currently work? Multiple responses possible - Selected Choice - University Library","character",190,0.0256410256410257,1
+"78","Dept_Nonacademic_5","In which other part of the organisation do you currently work? Multiple responses possible - Selected Choice - University Corporate Office","character",193,0.0102564102564102,1
+"79","Dept_Nonacademic_6","In which other part of the organisation do you currently work? Multiple responses possible - Selected Choice - Information Technology Services","character",195,0,0
+"80","Dept_Nonacademic_7","In which other part of the organisation do you currently work? Multiple responses possible - Selected Choice - Other","character",195,0,0
+"81","Dept_Nonacademic_7_TEXT","In which other part of the organisation do you currently work? Multiple responses possible - Other, namely: - Text","character",195,0,0
+"82","Position_1","What is your current position? Multiple responses possible - Selected Choice - Student","character",191,0.0205128205128206,1
+"83","Position_2","What is your current position? Multiple responses possible - Selected Choice - PhD/junior/post-doc","character",129,0.338461538461538,1
+"84","Position_3","What is your current position? Multiple responses possible - Selected Choice - Assistant/Associate Professor","character",135,0.307692307692308,1
+"85","Position_4","What is your current position? Multiple responses possible - Selected Choice - Full/Emeritus professor","character",175,0.102564102564103,1
+"86","Position_5","What is your current position? Multiple responses possible - Selected Choice - Teacher/Lecturer","character",182,0.0666666666666667,1
+"87","Position_6","What is your current position? Multiple responses possible - Selected Choice - Research supporter","character",178,0.0871794871794872,1
+"88","Position_7","What is your current position? Multiple responses possible - Selected Choice - Other","character",191,0.0205128205128206,1
+"89","Position_7_TEXT","What is your current position? Multiple responses possible - Other, namely: - Text","character",191,0.0205128205128206,4
+"90","Datatype_1","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Selected Choice - Textual data","character",81,0.584615384615385,1
+"91","Datatype_2","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Selected Choice - Tabular data","character",64,0.671794871794872,1
+"92","Datatype_3","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Selected Choice - Video data","character",153,0.215384615384615,1
+"93","Datatype_4","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Selected Choice - Images","character",153,0.215384615384615,1
+"94","Datatype_5","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Selected Choice - Audio data","character",135,0.307692307692308,1
+"95","Datatype_6","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Selected Choice - Bio-medical samples and data","character",166,0.148717948717949,1
+"96","Datatype_7","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Selected Choice - Physiological measurements","character",166,0.148717948717949,1
+"97","Datatype_8","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Selected Choice - Physical samples","character",183,0.0615384615384615,1
+"98","Datatype_9","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Selected Choice - Code/theoretical models","character",129,0.338461538461538,1
+"99","Datatype_10","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Selected Choice - Geographical data","character",170,0.128205128205128,1
+"100","Datatype_11","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Selected Choice - Other","character",187,0.041025641025641,1
+"101","Datatype_99","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Selected Choice - None","character",193,0.0102564102564102,1
+"102","Datatype_11_TEXT","With which source(s), type(s) or format(s) of data do you work in your research?Please select all th - Other, namely: - Text","character",187,0.041025641025641,8
+"103","Not_data","You indicated not to work at with research data of any kind. As this questionnaire is aimed at UU re","character",194,0.00512820512820511,1
+"104","Personaldata_type_1","With which types or sources of personal data do you work in your research project(s)?Please select a - Selected Choice - I don’t know what personal data is","character",195,0,0
+"105","Personaldata_type_2","With which types or sources of personal data do you work in your research project(s)?Please select a - Selected Choice - Direct identifiers","character",123,0.369230769230769,1
+"106","Personaldata_type_3","With which types or sources of personal data do you work in your research project(s)?Please select a - Selected Choice - Sensitive direct identifiers","character",186,0.0461538461538461,1
+"107","Personaldata_type_4","With which types or sources of personal data do you work in your research project(s)?Please select a - Selected Choice - Demographic information","character",87,0.553846153846154,1
+"108","Personaldata_type_5","With which types or sources of personal data do you work in your research project(s)?Please select a - Selected Choice - Sensitive demographic information","character",158,0.18974358974359,1
+"109","Personaldata_type_6","With which types or sources of personal data do you work in your research project(s)?Please select a - Selected Choice - Health/physical information","character",168,0.138461538461538,1
+"110","Personaldata_type_7","With which types or sources of personal data do you work in your research project(s)?Please select a - Selected Choice - Contact information","character",107,0.451282051282051,1
+"111","Personaldata_type_8","With which types or sources of personal data do you work in your research project(s)?Please select a - Selected Choice - Derived personal data","character",161,0.174358974358974,1
+"112","Personaldata_type_9","With which types or sources of personal data do you work in your research project(s)?Please select a - Selected Choice - Human behaviour","character",159,0.184615384615385,1
+"113","Personaldata_type_10","With which types or sources of personal data do you work in your research project(s)?Please select a - Selected Choice - Other","character",184,0.0564102564102564,1
+"114","Personaldata_type_99","With which types or sources of personal data do you work in your research project(s)?Please select a - Selected Choice - None","character",177,0.0923076923076923,1
+"115","Personaldata_type_10_TEXT","With which types or sources of personal data do you work in your research project(s)?Please select a - Other, namely: - Text","character",184,0.0564102564102564,11
+"116","No_personal_data","You indicated not to work at with personal data of any kind. As this questionnaire is aimed at UU re","character",181,0.0717948717948718,1
+"117","Orgmeasures_1","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - DMP","character",109,0.441025641025641,1
+"118","Orgmeasures_2","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Processing register","character",179,0.0820512820512821,1
+"119","Orgmeasures_3","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - DPIA","character",165,0.153846153846154,1
+"120","Orgmeasures_4","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Privacy review ","character",176,0.0974358974358974,1
+"121","Orgmeasures_5","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Access control","character",104,0.466666666666667,1
+"122","Orgmeasures_6","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Access logging","character",152,0.220512820512821,1
+"123","Orgmeasures_7","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Pseudonymisation/anonymisation","character",94,0.517948717948718,1
+"124","Orgmeasures_8","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Storage encryption","character",164,0.158974358974359,1
+"125","Orgmeasures_9","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Transfer encryption","character",139,0.287179487179487,1
+"126","Orgmeasures_10","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Retention policy","character",152,0.220512820512821,1
+"127","Orgmeasures_11","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Privacy training ","character",185,0.0512820512820513,1
+"128","Orgmeasures_12","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Agreements","character",146,0.251282051282051,1
+"129","Orgmeasures_13","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Non-disclosure agreement","character",151,0.225641025641026,1
+"130","Orgmeasures_14","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Data deletion","character",147,0.246153846153846,1
+"131","Orgmeasures_15","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Download/storage control","character",164,0.158974358974359,1
+"132","Orgmeasures_16","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - Other","character",177,0.0923076923076923,1
+"133","Orgmeasures_99","Which privacy-related measures do you (generally) implement in your research?Please select all that - Selected Choice - None","character",192,0.0153846153846153,1
+"134","Orgmeasures_16_TEXT","Which privacy-related measures do you (generally) implement in your research?Please select all that - Other, please specify: - Text","character",177,0.0923076923076923,18
+"135","Storage_medium_1","Where do you store your research data? Please select all that apply: - Selected Choice - UU network drive","character",123,0.369230769230769,1
+"136","Storage_medium_2","Where do you store your research data? Please select all that apply: - Selected Choice - UU cloud drive","character",92,0.528205128205128,1
+"137","Storage_medium_3","Where do you store your research data? Please select all that apply: - Selected Choice - Non-UU cloud","character",172,0.117948717948718,1
+"138","Storage_medium_4","Where do you store your research data? Please select all that apply: - Selected Choice - UU device","character",146,0.251282051282051,1
+"139","Storage_medium_5","Where do you store your research data? Please select all that apply: - Selected Choice - Non-UU device","character",167,0.143589743589744,1
+"140","Storage_medium_6","Where do you store your research data? Please select all that apply: - Selected Choice - UU external disk","character",192,0.0153846153846153,1
+"141","Storage_medium_7","Where do you store your research data? Please select all that apply: - Selected Choice - Non-UU external disk","character",171,0.123076923076923,1
+"142","Storage_medium_8","Where do you store your research data? Please select all that apply: - Selected Choice - Other","character",179,0.0820512820512821,1
+"143","Storage_medium_99","Where do you store your research data? Please select all that apply: - Selected Choice - Not applicable","character",195,0,0
+"144","Storage_medium_8_TEXT","Where do you store your research data? Please select all that apply: - Other, namely: - Text","character",179,0.0820512820512821,16
+"145","Consentforms_1","Do you use  consent forms in your research? - Selected Choice - Yes; myself","character",159,0.184615384615385,1
+"146","Consentforms_2","Do you use  consent forms in your research? - Selected Choice - Yes; approved by privacy or ethics","character",124,0.364102564102564,1
+"147","Consentforms_3","Do you use  consent forms in your research? - Selected Choice - Yes; from our department","character",165,0.153846153846154,1
+"148","Consentforms_4","Do you use  consent forms in your research? - Selected Choice - Yes; UU-wide template","character",176,0.0974358974358974,1
+"149","Consentforms_5","Do you use  consent forms in your research? - Selected Choice - No","character",174,0.107692307692308,1
+"150","Consentforms_6","Do you use  consent forms in your research? - Selected Choice - Don't know what it is","character",192,0.0153846153846153,1
+"151","Consentforms_7","Do you use  consent forms in your research? - Selected Choice - Other","character",182,0.0666666666666667,1
+"152","Consentforms_99","Do you use  consent forms in your research? - Selected Choice - Not applicable","character",190,0.0256410256410257,1
+"153","Consentforms_7_TEXT","Do you use  consent forms in your research? - Other, namely: - Text","character",183,0.0615384615384615,12
+"154","Consent_content_1","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Which data used","character",104,0.466666666666667,1
+"155","Consent_content_2","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Retention period","character",120,0.384615384615385,1
+"156","Consent_content_3","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Purposes","character",96,0.507692307692308,1
+"157","Consent_content_4","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Processors/controllers","character",115,0.41025641025641,1
+"158","Consent_content_5","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Sharing and reuse","character",125,0.358974358974359,1
+"159","Consent_content_6","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Safeguards","character",119,0.38974358974359,1
+"160","Consent_content_7","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Rights","character",120,0.384615384615385,1
+"161","Consent_content_8","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - DPO contact","character",145,0.256410256410256,1
+"162","Consent_content_9","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Regular consent","character",102,0.476923076923077,1
+"163","Consent_content_10","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Further processing consent","character",159,0.184615384615385,1
+"164","Consent_content_11","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Sharing data consent","character",155,0.205128205128205,1
+"165","Consent_content_12","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Other","character",189,0.0307692307692308,1
+"166","Consent_content_99","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Not applicable","character",194,0.00512820512820511,1
+"167","Consent_content_13","What privacy-related content is in your average information letter and/or consent form?Please select - Selected Choice - Not sure","character",189,0.0307692307692308,1
+"168","Consent_content_12_TEXT","What privacy-related content is in your average information letter and/or consent form?Please select - Other content, namely: - Text","character",189,0.0307692307692308,6
+"169","DPIA_experience_1","Have you ever conducted, or will you conduct, a Data Protection Impact Assessment (DPIA)? - Yes","character",161,0.174358974358974,1
+"170","DPIA_experience_2","Have you ever conducted, or will you conduct, a Data Protection Impact Assessment (DPIA)? - No; but familiar","character",156,0.2,1
+"171","DPIA_experience_3","Have you ever conducted, or will you conduct, a Data Protection Impact Assessment (DPIA)? - No; never heard of it","character",133,0.317948717948718,1
+"172","DPIA_experience_99","Have you ever conducted, or will you conduct, a Data Protection Impact Assessment (DPIA)? - Not applicable","character",187,0.041025641025641,1
+"173","DPIA_Help_1","Did/Will you ask for help in conducting the DPIA? - Selected Choice - Yes; RDM","character",187,0.041025641025641,1
+"174","DPIA_Help_2","Did/Will you ask for help in conducting the DPIA? - Selected Choice - Yes; Privacy Officer","character",172,0.117948717948718,1
+"175","DPIA_Help_3","Did/Will you ask for help in conducting the DPIA? - Selected Choice - Yes; Legal Affairs","character",189,0.0307692307692308,1
+"176","DPIA_Help_4","Did/Will you ask for help in conducting the DPIA? - Selected Choice - Yes; other","character",191,0.0205128205128206,1
+"177","DPIA_Help_5","Did/Will you ask for help in conducting the DPIA? - Selected Choice - No","character",192,0.0153846153846153,1
+"178","DPIA_Help_99","Did/Will you ask for help in conducting the DPIA? - Selected Choice - Not applicable","character",195,0,0
+"179","DPIA_Help_4_TEXT","Did/Will you ask for help in conducting the DPIA? - Yes, from someone else: - Text","character",193,0.0102564102564102,2
+"180","Share_outside_UU_1","Do you / Will you share research data containing personal data outside of the UU?Please select all t - Selected Choice - Yes; within EEA","character",160,0.17948717948718,1
+"181","Share_outside_UU_2","Do you / Will you share research data containing personal data outside of the UU?Please select all t - Selected Choice - Yes; outside EEA with adequacy","character",177,0.0923076923076923,1
+"182","Share_outside_UU_3","Do you / Will you share research data containing personal data outside of the UU?Please select all t - Selected Choice - Yes; outside EEA without adequacy","character",183,0.0615384615384615,1
+"183","Share_outside_UU_4","Do you / Will you share research data containing personal data outside of the UU?Please select all t - Selected Choice - No; only within UU","character",142,0.271794871794872,1
+"184","Share_outside_UU_5","Do you / Will you share research data containing personal data outside of the UU?Please select all t - Selected Choice - No sharing at all","character",164,0.158974358974359,1
+"185","Share_outside_UU_6","Do you / Will you share research data containing personal data outside of the UU?Please select all t - Selected Choice - Other","character",170,0.128205128205128,1
+"186","Share_outside_UU_6_TEXT","Do you / Will you share research data containing personal data outside of the UU?Please select all t - Other, please specify: - Text","character",171,0.123076923076923,24
+"187","Share_measures_1","What actions do you take to transfer personal data securely outside of the UU?Please select all that - Selected Choice - Pseudonymisation","character",154,0.21025641025641,1
+"188","Share_measures_2","What actions do you take to transfer personal data securely outside of the UU?Please select all that - Selected Choice - Privacy officer","character",184,0.0564102564102564,1
+"189","Share_measures_3","What actions do you take to transfer personal data securely outside of the UU?Please select all that - Selected Choice - RDM/data manager","character",186,0.0461538461538461,1
+"190","Share_measures_4","What actions do you take to transfer personal data securely outside of the UU?Please select all that - Selected Choice - Data transfer agreement","character",173,0.112820512820513,1
+"191","Share_measures_5","What actions do you take to transfer personal data securely outside of the UU?Please select all that - Selected Choice - Data processing agreement","character",179,0.0820512820512821,1
+"192","Share_measures_6","What actions do you take to transfer personal data securely outside of the UU?Please select all that - Selected Choice - Approved tool","character",171,0.123076923076923,1
+"193","Share_measures_7","What actions do you take to transfer personal data securely outside of the UU?Please select all that - Selected Choice - Access without transfer","character",181,0.0717948717948718,1
+"194","Share_measures_8","What actions do you take to transfer personal data securely outside of the UU?Please select all that - Selected Choice - Standard Contractual Clauses","character",190,0.0256410256410257,1
+"195","Share_measures_9","What actions do you take to transfer personal data securely outside of the UU?Please select all that - Selected Choice - Other","character",183,0.0615384615384615,1
+"196","Share_measures_10","What actions do you take to transfer personal data securely outside of the UU?Please select all that - Selected Choice - None","character",192,0.0153846153846153,1
+"197","Share_measures_99","What actions do you take to transfer personal data securely outside of the UU?Please select all that - Selected Choice - Not applicable","character",186,0.0461538461538461,1
+"198","Share_measures_9_TEXT","What actions do you take to transfer personal data securely outside of the UU?Please select all that - Other, namely: - Text","character",183,0.0615384615384615,12
+"199","Data_publication_1","Have you ever published a dataset containing personal data (e.g., in a repository)?With a dataset, - Yes; whole dataset","character",182,0.0666666666666667,1
+"200","Data_publication_2","Have you ever published a dataset containing personal data (e.g., in a repository)?With a dataset, - Yes; only metadata","character",169,0.133333333333333,1
+"201","Data_publication_3","Have you ever published a dataset containing personal data (e.g., in a repository)?With a dataset, - No","character",91,0.533333333333333,1
+"202","Publication_format_1","In what format was the data published? - Anonymised","character",187,0.041025641025641,1
+"203","Publication_format_2","In what format was the data published? - Pseudonymised","character",191,0.0205128205128206,1
+"204","Publication_format_3","In what format was the data published? - Not anonymised/pseudonymised","character",194,0.00512820512820511,1
+"205","Reason_NoPub_1","Why didn't you publish your data? Please select all that apply: - Selected Choice - Don’t want/need to","character",163,0.164102564102564,1
+"206","Reason_NoPub_2","Why didn't you publish your data? Please select all that apply: - Selected Choice - Don't know if allowed to","character",176,0.0974358974358974,1
+"207","Reason_NoPub_3","Why didn't you publish your data? Please select all that apply: - Selected Choice - Don’t know how","character",187,0.041025641025641,1
+"208","Reason_NoPub_4","Why didn't you publish your data? Please select all that apply: - Selected Choice - Too large","character",189,0.0307692307692308,1
+"209","Reason_NoPub_5","Why didn't you publish your data? Please select all that apply: - Selected Choice - No legal basis","character",171,0.123076923076923,1
+"210","Reason_NoPub_6","Why didn't you publish your data? Please select all that apply: - Selected Choice - No anonymisation possible","character",167,0.143589743589744,1
+"211","Reason_NoPub_7","Why didn't you publish your data? Please select all that apply: - Selected Choice - Still working on data","character",158,0.18974358974359,1
+"212","Reason_NoPub_8","Why didn't you publish your data? Please select all that apply: - Selected Choice - Other","character",172,0.117948717948718,1
+"213","Reason_NoPub_8_TEXT","Why didn't you publish your data? Please select all that apply: - Other reason, namely: - Text","character",172,0.117948717948718,23
+"214","Know_PO","Do you know who your faculty privacy officer is?","character",55,0.717948717948718,2
+"215","Lookedforhelp","Have you ever looked for UU-specific information, in-person support or tools on handling personal da","character",55,0.717948717948718,3
+"216","Foundhelp","Did you find what you were looking for (e.g., information, support, tools)?","character",104,0.466666666666667,4
+"217","Sourcesused_1","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - UU website","character",102,0.476923076923077,1
+"218","Sourcesused_2","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Faculty website","character",134,0.312820512820513,1
+"219","Sourcesused_3","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Intranet","character",120,0.384615384615385,1
+"220","Sourcesused_4","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Tooladvisor","character",172,0.117948717948718,1
+"221","Sourcesused_5","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - DPA website","character",171,0.123076923076923,1
+"222","Sourcesused_6","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - External institution website","character",174,0.107692307692308,1
+"223","Sourcesused_7","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Other website","character",167,0.143589743589744,1
+"224","Sourcesused_8","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Privacy officer","character",159,0.184615384615385,1
+"225","Sourcesused_9","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Legal Affairs","character",187,0.041025641025641,1
+"226","Sourcesused_10","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - DPO","character",183,0.0615384615384615,1
+"227","Sourcesused_11","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Department data manager","character",165,0.153846153846154,1
+"228","Sourcesused_12","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - RDM support","character",160,0.17948717948718,1
+"229","Sourcesused_13","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Information Security","character",192,0.0153846153846153,1
+"230","Sourcesused_14","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Colleagues","character",119,0.38974358974359,1
+"231","Sourcesused_15","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - UU training","character",165,0.153846153846154,1
+"232","Sourcesused_16","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - External training","character",191,0.0205128205128206,1
+"233","Sourcesused_17","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Cannot find information","character",191,0.0205128205128206,1
+"234","Sourcesused_18","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Never search information","character",185,0.0512820512820513,1
+"235","Sourcesused_19","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Other","character",184,0.0564102564102564,1
+"236","Sourcesused_99","Which channels do you use to find information about handling personal data?Please select all that ap - Selected Choice - Not applicable","character",195,0,0
+"237","Sourcesused_19_TEXT","Which channels do you use to find information about handling personal data?Please select all that ap - Other: - Text","character",184,0.0564102564102564,11
+"238","Obstacle","Do you see dealing with personal data as an obstacle in open science and research data management?","character",56,0.712820512820513,4
+"239","Challenges","Which challenges concerning the handling of personal data do you run into most often?For example: ho","character",103,0.471794871794872,92
+"240","Infotools_missing","What specific information or tools about handling personal data are you missing from exist","character",134,0.312820512820513,60
+"241","Better_support_1","What can we do better to support you in handling personal data in research?Please select all that ap - Selected Choice - Workshops","character",163,0.164102564102564,1
+"242","Better_support_2","What can we do better to support you in handling personal data in research?Please select all that ap - Selected Choice - Tooling","character",167,0.143589743589744,1
+"243","Better_support_3","What can we do better to support you in handling personal data in research?Please select all that ap - Selected Choice - Information","character",114,0.415384615384615,1
+"244","Better_support_4","What can we do better to support you in handling personal data in research?Please select all that ap - Selected Choice - Walk-ins","character",160,0.17948717948718,1
+"245","Better_support_5","What can we do better to support you in handling personal data in research?Please select all that ap - Selected Choice - Trainings","character",171,0.123076923076923,1
+"246","Better_support_6","What can we do better to support you in handling personal data in research?Please select all that ap - Selected Choice - Support visibility","character",128,0.343589743589744,1
+"247","Better_support_7","What can we do better to support you in handling personal data in research?Please select all that ap - Selected Choice - Support availability","character",168,0.138461538461538,1
+"248","Better_support_8","What can we do better to support you in handling personal data in research?Please select all that ap - Selected Choice - UU-wide policy","character",147,0.246153846153846,1
+"249","Better_support_9","What can we do better to support you in handling personal data in research?Please select all that ap - Selected Choice - Other","character",166,0.148717948717949,1
+"250","Better_support_9_TEXT","What can we do better to support you in handling personal data in research?Please select all that ap - Other (we welcome all suggestions!): - Text","character",166,0.148717948717949,29
+"251","Email","If you have any questions about this survey or the Data Privacy Project, feel free to contact: Do - Selected Choice","character",65,0.666666666666667,2
+"252","Email_1_TEXT","If you have any questions about this survey or the Data Privacy Project, feel free to contact: Do - Yes, email me via: - Text","character",155,0.205128205128205,40
