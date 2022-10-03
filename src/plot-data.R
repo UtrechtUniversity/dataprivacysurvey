@@ -218,7 +218,6 @@ plotdepartments <- function(data,
     select(-name) %>%
     group_by(Department) %>%
     summarise(Count = length(Department)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     ggplot(aes(reorder(Department, 
                        -Count, 
                        sum, 
@@ -272,9 +271,9 @@ meetings_faculties <- data.frame(Faculty = str_trim(unlist(str_split(interviews$
 meetings_faculties %>%
   group_by(Faculty) %>%
   summarise(Count = length(Faculty)) %>%
-  arrange(Count) %>% # Order by count
   mutate(Faculty = factor(Faculty, levels=Faculty)) %>% # Update factor levels
-  ggplot(aes(x = Faculty, y = Count)) + 
+  arrange(Count) %>% # Order by count
+  ggplot(aes(x = forcats::fct_rev(Faculty), y = Count)) + 
   geom_bar(stat = "identity", fill = uucol) + 
   labs(x = "", 
        title = "Faculty representation one-on-one meetings",
@@ -294,10 +293,8 @@ positionsmeetings <- function(interviewdata,
   # Plot positions of researchers in the meetings
     group_by(Position) %>%
     summarise(Count = length(Position)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    #arrange(Percentage) %>% # Order by %
     mutate(Position = factor(Position, levels=Position)) %>% # Update factor levels
-    ggplot(aes(x = Position, y = Count)) + 
+    ggplot(aes(x = forcats::fct_rev(Position), y = Count)) + 
     geom_bar(stat = "identity", fill = uucol) + 
     labs(x = "", title = title, caption = caption) +
     countstyle
@@ -314,10 +311,8 @@ datatypes <- function(data){
     select(-name) %>%
     group_by(Datatype) %>%
     summarise(Count = length(Datatype)) %>%
-    #arrange(Count) %>% # Order by count
     mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
     mutate(Percentage = round(Count/dim(data)[1]*100,1)) %>%
-    map_df(rev) %>% # reverse order
     mutate(Frequency = paste0(Count, " (", Percentage, "%)")) %>%
     select(-Count, -Percentage)
   
@@ -329,34 +324,32 @@ datatypes <- function(data){
     select(-name) %>%
     group_by(Personal_Datatype) %>%
     summarise(Count = length(Personal_Datatype)) %>%
-    #arrange(Count) %>% # Order by count
     mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype), # Update factor levels
            Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-    map_df(rev) %>% # reverse order
     mutate(Frequency = paste0(Count, " (", Percentage, "%)")) %>%
     select(-Count, -Percentage)
   
-  kables(list(
-    kbl(datatypetable,
-        col.names = gsub("_", " ", names(datatypetable)), 
-        align = "l",
-        caption = "<b>Types of research data</b>",
-        valign = 't') %>%
-      kable_classic(latex_options = "hover",
-                    full_width = F, 
-                    html_font = "Verdana",
-                    font_size = 12,
-                    position = "float_left"),
-    kbl(tablepersdata, 
-        col.names = gsub("_", " ", names(tablepersdata)), 
-        align = "l",
-        caption = "<b>Types of <i>personal</i> data</b>",
-        valign = 't') %>%
-      kable_classic(latex_options = "hover",
-                    full_width = F,
-                    html_font = "Verdana",
-                    font_size = 12,
-                    position = "left")))
+  t1 <- kable(datatypetable, format = "html", output = FALSE, 
+              col.names = gsub("_", " ", names(datatypetable),),
+              caption = "<b>Types of research data</b>",
+              table.attr='cellpadding="3", cellspacing="3"') %>%
+    kable_styling(bootstrap_options = c("striped", 
+                                        "hover", 
+                                        "condensed", 
+                                        "responsive"),
+                  fixed_thead = T)
+  t2 <- kable(tablepersdata, format = "html", output = FALSE, 
+              col.names = gsub("_", " ", names(tablepersdata)),
+              caption = "<b>Types of personal data</b>",
+              table.attr='cellpadding="3"') %>%
+    kable_styling(bootstrap_options = c("striped", 
+                                        "hover", 
+                                        "condensed", 
+                                        "responsive"),
+                  fixed_thead = T)
+  
+  tables <- list(t1, t2)
+  return(tables)
 }
 
 
@@ -372,8 +365,9 @@ dppsurvey %>%
   select(-name) %>%
   group_by(Faculty, Personal_Datatype) %>%
   summarise(Count = length(Personal_Datatype)) %>%
-  mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
-  ggplot(aes(x = Personal_Datatype, y = Count)) + 
+  mutate(Personal_Datatype = factor(Personal_Datatype, 
+                                    levels=Personal_Datatype)) %>% # Update factor levels
+  ggplot(aes(x = forcats::fct_rev(Personal_Datatype), y = Count)) + 
   geom_bar(stat = "identity", fill = "#FFCD00") + 
   facet_wrap(~Faculty, ncol = 4,
              labeller = label_wrap_gen(width=14)) +
@@ -391,7 +385,6 @@ dppsurvey %>%
         axis.text.x = element_blank(),
         axis.text.y = element_text(size = 9),
         axis.ticks = element_blank(),
-        #panel.background = element_rect(fill = NA, color = "black"),
         panel.background = element_blank(),
         panel.border=element_blank(), #rect(fill = NA),
         panel.spacing.y = unit(1, "lines"),
@@ -420,8 +413,9 @@ datatypesdepartments <- function(data, string,
     select(-name) %>%
     group_by(Department, Personal_Datatype) %>%
     summarise(Count = length(Personal_Datatype)) %>%
-    mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype)) %>% # Update factor levels
-    ggplot(aes(Personal_Datatype, Count)) +
+    mutate(Personal_Datatype = factor(Personal_Datatype, 
+                                      levels=Personal_Datatype)) %>% # Update factor levels
+    ggplot(aes(forcats::fct_rev(Personal_Datatype), y = Count)) +
     coord_flip() +
     theme_classic() + 
     geom_col(fill = uucol) +
@@ -435,7 +429,6 @@ datatypesdepartments <- function(data, string,
           axis.text.x = element_blank(),
           axis.text.y = element_text(size = 9),
           axis.ticks = element_blank(),
-          #panel.background = element_rect(fill = NA, color = "black"),
           panel.background = element_blank(),
           panel.border=element_blank(), #rect(fill = NA),
           panel.spacing.y = unit(1, "lines"),
@@ -461,9 +454,8 @@ measuresplot <- function(data,
     select(-name) %>%
     group_by(Measures) %>%
     summarise(Count = length(Measures)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    mutate(Measures = factor(rev(Measures), levels=rev(Measures))) %>% # Update factor levels
-    ggplot(aes(Measures, Count)) +
+    mutate(Measures = factor(Measures, levels=Measures)) %>% # Update factor levels
+    ggplot(aes(forcats::fct_rev(Measures), Count)) +
     geom_bar(stat = "identity", fill = uucol) + 
     labs(x = "", title = title, caption = caption) +
     countstyle
@@ -480,8 +472,6 @@ storageplot <- function(data,
     select(-name) %>%
     group_by(Storage) %>%
     summarise(Count = length(Storage)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    #arrange(Count) %>% # Order by count
     mutate(Storage = factor(Storage, levels=Storage)) %>% # Update factor levels
     ggplot(aes(x = Storage, y = Count)) + 
     geom_bar(stat = "identity") + 
@@ -494,7 +484,7 @@ storageplot <- function(data,
 consentforms <- function(data, title1 = "Consent Forms", 
                          title2 = "Content of forms",
                          caption1 = "Do you use consent forms in your research?",
-                         caption2 = "What privacy-related content is in your average information letter and/or consent form?"){
+                         caption2 = "What privacy-related content is in your average \ninformation letter and/or consent form?"){
   
   consent_usage_plot <- 
     data %>% 
@@ -504,7 +494,6 @@ consentforms <- function(data, title1 = "Consent Forms",
     select(-name) %>%
     group_by(Consent_Forms) %>%
     summarise(Count = length(Consent_Forms)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(Consent_Forms = factor(Consent_Forms, levels=Consent_Forms)) %>% # Update factor levels
     ggplot(aes(x = Consent_Forms, y = Count)) + 
     geom_bar(stat = "identity") + 
@@ -519,9 +508,9 @@ consentforms <- function(data, title1 = "Consent Forms",
     select(-name) %>%
     group_by(Consent_Content) %>%
     summarise(Count = length(Consent_Content)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    mutate(Consent_Content = factor(Consent_Content, levels=Consent_Content)) %>% # Update factor levels
-    ggplot(aes(x = Consent_Content, y = Count)) + 
+    mutate(Consent_Content = factor(Consent_Content, 
+                                    levels=Consent_Content)) %>% # Update factor levels
+    ggplot(aes(x = forcats::fct_rev(Consent_Content), y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title2, caption = caption2) +
     countstyle
@@ -543,7 +532,6 @@ dpiaplot <- function(data, title1 = "Experience with DPIAs",
     select(-name) %>%
     group_by(DPIA_experience) %>%
     summarise(Count = length(DPIA_experience)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(DPIA_experience = factor(DPIA_experience, levels=DPIA_experience)) %>% # Update factor levels
     ggplot(aes(x = DPIA_experience, y = Count)) + 
     geom_bar(stat = "identity") + 
@@ -558,7 +546,6 @@ dpiaplot <- function(data, title1 = "Experience with DPIAs",
     select(-name) %>%
     group_by(DPIA_help) %>%
     summarise(Count = length(DPIA_help)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(DPIA_help = factor(DPIA_help, levels=DPIA_help)) %>% # Update factor levels
     ggplot(aes(x = DPIA_help, y = Count)) + 
     geom_bar(stat = "identity") + 
@@ -584,7 +571,6 @@ datasharingplot <- function(data,
     select(-name) %>%
     group_by(external_sharing) %>%
     summarise(Count = length(external_sharing)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(external_sharing = factor(external_sharing, levels=external_sharing)) %>% # Update factor levels
     ggplot(aes(x = external_sharing, y = Count)) + 
     geom_bar(stat = "identity") + 
@@ -599,10 +585,9 @@ datasharingplot <- function(data,
     select(-name) %>%
     group_by(sharing_measures) %>%
     summarise(Count = length(sharing_measures)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    #arrange(Count) %>% # Order by count
-    mutate(sharing_measures = factor(sharing_measures, levels=sharing_measures)) %>% # Update factor levels
-    ggplot(aes(x = sharing_measures, y = Count)) + 
+    mutate(sharing_measures = factor(sharing_measures, 
+                                     levels=sharing_measures)) %>% # Update factor levels
+    ggplot(aes(x = forcats::fct_rev(sharing_measures), y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title2, caption = caption2) +
     countstyle
@@ -621,8 +606,9 @@ datapublishingplot <- function(data, title = "Has published data",
     select(-name) %>%
     group_by(data_publishing) %>%
     summarise(Count = length(data_publishing)) %>%
-    mutate(data_publishing = factor(data_publishing, levels=data_publishing)) %>% # Update factor levels
-    ggplot(aes(x = data_publishing, y = Count)) + 
+    mutate(data_publishing = factor(data_publishing, 
+                                    levels=data_publishing)) %>% # Update factor levels
+    ggplot(aes(x = forcats::fct_rev(data_publishing), y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title, caption = caption) +
     countstyle_noflip
@@ -643,18 +629,18 @@ publicationformatplot <- function(data, title1 = "Published data format",
     select(-name) %>%
     group_by(publication_format) %>%
     summarise(Count = length(publication_format)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     mutate(publication_format = factor(publication_format, 
                                        levels=publication_format)) # Update factor levels
-  
-  if(dim(publication_format)[1] != 0){
+
+    # If there is no data on publication format, leave the plot empty
+    if(dim(publication_format)[1] != 0){
     publication_format_plot <-
       publication_format %>%
-      ggplot(aes(x = publication_format, y = Count)) + 
+      ggplot(aes(x = forcats::fct_rev(publication_format), y = Count)) + 
       geom_bar(stat = "identity") + 
       labs(x = "", title = title1, caption = caption1) +
       countstyle
-  } else{
+  } else {
     publication_format_plot <- ggplot() + theme_void()
   }
   
@@ -665,9 +651,9 @@ publicationformatplot <- function(data, title1 = "Published data format",
     select(-name) %>%
     group_by(reasons_nopub) %>%
     summarise(Count = length(reasons_nopub)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    mutate(reasons_nopub = factor(reasons_nopub, levels=reasons_nopub)) %>% # Update factor levels
-    ggplot(aes(x = reasons_nopub, y = Count)) + 
+    mutate(reasons_nopub = factor(reasons_nopub, 
+                                  levels=reasons_nopub)) %>% # Update factor levels
+    ggplot(aes(x = forcats::fct_rev(reasons_nopub), y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title2, caption = caption2) +
     countstyle
@@ -684,9 +670,9 @@ dppsurvey %>%
   select(-name) %>%
   group_by(Faculty, Know_PO) %>%
   summarise(Count = length(Know_PO)) %>%
+  mutate(Know_PO = factor(Know_PO, levels=Know_PO)) %>% # Update factor levels
   arrange(Count) %>% # Order by count
   filter(!is.na(Know_PO)) %>%
-  mutate(Know_PO = factor(Know_PO, levels=Know_PO)) %>% # Update factor levels
   ggplot(aes(x = reorder(Know_PO, -Count, sum, decreasing = T), y = Count)) + 
   geom_bar(stat = "identity", fill = uucol) + 
   facet_wrap(~Faculty, ncol = 4,
@@ -699,18 +685,15 @@ dppsurvey %>%
   geom_text(aes(label = Count),
             color = "black",
             position = position_stack(vjust = 0.5)) +
-  # TODO: repeat axis labels x in the top panel, lines between panels
   theme(axis.title.x = element_text(size = 10),
         axis.line.y = element_blank(),
         axis.line.x = element_line(),
         axis.text.y = element_blank(),
         axis.text.x = element_text(size = 10, colour = "black"),
         axis.ticks.y = element_blank(),
-        #panel.background = element_rect(fill = NA, color = "black"),
         panel.background = element_blank(),
         panel.border=element_blank(), #rect(fill = NA),
         panel.spacing.x = unit(1, "lines"),
-        #panel.grid.major.x = element_line(),
         panel.grid.minor=element_blank(),
         plot.background=element_blank(),
         strip.background = element_rect(color="white",
@@ -735,7 +718,6 @@ existingsupportplot <- function(data,
     group_by(searchhelp) %>%
     summarise(Count = length(searchhelp)) %>%
     mutate(searchhelp = factor(searchhelp, levels = searchhelp)) %>% # Update factor levels
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     ggplot(aes(x = searchhelp, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title1, caption = caption1) +
@@ -752,7 +734,6 @@ existingsupportplot <- function(data,
                                                     "Often",
                                                     "Sometimes",
                                                     "(Almost) never"))) %>% # Update factor levels
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     ggplot(aes(x = foundhelp, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title2, caption = caption2) +
@@ -775,8 +756,7 @@ sourcesusedplot <- function(data,
     group_by(sourcesused) %>%
     summarise(Count = length(sourcesused)) %>%
     mutate(sourcesused = factor(sourcesused, levels = sourcesused)) %>% # Update factor levels
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    ggplot(aes(x = sourcesused, y = Count)) + 
+    ggplot(aes(x = forcats::fct_rev(sourcesused), y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title, caption = caption) +
     countstyle
@@ -799,7 +779,6 @@ obstacleplot <- function(data,
                                                   "Sometimes",
                                                   "(Almost) never",
                                                   "Not sure"))) %>% # Update factor levels
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
     ggplot(aes(x = obstacle, y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title, caption = caption) +
@@ -818,10 +797,9 @@ data %>%
     select(-name) %>%
     group_by(bettersupport) %>%
     summarise(Count = length(bettersupport)) %>%
-    mutate(bettersupport = factor(bettersupport, levels=bettersupport)) %>% # Update factor levels
-    #mutate(Percentage = round(Count/dim(data)[1]*100,1)) %>%
-    #mutate(Percentage = round(Count/sum(Count)*100,0)) %>%
-    ggplot(aes(x = bettersupport, y = Count)) + 
+    mutate(bettersupport = factor(bettersupport, 
+                                  levels=bettersupport)) %>% # Update factor levels
+    ggplot(aes(x = forcats::fct_rev(bettersupport), y = Count)) + 
     geom_bar(stat = "identity") + 
     labs(x = "", title = title, caption = caption) +
     countstyle
