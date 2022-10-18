@@ -52,20 +52,19 @@ source("plot-data.R", local = knitr::knit_global())
 ```
 
 # Introduction {#introduction}
-Scientific research often includes some form of personal data. The amount of 
-personal data that is processed in research is likely underestimated, as 
+Scientific research often includes some form of personal data. However, 
 researchers may be unaware of what personal data are or whether they are being 
-collected. With the implementation of the General Data Protection Regulation
+collected. With the implementation of the General Data Protection Regulation 
 (GDPR) in 2018, stricter legal requirements apply to handling personal data and 
 its sharing and publication. In our own experience, the number and complexity of 
-questions on handling personal data in scientific research at Utrecht University
-(UU) is increasing. 
+questions on handling personal data in scientific research at Utrecht University 
+(UU) is increasing.  
 
-Our premise at <a href = "https://uu.nl/rdm" target = "_blank">Research Data 
+Our goal at <a href = "https://uu.nl/rdm" target = "_blank">Research Data 
 Management Support</a> (RDM Support) is to assist researchers with any issues 
 surrounding the management of their research data, including research data that 
-contains personal data. To understand how we can best help researchers with 
-their privacy-related questions and needs, we wanted to investigate:
+contain personal data. To understand how we can best help researchers with their 
+privacy-related questions and needs, we wanted to investigate:
 
 1. To what extent are UU researchers aware of privacy legislation and practices?
 2. What data privacy issues do UU researchers typically run into?
