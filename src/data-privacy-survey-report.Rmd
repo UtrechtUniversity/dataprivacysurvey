@@ -1,7 +1,7 @@
 ---
 title: "Data Privacy Survey"
 subtitle: "Challenges and needs of privacy-related services for research at Utrecht University"
-author: "Dorien Huijser & Neha Moopen^[Research Data Management Support, Utrecht University]"
+author: "Dorien Huijser^[Research Data Management Support, Utrecht University, ORCID: 0000-0003-3282-8083] & Neha Moopen^[Research Data Management Support, Utrecht University, ORCID: 0000-0003-1412-4402]"
 date: "`r format(Sys.time(), '%Y-%m-%d')`<br>"
 abstract: |
   In the second quarter of 2022, Utrecht University (UU) Research Data Management 
@@ -21,7 +21,7 @@ abstract: |
   one-on-one meetings with researchers, both for the entire UU, as well as for 
   each UU faculty separately.
 knit: (function(inputFile, encoding) {
-  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../docs") })
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../docs", output_format = "all") })
 output:
   html_document:
     toc: true
@@ -35,6 +35,14 @@ output:
     css: "../assets/style.css"
     includes:
       in_header: "../includes/header.html"
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    highlight: tango
+    number_sections: true
+    df_print: kable
+urlcolor: #C00A35
+linkcolor: #C00A35   
 ---
 
 ```{r setup, include=FALSE}
@@ -60,8 +68,8 @@ its sharing and publication. In our own experience, the number and complexity of
 questions on handling personal data in scientific research at Utrecht University 
 (UU) is increasing.  
 
-Our goal at <a href = "https://uu.nl/rdm" target = "_blank">Research Data 
-Management Support</a> (RDM Support) is to assist researchers with any issues 
+Our goal at [Research Data Management Support](https://uu.nl/rdm){target="_blank"} 
+(RDM Support) is to assist researchers with any issues 
 surrounding the management of their research data, including research data that 
 contain personal data. To understand how we can best help researchers with their 
 privacy-related questions and needs, we wanted to investigate:
@@ -74,11 +82,10 @@ To answer these questions, we set up an online survey and planned one-on-one
 meetings with a selection of UU researchers. This report describes our methods 
 and full results of both the online survey and the one-on-one meetings. For a
 full summary of the results and recommendations on how to move forward, please
-refer to the [Recommendations report](data-privacy-survey-recommendations.html).
+refer to the [Recommendations report](https://utrechtuniversity.github.io/dataprivacysurvey/docs/data-privacy-survey-report.html).
 
 This survey was part of a larger project at UU, the 
-<a href = "https://utrechtuniversity.github.io/dataprivacyproject/" target = "_blank">Data 
-Privacy Project</a>^[The 
+[Data Privacy Project](https://utrechtuniversity.github.io/dataprivacyproject/){target="_blank"}^[The 
 Data Privacy Project is funded by Utrecht University’s Research IT program and 
 a Digital Competence Center grant from the Dutch Organization for Scientific 
 Research (NWO).], a data support effort led by RDM Support at UU that aims to 
@@ -134,16 +141,16 @@ The survey was created in Qualtrics and distributed from March 21st, 2022
 onwards via several communication channels to reach as many UU researchers as 
 possible:
 
-- An <a href = "https://utrechtuniversity.github.io/dataprivacyproject/20220321-data-privacy-survey.html"
-target = "_blank">email</a> was sent to all academic staff at UU through 
+- An [email](https://utrechtuniversity.github.io/dataprivacyproject/20220321-data-privacy-survey.html){target="_blank"}
+was sent to all academic staff at UU through 
 central communication channels. The reasoning was that this would be the most
 effective way to reach as many UU researchers as possible - taking for granted
 that we would likely miss a small part of non-academic personnel also involved
 in research in some way.
 - A mention in several Faculty newsletters.
-- Social media messages (e.g., on <a href = "https://twitter.com/RDMsupportUU/status/1517390979707412481"
-target = "_blank">Twitter</a>).
-- A <a href = "https://intranet.uu.nl/en/news/news-items/survey-better-support-for-handling-privacy-sensitive-data-in-research" target = "_blank">news item</a> on the UU intranet.
+- Social media messages (e.g., on [Twitter](https://twitter.com/RDMsupportUU/status/1517390979707412481){target="_blank"}.
+- A [news item](https://intranet.uu.nl/en/news/news-items/survey-better-support-for-handling-privacy-sensitive-data-in-research){target="_blank"}
+on the UU intranet.
 - Via data support colleagues, who were asked to point researchers they were
 in contact with to the survey.
 
@@ -395,11 +402,11 @@ positionsmeetings(interviews_geo,
 From the raw Qualtrics output, we first cleaned and split the data into different
 data files (cleaned and closed survey responses, open text responses, email
 addresses, see the 
-<a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/src/pseudonymise-data.R" 
-target="_blank">pseudonymise-data.R</a> script for details). Both the open text 
+[pseudonymise-data.R]("https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/src/pseudonymise-data.R"){target="_blank"}
+script for details). Both the open text 
 responses and the notes made during the one-on-one meetings were separately and 
-manually coded to enable the extraction of action points (see the file <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/codes-open-text-responses-meetings.csv" 
-target="_blank">codes-open-text-responses-meetings.csv</a> for the codes used).
+manually coded to enable the extraction of action points (see the file [codes-open-text-responses-meetings.csv]("https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/codes-open-text-responses-meetings.csv"){target="_blank"}
+for the codes used).
 
 Below we report on the descriptive statistics or summaries from the 
 survey questions and notes made during the one-on-one meetings. As we did not 
@@ -407,44 +414,43 @@ formulate hypotheses, no statistical analyses were performed.
 
 ## Data and material availability {#data-and-material-availability}
 All survey-related documentation can be found in the 
-<a href="https://github.com/UtrechtUniversity/dataprivacysurvey" target = "_blank">dedicated 
-survey repository</a>. 
+[dedicated GitHub repository](https://github.com/UtrechtUniversity/dataprivacysurvey){target="_blank"}. 
 
 ### Documentation {#documentation-availability}
-- A <a href = "https://utrechtuniversity.github.io/dataprivacysurvey" target = "_blank">general 
-description</a> and links to the relevant written reports.
+- A [general description](https://utrechtuniversity.github.io/dataprivacysurvey){target="_blank"} 
+and links to the relevant written reports.
 - The 
-<a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-questions-qualtrics.pdf"
-target = "_blank">full survey</a>.
-- The survey's <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-privacy-statement.pdf"target = "_blank">privacy statement</a>.
-- The survey's <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-data-management-plan.pdf"
-target = "_blank">Data Management Plan</a>.
-- The <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/codes-open-text-responses-meetings.csv" target="_blank">codes used </a> to score open text responses and meeting notes.
-- <a href = "https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/survey-codebook.csv" target = "_blank">Codebook</a> of the survey in .csv format.
+[full survey](https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-questions-qualtrics.pdf){target="_blank"}.
+- The survey's [privacy statement](https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-privacy-statement.pdf){target="_blank"}.
+- The survey's [Data Management Plan](https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-data-management-plan.pdf){target="_blank"}.
+- The [codes used](https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/codes-open-text-responses-meetings.csv){target="_blank"}
+to score open text responses and meeting notes.
+- [Codebook](https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/survey-codebook.csv){target="_blank"}
+of the survey in .csv format.
 
 ### Code {#code-availability}
-The repository contains all <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/src" target = "_blank">
-scripts and documents</a> used to clean the data and write the reports.
+The repository contains all [scripts and documents](https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/src){target="_blank"}
+used to clean the data and write the reports.
 
 ### Data {#data-availability}
 As the dataset contains personal information (demographic information, open text 
 responses, email addresses, etc.), and no consent was obtained to share those 
 details, we are unable to share them in this repository. We did however create a
-<a href="https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/data/processed/Data_Privacy_Survey_fakedataset_20220929.csv" target = "_blank">synthetic (fake) dataset</a> with 100 rows using 
-Qualtrics's "Generate responses" functionality. This dataset can be used to 
-regenerate most of the current report, but will not create any realistic results. 
+[synthetic (fake) dataset](https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/data/processed/Data_Privacy_Survey_fakedataset_20220929.csv){target="_blank"}
+with 100 rows using Qualtrics's "Generate responses" functionality. This dataset 
+can be used to regenerate most of the current report, but will not create any 
+realistic results. 
 
 To reproduce this report:
 
-1. Clone <a href="https://github.com/UtrechtUniversity/dataprivacysurvey" target="_blank">the repository</a> from GitHub.
-2. Open <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/src/pseudonymise-data.R" 
-target="_blank">pseudonymise-data.R</a>, change the path to the ("raw") dataset 
-and run the script. This will create a clean version of the dataset, stored in 
-either the data/processed or data/pseud folder.
-3. Open the file <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/src/data-privacy-report.Rmd" 
-target="_blank">data-privacy-survey-report.Rmd</a> and knit the document. Note that
-the final part of the report cannot be reproduced, because there is no synthetic 
-data available for the open text responses and one-on-one meeting notes.
+1. Clone [the repository](https://github.com/UtrechtUniversity/dataprivacysurvey){target="_blank"} from GitHub.
+2. Open [pseudonymise-data.R](https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/src/pseudonymise-data.R){target="_blank"}, 
+change the path to the ("raw") dataset and run the script. This will create a 
+clean version of the dataset, stored in either the data/processed or data/pseud folder.
+3. Open the file [data-privacy-survey-report.Rmd](https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/src/data-privacy-report.Rmd){target="_blank"}
+and knit the document. Note that the final part of the report cannot be 
+reproduced, because there is no synthetic data available for the open text 
+responses and one-on-one meeting notes.
 
 # Results {#results}
 ## Types of research data {#types-of-research-data .tabset}
@@ -829,7 +835,7 @@ project may not be reused again, reducing the scientific value of the data.
 
 Finally, contact details of the Data Protection Officer (DPO) were not always 
 included either, whereas these always have to be provided when working with
-personal data (<a href = "https://gdpr-info.eu/art-13-gdpr/" target = "_blank">art. 13</a>)
+personal data ([art. 13](https://gdpr-info.eu/art-13-gdpr/){target="_blank"})
 
 ```{r consentforms-uuwide}
 consentforms(dppsurvey)
@@ -1512,7 +1518,7 @@ Below we highlight the most frequently mentioned challenges and needs expressed
 by researchers in the survey (open questions) and one-one-one meetings, along
 with the amount of times they were mentioned. A full
 summary of the results and recommendations can be found in the 
-[Recommendations report](data-privacy-survey-recommendations).
+[Recommendations report](https://utrechtuniversity.github.io/dataprivacysurvey/docs/data-privacy-survey-recommendations.html){target="_blank"}.
 
 ### Visibility and findability {#visibility-and-findability}
 `r totalcodes$Meaning[totalcodes$Code == "visibility"]` (mentioned 
@@ -1677,7 +1683,7 @@ times). For example:
 
 # Summary {#summary}
 A full summary of the results and recommendations can be found in the 
-[Recommendations report](data-privacy-survey-recommendations.html).
+[Recommendations report](https://utrechtuniversity.github.io/dataprivacysurvey/docs/data-privacy-survey-recommendations.html){target="_blank"}.
 
 # Discussion {#discussion}
 In order to interpret the results described in this report correctly, there 
@@ -1698,7 +1704,7 @@ where the open questions and one-on-one meetings are concerned.
 
 # Technical information {#technical-information}
 This report was created in 
-<a href = "https://bookdown.org/yihui/rmarkdown/" target = "_blank">R markdown</a>, 
+[R markdown](https://bookdown.org/yihui/rmarkdown/){target="_blank"}, 
 and was last generated on `r as.character(Sys.Date())`. It was created in the 
 following local environment:
 
