@@ -393,8 +393,7 @@ dppsurvey %>%
         plot.background=element_blank(),
         strip.background = element_rect(color="white",
                                         size=1.5),
-        strip.text = element_text(family = "Verdana",
-                                  size = 10,
+        strip.text = element_text(size = 10,
                                   face = "bold"))
 
 
@@ -437,8 +436,7 @@ datatypesdepartments <- function(data, string,
           plot.background=element_blank(),
           strip.background = element_rect(color="white",
                                           size=1.5),
-          strip.text = element_text(family = "Verdana",
-                                    size = 10,
+          strip.text = element_text(size = 10,
                                     face = "bold"))
 }
 
@@ -698,8 +696,7 @@ dppsurvey %>%
         plot.background=element_blank(),
         strip.background = element_rect(color="white",
                                         size=1.5),
-        strip.text = element_text(#family = "Verdana",
-                                  size = 10,
+        strip.text = element_text(size = 10,
                                   face = "bold"))
 
 
