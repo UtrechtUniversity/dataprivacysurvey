@@ -329,8 +329,13 @@ datatypes <- function(data){
     mutate(Frequency = paste0(Count, " (", Percentage, "%)")) %>%
     select(-Count, -Percentage)
   
-  t1 <- kable(datatypetable, format = "html", output = FALSE, 
-              col.names = gsub("_", " ", names(datatypetable),),
+  tables <- list(datatypetable, tablepersdata)
+  return(tables)
+}
+
+datatypes_html <- function(tables){
+  t1 <- kable(tables[[1]], format = "html", output = FALSE, 
+              col.names = gsub("_", " ", names(tables[[1]]),),
               caption = "<b>Types of research data</b>",
               table.attr='cellpadding="3", cellspacing="3"') %>%
     kable_styling(bootstrap_options = c("striped", 
@@ -338,8 +343,8 @@ datatypes <- function(data){
                                         "condensed", 
                                         "responsive"),
                   fixed_thead = T)
-  t2 <- kable(tablepersdata, format = "html", output = FALSE, 
-              col.names = gsub("_", " ", names(tablepersdata)),
+  t2 <- kable(tables[[2]], format = "html", output = FALSE, 
+              col.names = gsub("_", " ", names(tables[[2]])),
               caption = "<b>Types of personal data</b>",
               table.attr='cellpadding="3"') %>%
     kable_styling(bootstrap_options = c("striped", 
@@ -348,8 +353,21 @@ datatypes <- function(data){
                                         "responsive"),
                   fixed_thead = T)
   
-  tables <- list(t1, t2)
-  return(tables)
+  htmltables <- list(t1, t2)
+  return(htmltables)
+} 
+
+datatypes_latex <- function(tables){
+  kables(list(
+    kable(tables[[1]], "simple",
+          col.names = gsub("_", " ", names(tables[[1]]),),
+          caption = "Types of research data",
+          valign = 't'),
+    kable(tables[[2]], "simple",
+          col.names = gsub("_", " ", names(tables[[2]])),
+          caption = "Types of personal data",
+          valign = 't')
+  ))
 }
 
 
@@ -393,8 +411,7 @@ dppsurvey %>%
         plot.background=element_blank(),
         strip.background = element_rect(color="white",
                                         size=1.5),
-        strip.text = element_text(family = "Verdana",
-                                  size = 10,
+        strip.text = element_text(size = 10,
                                   face = "bold"))
 
 
@@ -437,8 +454,7 @@ datatypesdepartments <- function(data, string,
           plot.background=element_blank(),
           strip.background = element_rect(color="white",
                                           size=1.5),
-          strip.text = element_text(family = "Verdana",
-                                    size = 10,
+          strip.text = element_text(size = 10,
                                     face = "bold"))
 }
 
@@ -521,9 +537,9 @@ consentforms <- function(data, title1 = "Consent Forms",
 
 ## ---- dpia --------
 dpiaplot <- function(data, title1 = "Experience with DPIAs", 
-                     caption1 = "Have you ever conducted, or will you conduct, a Data Protection Impact Assessment (DPIA)?", 
+                     caption1 = "Have you ever conducted, or will you \nconduct, a Data Protection Impact Assessment (DPIA)?", 
                      title2 = "Received support DPIAs", 
-                     caption2 = "Did/Will you ask for help in conducting the DPIA?"){
+                     caption2 = "Did/Will you ask for help \nin conducting the DPIA?"){
   DPIA_experience_plot <- 
     data %>% 
     pivot_longer(cols = grep("^DPIA_experience_[0-9]+$", names(data), value=TRUE), 
@@ -559,9 +575,9 @@ dpiaplot <- function(data, title1 = "Experience with DPIAs",
 ## ---- datasharing --------
 datasharingplot <- function(data, 
                             title1 = "External sharing",
-                            caption1 = "Do you / Will you share research data containing personal data outside of the UU?",
+                            caption1 = "Do you / Will you share research data \ncontaining personal data outside of the UU?",
                             title2 = "Sharing measures",
-                            caption2 = "What actions do you take to transfer personal data securely outside of the UU?"){
+                            caption2 = "What actions do you take to transfer \npersonal data securely outside of the UU?"){
   
   external_sharing_plot <- 
     data %>% 
@@ -698,8 +714,7 @@ dppsurvey %>%
         plot.background=element_blank(),
         strip.background = element_rect(color="white",
                                         size=1.5),
-        strip.text = element_text(#family = "Verdana",
-                                  size = 10,
+        strip.text = element_text(size = 10,
                                   face = "bold"))
 
 

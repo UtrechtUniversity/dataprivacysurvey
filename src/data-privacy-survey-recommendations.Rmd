@@ -1,7 +1,7 @@
 ---
 title: "Data Privacy Survey"
 subtitle: "Recommendations for improving privacy-related services for research at Utrecht University"
-author: "Dorien Huijser, Neha Moopen^[Research Data Management Support, Utrecht University] & Rik Janssen^[Information Technology Services, Utrecht University]"
+author: "Dorien Huijser^[Research Data Management Support, Utrecht University, ORCID: 0000-0003-3282-8083], Neha Moopen^[Research Data Management Support, Utrecht University, ORCID: 0000-0003-1412-4402] & Rik D.T. Janssen^[Information Technology Services, Utrecht University, ORCID: 0000-0001-9510-0802]"
 date: "`r format(Sys.time(), '%Y-%m-%d')`"
 abstract: |
   In the second quarter of 2022, Utrecht University (UU) Research Data Management 
@@ -12,8 +12,8 @@ abstract: |
   personal data in research, and 3) How support at UU can improve their 
   services concerning personal data in research. The results showed that most 
   researchers knew to take privacy into account in their projects. However, 
-  there were vast differences in knowledge on this topic, as well as in how privacy-
-  related practices were applied. Many researchers expressed concerns on the current
+  there were vast differences in knowledge on this topic, as well as in how 
+  privacy-related practices were applied. Many researchers expressed concerns on the current
   quantity, findability and quality of privacy-related support at UU. These 
   concerns were translated to recommendations in the current report. In short,
   our recommendations concern organising privacy-related research support
@@ -24,7 +24,7 @@ abstract: |
   organisation will likely both increase overall GDPR compliance and help 
   researchers focus more on performing high-quality research.
 knit: (function(inputFile, encoding) {
-  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../docs") })
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../docs", output_format = "all") })
 output:
   html_document:
     toc: true
@@ -38,6 +38,14 @@ output:
     css: "../assets/style.css"
     includes:
       in_header: "../includes/header.html"
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    highlight: tango
+    number_sections: true
+urlcolor: #C00A35
+linkcolor: #C00A35
+filecolor: #C00A35
 ---
 
 ```{r setup, include=FALSE}
@@ -56,8 +64,8 @@ its sharing and publication. In our own experience, the number and complexity of
 questions on handling personal data in scientific research at Utrecht University 
 (UU) is increasing.  
 
-Our goal at <a href = "https://uu.nl/rdm" target = "_blank">Research Data 
-Management Support</a> (RDM Support) is to assist researchers with any issues 
+Our goal at [Research Data Management Support](https://uu.nl/rdm){target="_blank"} 
+(RDM Support) is to assist researchers with any issues 
 surrounding the management of their research data, including research data that 
 contain personal data. To understand how we can best help researchers with their 
 privacy-related questions and needs, we wanted to investigate:
@@ -71,12 +79,11 @@ meetings with a selection of UU researchers. This report summarises our findings
 and describes recommendations to improve privacy-related services for research 
 at Utrecht University. For a full description of the methods and results, 
 please refer to the 
-<a href = "data-privacy-survey-report.html" target = "_blank">Data Privacy Survey Report</a>.
+[Data Privacy Survey Report](https://utrechtuniversity.github.io/dataprivacysurvey/docs/data-privacy-survey-report.html){target="_blank"}.
 
-This survey was part of a larger project at UU, the 
-<a href = "https://utrechtuniversity.github.io/dataprivacyproject/" target = "_blank">Data 
-Privacy Project</a>^[The 
-Data Privacy Project is funded by Utrecht University’s Research IT program and 
+This survey was part of a larger project, the 
+[Data Privacy Project](https://utrechtuniversity.github.io/dataprivacyproject/){target="_blank"}^[The 
+Data Privacy Project was funded by Utrecht University’s Research IT program and 
 a Digital Competence Center grant from the Dutch Organization for Scientific 
 Research (NWO).], a data support effort led by RDM Support at UU that aims to 
 provide actionable and FAIR (Findable, Accessible, Interoperable, Reusable) 
@@ -94,13 +101,13 @@ area.
 experiences, challenges and needs in this area.
 
 All relevant materials can be found in the 
-<a href = "https://github.com/utrechtuniversity/dataprivacysurvey" target = "_blank">GitHub repository</a>
+[GitHub repository](https://github.com/utrechtuniversity/dataprivacysurvey){target="_blank"}
 and are described in the 
-<a href = "data-privacy-survey-report.html" target = "_blank">full report</a>.
+[full report](https://utrechtuniversity.github.io/dataprivacysurvey/docs/data-privacy-survey-report.html){target="_blank"}.
 
 # Results summary {#results-summary}
 Below is a summary of all results, which are described in full in the 
-<a href = "data-privacy-survey-report.html" target = "_blank">Data Privacy Survey Report</a>.
+[Data Privacy Survey Report](https://utrechtuniversity.github.io/dataprivacysurvey/docs/data-privacy-survey-report.html){target="_blank"}.
 
 ## Current practices
 The Data Privacy Survey showed that personal data are processed in research from 
@@ -131,7 +138,7 @@ from their side, when and from whom should they ask help? The latter question
 is relevant when considering the large variety of support personnel in each 
 faculty: privacy officers, data managers, security officers, Ethical Review 
 Boards, Research Support Officers and the Data Protection Officer can all help 
-researchers, but their exact role is unclear to researchers and may even differ 
+researchers, but their exact role is often unclear to researchers and may even differ 
 across faculties.
 
 Some researchers were not content with the support they had received in the 
@@ -150,7 +157,7 @@ to two reasons:
 Privacy and Research, the RDM Support website, websites from the Ethical Review 
 Boards, faculty data support websites, etc. Researchers indicated to find it 
 hard to assess which information resource was the one they should be using.
-- Information that was too abstract, contained too much jargon to understand, 
+- Existing information was too abstract, contained too much jargon to understand, 
 was not tailored to research, or not tailored to specific research scenarios.
 
 Finally, many problems seemed to arise from the fact that privacy had not been 
@@ -171,7 +178,7 @@ we make this recommendation more concrete:
 support staff
 - Smoothen the process of handling personal data in research
 - Make current and future information and tools better findable
-- Increase the hands-on nature of support (people)
+- Increase the hands-on nature of support
 - Improve the quality of information and tools
 
 ## Provide clarity on the process and responsibilities of researchers and data support staff {#clarity-process}
@@ -205,8 +212,8 @@ Data Protection Impact Assessment (DPIA) should be smoother and more clear:
 privacy officers should make agreements on when a DPIA should be performed. DPIAs 
 from similar projects – also from other faculties if relevant -  should be 
 reused to prevent having to perform a DPIA from scratch. Ideally, a DPIA should 
-only be performed if absolutely necessary. At the moment, privacy officers are 
-already working on this recommendation.
+only be performed if absolutely necessary. At the moment, UU's privacy officers 
+are already working on this recommendation.
 
 ## Make current and future information and tools better findable {#findable-info-tools}
 As several researchers indicated to have difficulties finding the correct 
@@ -214,7 +221,7 @@ information and tools among the many sources of information, we recommend to:
 
 - Collectively create one central webpage with all relevant information for 
 researchers. This is currently being created in the form of the 
-<a href="https://utrechtuniversity.github.io/dataprivacyhandbook" target="_blank">Data Privacy Handbook</a>, 
+[Data Privacy Handbook](https://utrechtuniversity.github.io/dataprivacyhandbook){target="_blank"}, 
 initiated by the RDM Support team. Ideally, similar content that currently 
 exists on other UU-related websites can be consolidated in the Data Privacy 
 Handbook in consultation with those responsible for such websites.
