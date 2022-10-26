@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/480716989.svg)](https://zenodo.org/badge/latestdoi/480716989)
+
 # Data Privacy Survey
 
 ## About
@@ -71,4 +73,4 @@ For questions about this repository, please contact Utrecht University's <a href
 
 This repository is licensed under a GPL 3.0 license. You can view the <a href= "https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/LICENSE" target = "_blank">license text here</a>.
 
-Citation will be made possible soon.
+When using materials from this repository, please cite us as specified in https://doi.org/10.5281/zenodo.7253451.
