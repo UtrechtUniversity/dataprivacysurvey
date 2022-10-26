@@ -15,20 +15,19 @@
     {
       "orcid": "0000-0001-9510-0802",
       "affiliation": "Utrecht University",
-      "name": "Janssen, Rik D.T."
+      "name": "Janssen, Rik D.T.",
+      "type": "ProjectMember"
     }
   ],
   "title": "Data Privacy Survey: Challenges and needs of privacy-related services for research at Utrecht University",
   "access_right": "open",
   "related_identifiers": [
     {
-      "scheme": "urls",
       "identifier": "https://utrechtuniversity.github.io/dataprivacysurvey",
       "relation": "isAlternateIdentifier",
       "resource_type": "other"
     },
     {
-      "scheme": "urls",
       "identifier": "https://utrechtuniversity.github.io/dataprivacyproject",
       "relation": "describes",
       "resource_type": "other"
