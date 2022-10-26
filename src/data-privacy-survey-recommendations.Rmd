@@ -12,8 +12,8 @@ abstract: |
   personal data in research, and 3) How support at UU can improve their 
   services concerning personal data in research. The results showed that most 
   researchers knew to take privacy into account in their projects. However, 
-  there were vast differences in knowledge on this topic, as well as in how privacy-
-  related practices were applied. Many researchers expressed concerns on the current
+  there were vast differences in knowledge on this topic, as well as in how 
+  privacy-related practices were applied. Many researchers expressed concerns on the current
   quantity, findability and quality of privacy-related support at UU. These 
   concerns were translated to recommendations in the current report. In short,
   our recommendations concern organising privacy-related research support
@@ -44,7 +44,8 @@ output:
     highlight: tango
     number_sections: true
 urlcolor: #C00A35
-linkcolor: #C00A35   
+linkcolor: #C00A35
+filecolor: #C00A35
 ---
 
 ```{r setup, include=FALSE}
@@ -80,9 +81,9 @@ at Utrecht University. For a full description of the methods and results,
 please refer to the 
 [Data Privacy Survey Report](https://utrechtuniversity.github.io/dataprivacysurvey/docs/data-privacy-survey-report.html){target="_blank"}.
 
-This survey was part of a larger project at UU, the 
+This survey was part of a larger project, the 
 [Data Privacy Project](https://utrechtuniversity.github.io/dataprivacyproject/){target="_blank"}^[The 
-Data Privacy Project is funded by Utrecht University’s Research IT program and 
+Data Privacy Project was funded by Utrecht University’s Research IT program and 
 a Digital Competence Center grant from the Dutch Organization for Scientific 
 Research (NWO).], a data support effort led by RDM Support at UU that aims to 
 provide actionable and FAIR (Findable, Accessible, Interoperable, Reusable) 
@@ -137,7 +138,7 @@ from their side, when and from whom should they ask help? The latter question
 is relevant when considering the large variety of support personnel in each 
 faculty: privacy officers, data managers, security officers, Ethical Review 
 Boards, Research Support Officers and the Data Protection Officer can all help 
-researchers, but their exact role is unclear to researchers and may even differ 
+researchers, but their exact role is often unclear to researchers and may even differ 
 across faculties.
 
 Some researchers were not content with the support they had received in the 
@@ -156,7 +157,7 @@ to two reasons:
 Privacy and Research, the RDM Support website, websites from the Ethical Review 
 Boards, faculty data support websites, etc. Researchers indicated to find it 
 hard to assess which information resource was the one they should be using.
-- Information that was too abstract, contained too much jargon to understand, 
+- Existing information was too abstract, contained too much jargon to understand, 
 was not tailored to research, or not tailored to specific research scenarios.
 
 Finally, many problems seemed to arise from the fact that privacy had not been 
@@ -177,7 +178,7 @@ we make this recommendation more concrete:
 support staff
 - Smoothen the process of handling personal data in research
 - Make current and future information and tools better findable
-- Increase the hands-on nature of support (people)
+- Increase the hands-on nature of support
 - Improve the quality of information and tools
 
 ## Provide clarity on the process and responsibilities of researchers and data support staff {#clarity-process}
@@ -211,8 +212,8 @@ Data Protection Impact Assessment (DPIA) should be smoother and more clear:
 privacy officers should make agreements on when a DPIA should be performed. DPIAs 
 from similar projects – also from other faculties if relevant -  should be 
 reused to prevent having to perform a DPIA from scratch. Ideally, a DPIA should 
-only be performed if absolutely necessary. At the moment, privacy officers are 
-already working on this recommendation.
+only be performed if absolutely necessary. At the moment, UU's privacy officers 
+are already working on this recommendation.
 
 ## Make current and future information and tools better findable {#findable-info-tools}
 As several researchers indicated to have difficulties finding the correct 
