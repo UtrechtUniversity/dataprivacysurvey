@@ -16,8 +16,8 @@ The survey and one-on-one meetings were part of the
 an RDM Support  project to improve information, tools and services surrounding 
 personal data in research. 
 
-<a href = "docs/data-privacy-survey-report.html"><button>Results report</button></a>
-<a href = "docs/data-privacy-survey-recommendations.html"><button>Recommendations report</button></a>
+<a href = "https://utrechtuniversity.github.io/dataprivacysurvey/docs/data-privacy-survey-report.html"><button>Results report</button></a>
+<a href = "https://utrechtuniversity.github.io/dataprivacysurvey/docs/data-privacy-survey-recommendations.html"><button>Recommendations report</button></a>
 
 ## This repository
 
@@ -58,10 +58,10 @@ reproduce most of the Results report.
 
 The two **reports** written about the survey are the following:
 
-- The <a href = "docs/data-privacy-survey-report">Results report</a> describes 
+- The <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/docs/data-privacy-survey-report.html">Results report</a> describes 
 the methodology and full results, both for the entire Utrecht University as well 
 as the separate faculties.
-- The <a href = "docs/data-privacy-survey-recommendations">Recommendations report</a> 
+- The <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/docs/data-privacy-survey-recommendations.html">Recommendations report</a> 
 summarises the results and provides Recommendations to improve privacy-related 
 support for Utrecht University researchers.
 
