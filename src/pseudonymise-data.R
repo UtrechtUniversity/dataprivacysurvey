@@ -82,7 +82,7 @@ emaildataset <- dppsurvey %>%
         sep = ",", remove = TRUE, na.rm=TRUE)
 
 write.csv(emaildataset, 
-          file.path(paste0("data/email_addresses/", 
+          file.path(paste0("data/raw/", 
                            most_recent_date, 
                            "_dppsurvey_emailaddresses.csv")))
 
@@ -112,7 +112,7 @@ opentextresponses <- dppsurvey %>%
             any_vars(!is.na(.)))
 
 write.csv(opentextresponses, 
-          file.path(paste0("data/opentext/", 
+          file.path(paste0("data/raw/", 
                            most_recent_date, 
                            "_dppsurvey_opentextresponses.csv")))
 
@@ -195,4 +195,3 @@ if(dim(check_vars)[1] != 0 | dim(check_combos)[1] != 0){
                              most_recent_date, 
                              "_dppsurvey.csv")))
 }
-

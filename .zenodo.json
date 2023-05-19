@@ -46,5 +46,15 @@
   ],
   "upload_type": "publication",
   "publication_type": "report",
-  "language": "eng"
+  "language": "eng",
+  "subjects": [{
+    "term": "research data management",
+    "identifier": "https://codata.org/rdm-terminology/research-data-management/",
+    "scheme": "url"
+  },
+  {
+    "term": "privacy",
+    "identifier": "https://codata.org/rdm-terminology/privacy/",
+    "scheme": "url"
+  }]
 }

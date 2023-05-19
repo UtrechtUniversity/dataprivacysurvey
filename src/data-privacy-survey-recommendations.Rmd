@@ -37,7 +37,7 @@ output:
     df_print: paged
     css: "../assets/style.css"
     includes:
-      in_header: "../includes/header.html"
+      in_header: "../assets/header.html"
   pdf_document:
     toc: true
     toc_depth: 2

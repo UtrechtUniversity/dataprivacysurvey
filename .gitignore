@@ -4,8 +4,5 @@
 .Ruserdata
 
 data/raw
-data/opentext
-data/email_addresses
 data/pseud
-data/coded
 src/get-data.R

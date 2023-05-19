@@ -34,7 +34,7 @@ output:
     df_print: paged
     css: "../assets/style.css"
     includes:
-      in_header: "../includes/header.html"
+      in_header: "../assets/header.html"
   pdf_document:
     toc: true
     toc_depth: 2
@@ -428,10 +428,12 @@ All survey-related documentation can be found in the
 ### Documentation {#documentation-availability}
 - A [general description](https://utrechtuniversity.github.io/dataprivacysurvey){target="_blank"} 
 and links to the relevant written reports.
-- The 
-[full survey](https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-questions-qualtrics.pdf){target="_blank"}.
+- The full survey
+[in text](https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-questions-qualtrics.pdf){target="_blank"}
+and [as Qualtrics export](https://utrechtuniversity.github.io/dataprivacysurvey/documentation/Data_Privacy_Survey_Qualtrics_export.qsf){target="_blank"}.
 - The survey's [privacy statement](https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-privacy-statement.pdf){target="_blank"}.
 - The survey's [Data Management Plan](https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-data-management-plan.pdf){target="_blank"}.
+- The <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/meeting-request.md" target="_blank">invitation</a> sent out to researchers to meet one-on-one.
 - The [codes used](https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/codes-open-text-responses-meetings.csv){target="_blank"}
 to score open text responses and meeting notes.
 - [Codebook](https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/survey-codebook.csv){target="_blank"}
@@ -442,24 +444,23 @@ The repository contains all [scripts and documents](https://github.com/UtrechtUn
 used to clean the data and write the reports.
 
 ### Data {#data-availability}
-As the dataset contains personal information (demographic information, open text 
+As the original dataset contains personal information (demographic information, open text 
 responses, email addresses, etc.), and no consent was obtained to share those 
-details, we are unable to share them in this repository. We did however create a
-[synthetic (fake) dataset](https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/data/processed/Data_Privacy_Survey_fakedataset_20220929.csv){target="_blank"}
-with 100 rows using Qualtrics's "Generate responses" functionality. This dataset 
-can be used to regenerate most of the current report, but will not create any 
-realistic results. 
+details, we are unable to share them in this repository. We did however create
+[dummy data files](https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/data/processed){target="_blank"}
+using Qualtrics's "Generate responses" functionality (for the fake raw survey data)
+and the website "[Mockaroo.com](https://www.mockaroo.com/){target="_blank"}" 
+(for the interview and open text response data). These files can be used to 
+regenerate the current report, but will not create any realistic results. 
 
 To reproduce this report:
 
 1. Clone [the repository](https://github.com/UtrechtUniversity/dataprivacysurvey){target="_blank"} from GitHub.
-2. Open [pseudonymise-data.R](https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/src/pseudonymise-data.R){target="_blank"}, 
-change the path to the ("raw") dataset and run the script. This will create a 
-clean version of the dataset, stored in either the data/processed or data/pseud folder.
-3. Open the file [data-privacy-survey-report.Rmd](https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/src/data-privacy-survey-report.Rmd){target="_blank"}
-and knit the document. Note that the final part of the report cannot be 
-reproduced, because there is no synthetic data available for the open text 
-responses and one-on-one meeting notes.
+2. In RStudio, open the file [plot-data.R](https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/src/plot-data.R){target="_blank"}
+3. In the first `dependencies` block of `plot-data.R`, change `reproduce <- "no"` to 
+`reproduce <- "yes"` so that the fake data files are read into the report.
+4. Open the file [data-privacy-survey-report.Rmd](https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/src/data-privacy-survey-report.Rmd){target="_blank"}
+and knit the document into a "fake" survey report.
 
 # Results {#results}
 ## Types of research data {#types-of-research-data .tabset}

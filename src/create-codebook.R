@@ -44,19 +44,3 @@ codebookobject <- codebook_table(dppsurvey) %>%
 
 # Write to csv
 write.csv(codebookobject, "documentation/survey-codebook.csv")
-
-
-### OTHER CODEBOOK OPTIONS (not used) ####
-# 1. Compact_codebook (also codebook package): output = html file
-#library(future)
-#codebook <- compact_codebook(codebook_data)
-
-# 2. libr package
-# column explanation: https://libr.r-sassy.org/reference/dictionary.html
-#library(libr)
-#codebook <- dictionary(codebook_data)
-
-# 3. WORCS package
-#library(worcs)
-# codebook <- make_codebook(codebook_data)
-# codebook_read <- read.csv("codebook.csv")
