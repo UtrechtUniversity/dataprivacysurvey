@@ -9,7 +9,7 @@
 ## ---- dependencies --------
 # Change this line to `reproduce <- "yes"` if you want to reproduce the report 
 # with the fake data
-reproduce <- "no"
+reproduce <- "yes"
 
 # Uncomment to install the packages
 # install.packages("data.table")
@@ -244,7 +244,7 @@ if(reproduce == "no"){
   interviewfile <- "../data/pseud/dppsurvey_interviews_coded.xlsx"
 } else if(reproduce == "yes"){
   # Fake data produced with https://www.mockaroo.com/
-  interviewfile <- "..data/processed/Data_Privacy_Survey_fake_interviews.xlsx"
+  interviewfile <- "../data/processed/Data_Privacy_Survey_fake_interviews.xlsx"
 }
 
 interviews <- read_excel(interviewfile, 
