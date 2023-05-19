@@ -27,6 +27,9 @@ reports written about the survey.
 **Documentation** can be found in the `documentation` folder of this repository. 
 It contains:
 
+- The full survey
+<a href="https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-questions-qualtrics.pdf" target="_blank">in text</a> and
+<a href="https://utrechtuniversity.github.io/dataprivacysurvey/documentation/Data_Privacy_Survey_Qualtrics_export.qsf" target="_blank">as Qualtrics export</a>.
 - The 
 <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-questions-qualtrics.pdf"
 target = "_blank">full survey</a>.
@@ -54,8 +57,8 @@ Recommendations report.
 As the **dataset** contains personal information (demographic information, open text 
 responses, email addresses, etc.), and no consent was obtained to share those 
 details, we are unable to share the dataset in this repository. Instead, we 
-created a <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/data/processed/Data_Privacy_Survey_fakedataset_20220929.csv" target = "_blank">synthetic (fake) dataset</a>, which can be used to 
-reproduce most of the Results report. 
+created <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/data/processed" target = "_blank">fake dat files</a>, 
+which can be used to reproduce the Results report. 
 
 The two **reports** written about the survey are the following:
 
