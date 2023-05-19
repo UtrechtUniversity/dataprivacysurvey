@@ -57,7 +57,7 @@ Recommendations report.
 As the **dataset** contains personal information (demographic information, open text 
 responses, email addresses, etc.), and no consent was obtained to share those 
 details, we are unable to share the dataset in this repository. Instead, we 
-created <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/data/processed" target = "_blank">fake dat files</a>, 
+created <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/tree/main/data/processed" target = "_blank">fake data files</a>, 
 which can be used to reproduce the Results report. 
 
 The two **reports** written about the survey are the following:
@@ -75,6 +75,6 @@ For questions about this repository, please contact Utrecht University's <a href
 
 ## License and citation
 
-This repository is licensed under a GPL 3.0 license. You can view the <a href= "https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/LICENSE" target = "_blank">license text here</a>.
+This repository is licensed under a CC BY 4.0 license. You can view the <a href= "https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/LICENSE" target = "_blank">license text here</a>.
 
 When using materials from this repository, please cite us as specified in https://doi.org/10.5281/zenodo.7253451.
