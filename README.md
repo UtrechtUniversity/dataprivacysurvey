@@ -75,6 +75,6 @@ For questions about this repository, please contact Utrecht University's <a href
 
 ## License and citation
 
-This repository is licensed under a CC BY 4.0 license. You can view the <a href= "https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/LICENSE" target = "_blank">license text here</a>.
+This repository is licensed under a CC BY 4.0 license. You can view the <a href= "https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/LICENSE.md" target = "_blank">license text here</a>.
 
 When using materials from this repository, please cite us as specified in https://doi.org/10.5281/zenodo.7253451.
