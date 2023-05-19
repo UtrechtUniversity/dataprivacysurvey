@@ -7,6 +7,11 @@
 # without having to copy-paste code between reports, yay!
 
 ## ---- dependencies --------
+# Change this line to `reproduce <- "yes"` if you want to reproduce the report 
+# with the fake data
+reproduce <- "no"
+
+# Uncomment to install the packages
 # install.packages("data.table")
 library(data.table)
 
@@ -19,7 +24,12 @@ library(gridExtra)
 #install.packages("knitr")
 library(knitr)
 
-#install.packages("kableExtra")
+##install.packages("kableExtra")
+# Due to an issue with R 4.2.3 and the kableExtra package,
+# we use the dev version of kableExtra for the moment
+# See https://github.com/haozhu233/kableExtra/issues/750
+#install.packages("devtools")
+#devtools::install_github("kupietz/kableExtra")
 library(kableExtra)
 
 #install.packages("readxl")
@@ -27,39 +37,39 @@ library(readxl)
 
 
 ## ---- readdata --------
-### Find the most recent data file in data/pseud or data/processed and read it in
-# N.B. When cloning this project, this will load the fake dataset in /data/processed
-# as it has the most recent date. 
-# NB2: Perhaps R will whine that there is no pseud folder as it is not tracked by 
-# git (files in the pseud folder contain pseudonymised data = personal data).
 
-# List all the files in pseud and processed folder
-data_files_pseud <- list.files(path = "../data/pseud")
-data_files_processed <- list.files(path = "../data/processed")
-
-data_files <- data.frame(filename = c(data_files_pseud,
-                                      data_files_processed),
-                         folder = c(rep("pseud", length(data_files_pseud)),
-                                    rep("processed", length(data_files_processed))
-                         )
-)
-
-# Get the dates out of the file names and pick the newest one
-data_files$filenamedates <- as.Date(str_extract(pattern = "[0-9]+-[0-9]+-[0-9]+", 
-                                                string = data_files$filename),
-                                    format = "%Y-%m-%d")
-
-# Sort by date (descending = most recent one first)
-setorder(data_files, -filenamedates, na.last = TRUE)
-
-# Get most recent file
-datafile <- paste0("../data/",
-                   data_files$folder[1],
-                   "/",
-                   data_files$filename[1])
+if(reproduce == "no"){
+  ### Find the most recent data file in data/pseud or data/processed and read it in
+  # List all the files in pseud and processed folder
+  data_files_pseud <- list.files(path = "../data/pseud")
+  data_files_processed <- list.files(path = "../data/processed")
+  
+  data_files <- data.frame(filename = c(data_files_pseud,
+                                        data_files_processed),
+                           folder = c(rep("pseud", length(data_files_pseud)),
+                                      rep("processed", length(data_files_processed))
+                           )
+  )
+  
+  # Get the dates out of the file names and pick the newest one
+  data_files$filenamedates <- as.Date(str_extract(pattern = "[0-9]+-[0-9]+-[0-9]+", 
+                                                  string = data_files$filename),
+                                      format = "%Y-%m-%d")
+  
+  # Sort by date (descending = most recent one first)
+  setorder(data_files, -filenamedates, na.last = TRUE)
+  
+  # Get most recent file
+  datafile <- paste0("../data/",
+                     data_files$folder[1],
+                     "/",
+                     data_files$filename[1])
+  
+} else if(reproduce == "yes"){
+  datafile <- "../data/processed/Data_Privacy_Survey_fakedataset_pseudonymised.csv"
+}
 
 dppsurvey <- fread(datafile)
-
 
 ## ---- labelsfsw --------
 # The labels of the FSW Departments are too long to display properly in a graph.
@@ -230,14 +240,24 @@ plotdepartments <- function(data,
 
 ## ---- read-opentext --------
 # Read in coded responses from interviews
-interviewfile <- "../data/coded/dppsurvey_interviews_coded.xlsx"
+if(reproduce == "no"){
+  interviewfile <- "../data/pseud/dppsurvey_interviews_coded.xlsx"
+} else if(reproduce == "yes"){
+  # Fake data produced with https://www.mockaroo.com/
+  interviewfile <- "..data/processed/Data_Privacy_Survey_fake_interviews.xlsx"
+}
 
 interviews <- read_excel(interviewfile, 
                          sheet = "interviews") %>%
-  select(Interviewnr, Faculty, Position, Present, codes, tools)
+  select(Interviewnr, Faculty, Position, codes, tools)
 
 # Read in coded responses from open questions
-opentextfile <- "../data/coded/dppsurvey_opentextresponses_coded.xlsx"
+if(reproduce == "no"){
+  opentextfile <- "../data/pseud/dppsurvey_opentextresponses_coded.xlsx"
+} else if(reproduce == "yes"){
+  # Fake data produced with https://www.mockaroo.com/
+  opentextfile <- "../data/processed/Data_Privacy_Survey_fake_opentextresponses_coded.xlsx"
+}
 opentext <- read_excel(opentextfile, sheet = "opentextresponses") %>%
   select(Faculty, Dept, Position, codes, tools)
 opencodes <- read_excel(opentextfile, sheet = "codes") %>%
@@ -311,10 +331,10 @@ datatypes <- function(data){
     select(-name) %>%
     group_by(Datatype) %>%
     summarise(Count = length(Datatype)) %>%
-    mutate(Datatype = factor(Datatype, levels=Datatype)) %>% # Update factor levels
-    mutate(Percentage = round(Count/dim(data)[1]*100,1)) %>%
-    mutate(Frequency = paste0(Count, " (", Percentage, "%)")) %>%
-    select(-Count, -Percentage)
+    mutate(Datatype = factor(Datatype, levels=Datatype)) #%>% # Update factor levels
+    #mutate(Percentage = round(Count/dim(data)[1]*100,1)) %>%
+    #mutate(Frequency = paste0(Count, " (", Percentage, "%)")) %>%
+    #select(-Count, -Percentage)
   
   # Table of personal data types
   tablepersdata <- data %>%
@@ -325,9 +345,10 @@ datatypes <- function(data){
     group_by(Personal_Datatype) %>%
     summarise(Count = length(Personal_Datatype)) %>%
     mutate(Personal_Datatype = factor(Personal_Datatype, levels=Personal_Datatype), # Update factor levels
-           Percentage = round(Count/dim(dppsurvey)[1]*100,1)) %>%
-    mutate(Frequency = paste0(Count, " (", Percentage, "%)")) %>%
-    select(-Count, -Percentage)
+           #Percentage = round(Count/dim(dppsurvey)[1]*100,1)
+           ) #%>%
+    #mutate(Frequency = paste0(Count, " (", Percentage, "%)")) %>%
+    #select(-Count, -Percentage)
   
   tables <- list(datatypetable, tablepersdata)
   return(tables)
