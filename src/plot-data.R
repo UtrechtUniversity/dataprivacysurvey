@@ -9,7 +9,7 @@
 ## ---- dependencies --------
 # Change this line to `reproduce <- "yes"` if you want to reproduce the report 
 # with the fake data
-reproduce <- "yes"
+reproduce <- "no"
 
 # Uncomment to install the packages
 # install.packages("data.table")
