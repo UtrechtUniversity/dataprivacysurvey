@@ -33,7 +33,7 @@ target = "_blank">full survey</a>.
 - The survey's <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-privacy-statement.pdf" target = "_blank">privacy statement</a>.
 - The survey's <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-data-management-plan.pdf"
 target = "_blank">Data Management Plan</a>.
-- The <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/meeting-request.md" target="_blank">invitation</a> sent out to researchers to meet one-on-one
+- The <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/meeting-request.md" target="_blank">invitation</a> sent out to researchers to meet one-on-one.
 - The <a href="https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/codes-open-text-responses-meetings.csv" target="_blank">codes used </a> to score open text responses and meeting notes.
 - A <a href = "https://github.com/UtrechtUniversity/dataprivacysurvey/blob/main/documentation/survey-codebook.csv" target = "_blank">codebook</a> of the online survey in .csv format.
 
