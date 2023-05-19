@@ -50,8 +50,7 @@ filecolor: #C00A35
 knitr::opts_chunk$set(echo = FALSE, 
                       warning = FALSE, 
                       message = FALSE,
-                      fig.align = "center",
-                      fig.keep = "none")
+                      fig.align = "center")
 ```
 
 ```{r sourcescript, include=FALSE, cache=FALSE}
