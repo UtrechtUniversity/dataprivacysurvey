@@ -30,9 +30,6 @@ It contains:
 - The full survey
 <a href="https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-questions-qualtrics.pdf" target="_blank">in text</a> and
 <a href="https://utrechtuniversity.github.io/dataprivacysurvey/documentation/Data_Privacy_Survey_Qualtrics_export.qsf" target="_blank">as Qualtrics export</a>.
-- The 
-<a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-questions-qualtrics.pdf"
-target = "_blank">full survey</a>.
 - The survey's <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-privacy-statement.pdf" target = "_blank">privacy statement</a>.
 - The survey's <a href = "https://utrechtuniversity.github.io/dataprivacysurvey/documentation/survey-data-management-plan.pdf"
 target = "_blank">Data Management Plan</a>.
